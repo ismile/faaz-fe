@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import Drawer from '@material-ui/core/Drawer'
-import { alpha, makeStyles } from '@material-ui/core/styles'
+import {makeStyles } from '@material-ui/core/styles'
 import { useState } from 'react'
 import clsx from 'clsx'
 import InputBase from '@material-ui/core/InputBase'
@@ -154,7 +154,7 @@ export default function Layout({ children }) {
         </Drawer>
         <main className="w-full min-h-full bg-gray-100 block p-3 pl-0">
           <div
-            className="w-full fixed top-0 left-0 bg-red"
+            className={clsx("w-full fixed top-0 left-0", classes.bg)}
             style={{ height: 184 }}
           ></div>
           <div
@@ -174,6 +174,7 @@ export default function Layout({ children }) {
 const drawerWidth = 210
 
 const useStyles = makeStyles((theme) => ({
+  bg: {background: theme.palette.primary.main,},
   root: {
     display: 'flex',
   },
@@ -204,7 +205,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
-    borderRight: 'none',
+    // borderRight: 'none',
   },
   drawerOpen: {
     width: drawerWidth,
