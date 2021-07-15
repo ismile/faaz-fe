@@ -1,9 +1,9 @@
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import red from '@material-ui/core/colors/red';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import red from '@material-ui/core/colors/red'
 
 // Create a theme instance.
 const theme = createMuiTheme({
-  spacing: factor => `${0.25 * factor}rem`,
+  spacing: (factor) => `${0.25 * factor}rem`,
   palette: {
     primary: red,
     secondary: {
@@ -16,8 +16,9 @@ const theme = createMuiTheme({
       default: '#fff',
     },
   },
-});
+  shape: {
+    borderRadius: 0,
+  },
+})
 
-
-
-export default theme;
+export default theme

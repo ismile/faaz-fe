@@ -157,7 +157,14 @@ export default function Layout({ children }) {
             className="w-full fixed top-0 left-0 bg-red"
             style={{ height: 184 }}
           ></div>
-          <div className="h-full relative mt-16 ml-3">{children}</div>
+          <div
+            className={clsx('h-full relative ml-3', {
+              'mt-15': open,
+              'mt-12': !open,
+            })}
+          >
+            {children}
+          </div>
         </main>
       </div>
     </div>

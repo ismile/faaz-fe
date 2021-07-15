@@ -1,5 +1,5 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: false
+  enabled: false,
 })
 
 module.exports = (phase, defaultConfig) => {
