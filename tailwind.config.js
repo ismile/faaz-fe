@@ -1,3 +1,6 @@
+const colors = require('./configs/colors')
+
+
 module.exports = {
   purge: {
     purge: true,
@@ -5,7 +8,14 @@ module.exports = {
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      colors: colors,
+      zIndex: {
+        '1': 1,
+        '1000': 1000,
+        '3000': 3000
+      }
+    },
   },
   variants: {
     extend: {},

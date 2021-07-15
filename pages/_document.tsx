@@ -6,7 +6,7 @@ import theme from '../configs/theme';
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en">
+      <Html lang="en" style={{fontSize: 14}}>
         <Head>
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
@@ -16,8 +16,19 @@ export default class MyDocument extends Document {
           />
         </Head>
         <body>
-          <Main />
+          <Main  />
           <NextScript />
+
+          <style jsx global>{`
+            #__next, body, html {
+              height: 100%;
+            }
+
+            #__next {
+
+            }
+
+          `}</style>
         </body>
       </Html>
     );
