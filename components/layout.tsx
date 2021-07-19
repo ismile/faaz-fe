@@ -4,8 +4,8 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import Drawer from '@material-ui/core/Drawer'
-import {makeStyles } from '@material-ui/core/styles'
-import { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { useState, memo } from 'react'
 import clsx from 'clsx'
 import InputBase from '@material-ui/core/InputBase'
 
@@ -26,18 +26,45 @@ import Avatar from '@material-ui/core/Avatar'
 import SearchIcon from '@material-ui/icons/Search'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import Badge from '@material-ui/core/Badge'
+import useSidebarStore from './hooks/useSidebarStore'
+
+const MenuItemView = memo(function ({ text, index }) {
+  return (
+    <ListItem button key={text}>
+      <ListItemIcon>
+        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+      </ListItemIcon>
+      <ListItemText primary={text} />
+    </ListItem>
+  )
+})
+
+const MenuView = memo(function ({ menu1, menu2 }) {
+  return (
+    <>
+      <List>
+        {menu1.map((text, index) => (
+          <MenuItemView text={text} index={index} />
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {menu2.map((text, index) => (
+          <MenuItemView text={text} index={index} />
+        ))}
+      </List>
+    </>
+  )
+})
 
 export default function Layout({ children }) {
   const classes = useStyles()
-  const [open, setOpen] = useState(false)
-
-  const _handleDrawerOpen = () => {
-    setOpen(!open)
-  }
-
-  const _handleDrawerClose = () => {
-    setOpen(false)
-  }
+  const menu1 = ['Inbox', 'Starred', 'Send email', 'Drafts']
+  const menu2 = ['All mail', 'Trash', 'Spam']
+  const [open, _toggle] = useSidebarStore((store) => [
+    store.open,
+    store._toggle,
+  ])
 
   return (
     <div className="flex w-full min-h-full absolute z-1000 top-0 left-0 overflow-hidden">
@@ -55,7 +82,7 @@ export default function Layout({ children }) {
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={_handleDrawerOpen}
+              onClick={_toggle}
               edge="start"
             >
               <MenuIcon />
@@ -128,42 +155,18 @@ export default function Layout({ children }) {
                 </ListItemSecondaryAction>
               </ListItem>
             </List>
+            <MenuView menu1={menu1} menu2={menu2} />
           </div>
           <Divider />
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </Drawer>
         <main className="w-full min-h-full bg-gray-100 block p-3 pl-0">
           <div
-            className={clsx("w-full fixed top-0 left-0", classes.bg)}
+            className={clsx('w-full fixed top-0 left-0', classes.bg)}
             style={{ height: 184 }}
           ></div>
-          <div
-            className={clsx('h-full relative ml-3', {
-              'mt-15': open,
-              'mt-12': !open,
-            })}
-          >
-            {children}
+          <div className={clsx('h-full relative ml-3 flex flex-col')}>
+            <div className="h-15"></div>
+            <div className="flex-1">{children}</div>
           </div>
         </main>
       </div>
@@ -174,7 +177,7 @@ export default function Layout({ children }) {
 const drawerWidth = 210
 
 const useStyles = makeStyles((theme) => ({
-  bg: {background: theme.palette.primary.main,},
+  bg: { background: theme.palette.primary.main },
   root: {
     display: 'flex',
   },
