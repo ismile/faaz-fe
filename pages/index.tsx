@@ -7,10 +7,7 @@ import Button from '@material-ui/core/Button'
 import Layout from '../components/layout'
 import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
-import { TABLE_ICONS } from '../configs/table'
-import AutoSizer from 'react-virtualized-auto-sizer'
 import { useRef, useState } from 'react'
-import { useWindowResize } from '../components/hooks/useWindowResize'
 import RCTable from 'rc-table'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -26,8 +23,7 @@ import immer from 'immer'
 import zustand from 'zustand'
 import { memo } from 'react'
 import { Resizable } from 'react-resizable'
-import debounce from 'lodash/debounce'
-import shallow from 'zustand/shallow'
+import useElementSize from '../components/hooks/useElementSize'
 
 const rowKey = 'id'
 
@@ -70,11 +66,7 @@ const useStore = zustand((set) => ({
     ),
 }))
 
-
-
 export default function Home() {
-
-
   const [
     selected,
     selectedArr,
@@ -88,6 +80,10 @@ export default function Home() {
     state._handleSingleSelect,
     state._handleSelectAll,
   ])
+
+  const squareRef = useRef(null)
+
+  const { width, height } = useElementSize(squareRef)
 
   const columns = [
     {
@@ -197,95 +193,75 @@ export default function Home() {
   ]
 
   return (
-    <Layout>
-      <div className="h-full w-full flex flex-col">
-        <Toolbar>
-          <Typography variant="h6">SAMPLE GRID</Typography>
-          <div className="flex-1" />
-          <Button variant="contained" color="secondary" className="mr-2">
-            hellow
-          </Button>
-          <Button variant="contained" color="secondary">
-            hellow
-          </Button>
-        </Toolbar>
+    <div className="h-full w-full flex flex-col">
+      <Toolbar>
+        <Typography variant="h6">SAMPLE GRID</Typography>
+        <div className="flex-1" />
+        <Button variant="contained" color="secondary" className="mr-2">
+          hellow
+        </Button>
+        <Button variant="contained" color="secondary">
+          hellow
+        </Button>
+      </Toolbar>
 
-        {/* <Paper className="mt-2 p-6"> */}
-        <Paper className="flex flex-1 flex-col ag-theme-material mb-1">
-          <div className="flex-1 w-full">
-            <div className="h-full w-full">
-              <DataTable columns={columns} />
+      {/* <Paper className="mt-2 p-6"> */}
+      <Paper className="flex flex-1 flex-col ag-theme-material mb-1">
+        <div className="flex-1 w-full">
+          <div className="h-full w-full" ref={squareRef}>
+            <div className="fixed" style={{ width, height }}>
+              <RCTable
+                // tableLayout="fixed"
+                // sticky
+                style={{ width: width, height: height }}
+                columns={columns}
+                data={data}
+                scroll={{ x: width, y: height - 53 }}
+                rowKey={rowKey}
+                components={{
+                  table: memo((props) => <Table {...props} />),
+                  header: {
+                    wrapper: memo((props) => <TableHead {...props} />),
+                    row: memo((props) => <TableRow {...props} />),
+                    cell: memo((props) => {
+                      const { onResize, width, resizeable, ...restProps } =
+                        props
+                      if (!(width && resizeable)) {
+                        return <TableCell {...props} />
+                      }
+
+                      return (
+                        <Resizable width={width} height={0} onResize={onResize}>
+                          <TableCell {...restProps} />
+                        </Resizable>
+                      )
+                    }),
+                  },
+                  body: {
+                    wrapper: memo((props) => <TableBody {...props} />),
+                    row: memo((props) => <TableRow {...props} />),
+                    cell: memo((props) => <TableCell {...props} />),
+                  },
+                }}
+              />
             </div>
           </div>
-          <Toolbar className="flex flex-row">
-            <div className="flex-1">Selected: {selectedArr.length}</div>
-            <TablePagination
-              component="div"
-              count={100}
-              page={1}
-              onPageChange={() => {}}
-              rowsPerPage={10}
-              onRowsPerPageChange={() => {}}
-            />
-          </Toolbar>
-        </Paper>
-
-        {/* </Paper> */}
-      </div>
-    </Layout>
-  )
-}
-
-const DataTable = ({ width, height, columns }) => {
-  const [size, setSize] = useState({ height: 0, width: 0 })
-  const _handleSetSize = debounce(({ height, width }) => {
-    console.log(width, height)
-    setSize({ height, width })
-  }, 500)
-  return (
-    <>
-      <AutoSizer
-        onResize={({ height, width }) => {
-          _handleSetSize({ height, width })
-        }}
-      >
-        {({ height, width }) => (
-          <RCTable
-            // tableLayout="fixed"
-            // sticky
-            style={{ width: size.width, height: size.height }}
-            columns={columns}
-            data={data}
-            scroll={{ x: size.width, y: size.height - 53 }}
-            rowKey={rowKey}
-            components={{
-              table: memo((props) => <Table {...props} />),
-              header: {
-                wrapper: memo((props) => <TableHead {...props} />),
-                row: memo((props) => <TableRow {...props} />),
-                cell: memo((props) => {
-                  const { onResize, width, resizeable, ...restProps } = props
-                  if (!(width && resizeable)) {
-                    return <TableCell {...props} />
-                  }
-
-                  return (
-                    <Resizable width={width} height={0} onResize={onResize}>
-                      <TableCell {...restProps} />
-                    </Resizable>
-                  )
-                }),
-              },
-              body: {
-                wrapper: memo((props) => <TableBody {...props} />),
-                row: memo((props) => <TableRow {...props} />),
-                cell: memo((props) => <TableCell {...props} />),
-              },
-            }}
+        </div>
+        <Toolbar className="flex flex-row">
+          <div className="flex-1">Selected: {selectedArr.length}</div>
+          <TablePagination
+            component="div"
+            count={100}
+            page={1}
+            onPageChange={() => {}}
+            rowsPerPage={10}
+            onRowsPerPageChange={() => {}}
           />
-        )}
-      </AutoSizer>
-    </>
+        </Toolbar>
+      </Paper>
+
+      {/* </Paper> */}
+    </div>
   )
 }
 

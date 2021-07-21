@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import Toolbar from '@material-ui/core/Toolbar'
 
 import '../styles/globals.css'
+import Layout from '../components/layout'
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -28,7 +29,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <Layout>
           <Component {...pageProps} />
+          </Layout>
         </ThemeProvider>
       </StylesProvider>
     </>

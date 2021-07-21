@@ -3,7 +3,10 @@ import zustand from 'zustand'
 
 const useSidebarStore = zustand(set => ({
   open: false,
-  _toggle: () => set(state => ({ open: !state.open})),
+  _toggle: () => {
+    if(window) window.dispatchEvent(new Event('resize'))
+    return set(state => ({ open: !state.open}))
+  },
 }))
 
 
