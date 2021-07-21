@@ -25,6 +25,9 @@ import MenuIcon from '@material-ui/icons/Menu'
 import immer from 'immer'
 import zustand from 'zustand'
 import { memo } from 'react'
+import { Resizable } from 'react-resizable'
+import debounce from 'lodash/debounce'
+import shallow from 'zustand/shallow'
 
 const rowKey = 'id'
 
@@ -41,7 +44,7 @@ const useStore = zustand((set) => ({
           draft.selected[d[rowKey]] = d
         }
 
-        draft.selectedArr = Object.keys(draft.selected).map((key)=> {
+        draft.selectedArr = Object.keys(draft.selected).map((key) => {
           return draft.selected[key]
         })
       })
@@ -50,40 +53,52 @@ const useStore = zustand((set) => ({
     set(
       immer((draft) => {
         draft.isAllSelected = !draft.isAllSelected
-        console.log(draft.isAllSelected)
-        if(draft.isAllSelected) {
-          data.forEach((d, i)=> {
+        if (draft.isAllSelected) {
+          data.forEach((d, i) => {
             draft.selected[d[rowKey]] = d
           })
         } else {
-          data.forEach((d, i)=> {
+          data.forEach((d, i) => {
             delete draft.selected[d[rowKey]]
           })
         }
 
-        draft.selectedArr = Object.keys(draft.selected).map((key)=> {
+        draft.selectedArr = Object.keys(draft.selected).map((key) => {
           return draft.selected[key]
         })
       })
     ),
 }))
 
+
+
 export default function Home() {
-  const [selected, selectedArr, isAllSelected, _handleSingleSelect, _handleSelectAll] = useStore((state) => [
+
+
+  const [
+    selected,
+    selectedArr,
+    isAllSelected,
+    _handleSingleSelect,
+    _handleSelectAll,
+  ] = useStore((state) => [
     state.selected,
     state.selectedArr,
     state.isAllSelected,
     state._handleSingleSelect,
-    state._handleSelectAll
+    state._handleSelectAll,
   ])
 
   const columns = [
     {
       title: (
         <Checkbox
+          key={`check-all`}
           className="p-0"
           checked={isAllSelected}
-          onChange={() => {_handleSelectAll(data)}}
+          onChange={() => {
+            _handleSelectAll(data)
+          }}
           inputProps={{ 'aria-label': 'primary checkbox' }}
         />
       ),
@@ -94,10 +109,10 @@ export default function Home() {
       render: (v, d) => {
         return (
           <Checkbox
+            key={`checkbox-${d[rowKey]}`}
             className="p-0"
             checked={selected[d[rowKey]]}
             onChange={function (ev, val) {
-              console.log(val, d, 'asd')
               _handleSingleSelect(d, val)
             }}
             inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -133,6 +148,7 @@ export default function Home() {
       title: 'Address',
       dataIndex: 'address',
       key: 'address',
+      resizeable: true,
       width: 800,
     },
     {
@@ -221,33 +237,55 @@ export default function Home() {
 }
 
 const DataTable = ({ width, height, columns }) => {
+  const [size, setSize] = useState({ height: 0, width: 0 })
+  const _handleSetSize = debounce(({ height, width }) => {
+    console.log(width, height)
+    setSize({ height, width })
+  }, 500)
   return (
-    <AutoSizer>
-      {({ height, width }) => (
-        <RCTable
-          // tableLayout="fixed"
-          // sticky
-          style={{ width: width, height: height }}
-          columns={columns}
-          data={data}
-          scroll={{ x: width, y: height - 53 }}
-          rowKey={rowKey}
-          components={{
-            table: memo((props) => <Table {...props} />),
-            header: {
-              wrapper: memo((props) => <TableHead {...props} />),
-              row: memo((props) => <TableRow {...props} />),
-              cell: memo((props) => <TableCell {...props} />),
-            },
-            body: {
-              wrapper: memo((props) => <TableBody {...props} />),
-              row: memo((props) => <TableRow {...props} />),
-              cell: memo((props) => <TableCell {...props} />),
-            },
-          }}
-        />
-      )}
-    </AutoSizer>
+    <>
+      <AutoSizer
+        onResize={({ height, width }) => {
+          _handleSetSize({ height, width })
+        }}
+      >
+        {({ height, width }) => (
+          <RCTable
+            // tableLayout="fixed"
+            // sticky
+            style={{ width: size.width, height: size.height }}
+            columns={columns}
+            data={data}
+            scroll={{ x: size.width, y: size.height - 53 }}
+            rowKey={rowKey}
+            components={{
+              table: memo((props) => <Table {...props} />),
+              header: {
+                wrapper: memo((props) => <TableHead {...props} />),
+                row: memo((props) => <TableRow {...props} />),
+                cell: memo((props) => {
+                  const { onResize, width, resizeable, ...restProps } = props
+                  if (!(width && resizeable)) {
+                    return <TableCell {...props} />
+                  }
+
+                  return (
+                    <Resizable width={width} height={0} onResize={onResize}>
+                      <TableCell {...restProps} />
+                    </Resizable>
+                  )
+                }),
+              },
+              body: {
+                wrapper: memo((props) => <TableBody {...props} />),
+                row: memo((props) => <TableRow {...props} />),
+                cell: memo((props) => <TableCell {...props} />),
+              },
+            }}
+          />
+        )}
+      </AutoSizer>
+    </>
   )
 }
 

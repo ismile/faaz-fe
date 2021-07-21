@@ -44,13 +44,13 @@ const MenuView = memo(function ({ menu1, menu2 }) {
     <>
       <List>
         {menu1.map((text, index) => (
-          <MenuItemView text={text} index={index} />
+          <MenuItemView key={text} text={text} index={index} />
         ))}
       </List>
       <Divider />
       <List>
         {menu2.map((text, index) => (
-          <MenuItemView text={text} index={index} />
+          <MenuItemView key={text} text={text} index={index} />
         ))}
       </List>
     </>
