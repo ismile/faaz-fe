@@ -21,6 +21,9 @@ module.exports = {
         15: '3.8rem',
         35: '0.9rem',
       },
+      transitionProperty: {
+        'width': 'width'
+    },
     },
   },
   variants: {
