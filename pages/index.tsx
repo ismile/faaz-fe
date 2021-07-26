@@ -8,13 +8,38 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 import storeCreator from '../components/creators/storeCreator'
 import dataTableCreator from '../components/creators/dataTableCreator'
 
-const {useStore} = storeCreator()
-const {DataTable,TableFilter, TablePagination} = dataTableCreator({useStore: useStore})
+const { useStore } = storeCreator()
+const { DataTable, TableFilter, TablePagination } = dataTableCreator({
+  useStore: useStore,
+  columns: [
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age',
+      width: 100,
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+      resizeable: true,
+      width: 800,
+    },
+    {
+      title: 'Operations',
+      dataIndex: '',
+      key: 'operations',
+      width: 100,
+      render: (d) => <a href="#">{d.age}</a>,
+    },
+  ],
+})
 
 export default function Home() {
   const [data, _toggleFilterOpen] = useStore(
     (state) => [state.data, state._toggleFilterOpen],
-    (oldTreats, newTreats) =>  JSON.stringify(oldTreats[0]) == JSON.stringify(newTreats[0])
+    (oldTreats, newTreats) =>
+      JSON.stringify(oldTreats[0]) == JSON.stringify(newTreats[0])
   )
   const columns = useStore(
     (state) => state.columns,
@@ -59,7 +84,3 @@ export default function Home() {
     </div>
   )
 }
-
-
-
-

@@ -1,17 +1,21 @@
 import immer from 'immer'
 import zustand from 'zustand'
-import MenuIcon from '@material-ui/icons/Menu'
-import Checkbox from '@material-ui/core/Checkbox'
-import IconButton from '@material-ui/core/IconButton'
 
+import Table from 'rc-table'
 interface IStoreCreatorConfig {
-  rowKey?: String,
-
+  rowKey?: String
 }
 
-function storeCreator(config:IStoreCreatorConfig = {
-  rowKey: 'id'
-}) {
+const defaultConfig = {
+  rowKey: 'id',
+}
+
+function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
+  config = {
+    ...defaultConfig,
+    ...config,
+  }
+
   const rowKey = config.rowKey
 
   const useStore = zustand((set) => ({
@@ -35,94 +39,20 @@ function storeCreator(config:IStoreCreatorConfig = {
       { name: 'Jack', age: 28, address: 'some where', id: '17' },
       { name: 'Rose', age: 36, address: 'some where', id: '18' },
     ],
-    columns: [
-      {
-        title: 'Checkbox',
-        key: 'check',
-        dataIndex: 'check',
-        width: 60,
-        fixed: 'left',
-        onHeaderCell: (column) => ({
-          width: column.width,
-          type: 'checkbox',
-          Element: () => {
-            const [isAllSelected, _handleSelectAll] = useStore((state) => [
-              state.isAllSelected,
-              state._handleSelectAll,
-            ])
-            return (
-              <Checkbox
-                key={`check-all`}
-                className="p-0"
-                checked={isAllSelected}
-                onChange={_handleSelectAll}
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-              />
-            )
-          },
-        }),
-        render: (v, d) => {
-          const [selected, _handleSingleSelect] = useStore((state) => [
-            state.selected,
-            state._handleSingleSelect,
-          ])
-          return (
-            <Checkbox
-              key={`checkbox-${d[rowKey]}`}
-              className="p-0"
-              checked={!!selected[d[rowKey]]}
-              onChange={function (ev, val) {
-                _handleSingleSelect(d, val)
-              }}
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-          )
-        },
-      },
-      {
-        title: 'Action',
-        dataIndex: 'action',
-        key: 'name',
-        width: 80,
-        fixed: 'left',
-        render: (d) => (
-          <IconButton
-            size="small"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => {}}
-            edge="start"
-          >
-            <MenuIcon />
-          </IconButton>
-        ),
-      },
-      {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-        width: 100,
-      },
-      {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-        resizeable: true,
-        width: 800,
-      },
-      {
-        title: 'Operations',
-        dataIndex: '',
-        key: 'operations',
-        width: 100,
-        render: (d) => <a href="#">{d.age}</a>,
-      },
-    ],
+    columns: [],
     isAllSelected: false,
     selected: {},
     selectedArr: [],
 
     filterOpen: false,
+
+    _setColumns: (columns) => {
+      return set(
+        immer((draft) => {
+          draft.columns = columns
+        })
+      )
+    },
 
     _toggleFilterOpen: () => {
       if (window) window.dispatchEvent(new Event('resize'))
@@ -169,9 +99,8 @@ function storeCreator(config:IStoreCreatorConfig = {
   }))
 
   return {
-    useStore
+    useStore,
   }
 }
-
 
 export default storeCreator

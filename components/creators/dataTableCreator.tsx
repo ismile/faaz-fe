@@ -1,23 +1,41 @@
-
 import RCTable from 'rc-table'
 import { useRef } from 'react'
 import useElementSize from '../hooks/useElementSize'
 import TableComponents from '../TableComponents'
 import { dataTableFilterCreator } from './DataTableFilterCreator'
 import TablePaginationMaterial from '@material-ui/core/TablePagination'
+import MenuIcon from '@material-ui/icons/Menu'
+import Checkbox from '@material-ui/core/Checkbox'
+import IconButton from '@material-ui/core/IconButton'
+
 interface IDataTableCreatorConfig {
-  rowKey?: String,
-  useStore?:any,
-  dataTableFilterCreator: Function,
+  rowKey?: String
+  useStore?: any
+  dataTableFilterCreator: Function
+  colCheckbox?: Boolean
+  colAction?: Boolean
+  colActionElement: Function
+  columns?: Array<any>
 }
 
-function dataTableCreator(config:IDataTableCreatorConfig={
+const defaultConfig = {
   rowKey: 'id',
-  dataTableFilterCreator: dataTableFilterCreator
-}) {
+  dataTableFilterCreator: dataTableFilterCreator,
+  colCheckbox: true,
+  colAction: true,
+  colActionElement: () => {},
+  columns: [],
+}
 
+function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
+  config = {
+    ...defaultConfig,
+    ...config,
+  }
 
-  const DataTable = ({ data, columns}) => {
+  var columns = _columnGenerator(config)
+
+  const DataTable = ({ data, columns }) => {
     const squareRef = useRef(null)
     const { width, height } = useElementSize(squareRef)
 
@@ -39,15 +57,17 @@ function dataTableCreator(config:IDataTableCreatorConfig={
     )
   }
 
-  const TablePagination =  ()=> {
-    return <TablePaginationMaterial
-    component="div"
-    count={100}
-    page={1}
-    onPageChange={() => {}}
-    rowsPerPage={10}
-    onRowsPerPageChange={() => {}}
-  />
+  const TablePagination = () => {
+    return (
+      <TablePaginationMaterial
+        component="div"
+        count={100}
+        page={1}
+        onPageChange={() => {}}
+        rowsPerPage={10}
+        onRowsPerPageChange={() => {}}
+      />
+    )
   }
 
   const TableFilter = dataTableFilterCreator(config.useStore)
@@ -55,10 +75,82 @@ function dataTableCreator(config:IDataTableCreatorConfig={
   return {
     DataTable,
     TableFilter,
-    TablePagination
+    TablePagination,
   }
 }
 
+function _columnGenerator(config: IDataTableCreatorConfig) {
+  var columns = [...config.columns]
+  var rowKey = config.rowKey
+  const useStore = config.useStore
+  if (config.colAction) {
+    columns.unshift({
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'name',
+      width: 80,
+      fixed: 'left',
+      render: (d) => (
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => {}}
+          edge="start"
+        >
+          <MenuIcon />
+        </IconButton>
+      ),
+    })
+  }
+  if (config.colCheckbox) {
+    columns.unshift({
+      title: 'Checkbox',
+      key: 'check',
+      dataIndex: 'check',
+      width: 60,
+      fixed: 'left',
+      onHeaderCell: (column) => ({
+        width: column.width,
+        type: 'checkbox',
+        Element: () => {
+          const [isAllSelected, _handleSelectAll] = useStore((state) => [
+            state.isAllSelected,
+            state._handleSelectAll,
+          ])
+          return (
+            <Checkbox
+              key={`check-all`}
+              className="p-0"
+              checked={isAllSelected}
+              onChange={_handleSelectAll}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          )
+        },
+      }),
+      render: (v, d) => {
+        const [selected, _handleSingleSelect] = useStore((state) => [
+          state.selected,
+          state._handleSingleSelect,
+        ])
+        return (
+          <Checkbox
+            key={`checkbox-${d[rowKey]}`}
+            className="p-0"
+            checked={!!selected[d[rowKey]]}
+            onChange={function (ev, val) {
+              _handleSingleSelect(d, val)
+            }}
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />
+        )
+      },
+    })
+  }
 
+  config.useStore.getState()._setColumns(columns)
+  return columns
+}
 
-export default dataTableCreator;
+export default dataTableCreator
