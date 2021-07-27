@@ -3,14 +3,45 @@ import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
 
-import IconButton from '@material-ui/core/IconButton'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import storeCreator from '../components/creators/storeCreator'
 import dataTableCreator from '../components/creators/dataTableCreator'
+import MenuIcon from '@material-ui/icons/Menu'
+import Checkbox from '@material-ui/core/Checkbox'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const { useStore } = storeCreator()
 const { DataTable, TableFilter, TablePagination } = dataTableCreator({
   useStore: useStore,
+  colAction: true,
+  ActionElement: ({ data, anchorEl, handleClick, handleClose }) => {
+    return (
+      <>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleClick}
+          edge="start"
+        >
+          <MenuIcon />
+        </IconButton>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <MenuItem onClick={handleClose}>Logout</MenuItem>
+        </Menu>
+      </>
+    )
+  },
   columns: [
     {
       title: 'Age',

@@ -1,5 +1,5 @@
 import RCTable from 'rc-table'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import useElementSize from '../hooks/useElementSize'
 import TableComponents from '../TableComponents'
 import { dataTableFilterCreator } from './DataTableFilterCreator'
@@ -13,8 +13,7 @@ interface IDataTableCreatorConfig {
   useStore?: any
   dataTableFilterCreator: Function
   colCheckbox?: Boolean
-  colAction?: Boolean
-  colActionElement: Function
+  ActionElement: Function
   columns?: Array<any>
 }
 
@@ -22,8 +21,7 @@ const defaultConfig = {
   rowKey: 'id',
   dataTableFilterCreator: dataTableFilterCreator,
   colCheckbox: true,
-  colAction: true,
-  colActionElement: () => {},
+  ActionElement: () => {},
   columns: [],
 }
 
@@ -83,24 +81,24 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
   var columns = [...config.columns]
   var rowKey = config.rowKey
   const useStore = config.useStore
-  if (config.colAction) {
+  if (config.ActionElement) {
     columns.unshift({
       title: 'Action',
       dataIndex: 'action',
       key: 'name',
       width: 80,
       fixed: 'left',
-      render: (d) => (
-        <IconButton
-          size="small"
-          color="inherit"
-          aria-label="open drawer"
-          onClick={() => {}}
-          edge="start"
-        >
-          <MenuIcon />
-        </IconButton>
-      ),
+      render: (d) => {
+        const [anchorEl, setAnchorEl] = useState(null);
+        const handleClick = (event) => {
+          setAnchorEl(event.currentTarget);
+        };
+        const handleClose = () => {
+          setAnchorEl(null);
+        };
+
+        return <config.ActionElement data={d} anchorEl={anchorEl} handleClick={handleClick} handleClose={handleClose} />
+      },
     })
   }
   if (config.colCheckbox) {
