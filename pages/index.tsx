@@ -9,8 +9,9 @@ import dataTableCreator from '../components/creators/dataTableCreator'
 import MenuIcon from '@material-ui/icons/Menu'
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import { useEffect } from 'react'
 
 const { useStore } = storeCreator()
 const { DataTable, TableFilter, TablePagination } = dataTableCreator({
@@ -44,38 +45,35 @@ const { DataTable, TableFilter, TablePagination } = dataTableCreator({
   },
   columns: [
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'First Name',
+      dataIndex: 'firstName',
+      key: 'firstName',
       width: 100,
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Last Name',
+      dataIndex: 'lastName',
+      key: 'lastName',
       resizeable: true,
       width: 800,
-    },
-    {
-      title: 'Operations',
-      dataIndex: '',
-      key: 'operations',
-      width: 100,
-      render: (d) => <a href="#">{d.age}</a>,
     },
   ],
 })
 
 export default function Home() {
-  const [data, _toggleFilterOpen] = useStore(
-    (state) => [state.data, state._toggleFilterOpen],
-    (oldTreats, newTreats) =>
-      JSON.stringify(oldTreats[0]) == JSON.stringify(newTreats[0])
-  )
   const columns = useStore(
     (state) => state.columns,
     (ps, ns) => true
   )
+
+  const [_toggleFilterOpen, _fetch] = useStore(
+    (state) => [state._toggleFilterOpen, state._fetch],
+    (ps, ns) => true
+  )
+
+  useEffect(() => {
+    _fetch()
+  }, [])
 
   return (
     <div className="h-full w-full flex flex-col">
@@ -99,7 +97,7 @@ export default function Home() {
         <TableFilter />
         <div className="flex-1 flex flex-col w-full">
           <div className="flex-1 flex-row">
-            <DataTable data={data} columns={columns} />
+            <DataTable />
           </div>
           <Toolbar className="flex flex-row">
             <IconButton onClick={_toggleFilterOpen}>

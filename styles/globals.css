@@ -12,6 +12,11 @@
 .rc-table-rtl {
   direction: rtl;
 }
+
+.rc-table-body {
+  height: 8000px;
+}
+
 .rc-table table {
   width: 100%;
   border-spacing: 0px;

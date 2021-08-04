@@ -25,6 +25,53 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
 export function dataTableFilterCreator(useStore) {
+
+  const SwitchTable = ({dataKey})=> {
+    const [columnSetting, _toggleColumn] = useStore(
+      (state) => [state.columnSetting[dataKey], state._toggleColumn],
+      (ps, ns) => ps[0]== ns[0]
+    )
+    return <Switch
+    edge="end"
+    onChange={(e,v)=> {_toggleColumn(dataKey)}}
+    checked={Boolean(columnSetting)}
+    inputProps={{ 'aria-labelledby': 'switch-list-label-wifi' }}
+  />
+  }
+
+  const ColumnSelector = () => {
+    const columns = useStore(
+      (state) => state.columns,
+      (ps, ns) => true
+    )
+
+    return (
+      <List
+        subheader={
+          <Typography
+            // className={classes.dividerFullWidth}
+            className="p-4"
+            color="textSecondary"
+            display="block"
+            variant="caption"
+          >
+            Kolom
+          </Typography>
+        }
+      >
+        {columns
+          .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
+          .map((d) => {
+            return <ListItem key={d.key}>
+              <ListItemText id={"switch_"+d.key} primary={d.title} />
+              <ListItemSecondaryAction>
+                <SwitchTable dataKey={d.key} />
+              </ListItemSecondaryAction>
+            </ListItem>
+          })}
+      </List>
+    )
+  }
   const DataTableFilter = () => {
     const filterOpen = useStore((state) => state.filterOpen)
 
@@ -85,7 +132,9 @@ export function dataTableFilterCreator(useStore) {
                     fieldState: { error },
                   }) => (
                     <FormControl className="col-span-7" variant="filled">
-                      <InputLabel id="demo-simple-select-label">Kolom</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        Kolom
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -96,7 +145,9 @@ export function dataTableFilterCreator(useStore) {
                         <MenuItem value={20}>Twenty</MenuItem>
                         <MenuItem value={30}>Thirty</MenuItem>
                       </Select>
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                      {error && (
+                        <FormHelperText>{error.message}</FormHelperText>
+                      )}
                     </FormControl>
                   )}
                   rules={{ required: 'First name required' }}
@@ -110,7 +161,9 @@ export function dataTableFilterCreator(useStore) {
                     fieldState: { error },
                   }) => (
                     <FormControl className="col-span-5" variant="filled">
-                      <InputLabel id="demo-simple-select-label">ORDER</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        ORDER
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -120,7 +173,9 @@ export function dataTableFilterCreator(useStore) {
                         <MenuItem value={10}>ASC</MenuItem>
                         <MenuItem value={20}>DESC</MenuItem>
                       </Select>
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                      {error && (
+                        <FormHelperText>{error.message}</FormHelperText>
+                      )}
                     </FormControl>
                   )}
                   rules={{ required: 'First name required' }}
@@ -155,7 +210,9 @@ export function dataTableFilterCreator(useStore) {
                     fieldState: { error },
                   }) => (
                     <FormControl className="col-span-12" variant="filled">
-                      <InputLabel id="demo-simple-select-label">Kolom</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        Kolom
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -166,7 +223,9 @@ export function dataTableFilterCreator(useStore) {
                         <MenuItem value={20}>Twenty</MenuItem>
                         <MenuItem value={30}>Thirty</MenuItem>
                       </Select>
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                      {error && (
+                        <FormHelperText>{error.message}</FormHelperText>
+                      )}
                     </FormControl>
                   )}
                   rules={{ required: 'First name required' }}
@@ -193,7 +252,9 @@ export function dataTableFilterCreator(useStore) {
                         <MenuItem value={20}>Twenty</MenuItem>
                         <MenuItem value={30}>Thirty</MenuItem>
                       </Select>
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                      {error && (
+                        <FormHelperText>{error.message}</FormHelperText>
+                      )}
                     </FormControl>
                   )}
                   rules={{ required: 'First name required' }}
@@ -228,45 +289,7 @@ export function dataTableFilterCreator(useStore) {
             </form>
           </div>
           <div>
-            <List
-              subheader={<Typography
-                // className={classes.dividerFullWidth}
-                className="p-4"
-                color="textSecondary"
-                display="block"
-                variant="caption"
-              >
-                Kolom
-              </Typography>}
-            >
-              <ListItem>
-                <ListItemText id="switch-list-label-wifi" primary="Wi-Fi" />
-                <ListItemSecondaryAction>
-                  <Switch
-                    edge="end"
-                    // onChange={handleToggle('wifi')}
-                    // checked={checked.indexOf('wifi') !== -1}
-                    inputProps={{ 'aria-labelledby': 'switch-list-label-wifi' }}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  id="switch-list-label-bluetooth"
-                  primary="Bluetooth"
-                />
-                <ListItemSecondaryAction>
-                  <Switch
-                    edge="end"
-                    // onChange={handleToggle('bluetooth')}
-                    // checked={checked.indexOf('bluetooth') !== -1}
-                    inputProps={{
-                      'aria-labelledby': 'switch-list-label-bluetooth',
-                    }}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
+            <ColumnSelector />
           </div>
         </SwipeableViews>
 

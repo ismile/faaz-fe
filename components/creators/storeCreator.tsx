@@ -1,7 +1,8 @@
 import immer from 'immer'
 import zustand from 'zustand'
-
+import axios from 'axios'
 import Table from 'rc-table'
+import { asyncTimeout } from '../../configs/utils'
 interface IStoreCreatorConfig {
   rowKey?: String
 }
@@ -18,38 +19,61 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
 
   const rowKey = config.rowKey
 
-  const useStore = zustand((set) => ({
-    data: [
-      { name: 'Jack', age: 28, address: 'some where', id: '1' },
-      { name: 'Rose', age: 36, address: 'some where', id: '2' },
-      { name: 'Jack', age: 28, address: 'some where', id: '3' },
-      { name: 'Rose', age: 36, address: 'some where', id: '4' },
-      { name: 'Jack', age: 28, address: 'some where', id: '5' },
-      { name: 'Rose', age: 36, address: 'some where', id: '6' },
-      { name: 'Jack', age: 28, address: 'some where', id: '7' },
-      { name: 'Rose', age: 36, address: 'some where', id: '8' },
-      { name: 'Jack', age: 28, address: 'some where', id: '9' },
-      { name: 'Rose', age: 36, address: 'some where', id: '10' },
-      { name: 'Jack', age: 28, address: 'some where', id: '11' },
-      { name: 'Rose', age: 36, address: 'some where', id: '12' },
-      { name: 'Jack', age: 28, address: 'some where', id: '13' },
-      { name: 'Rose', age: 36, address: 'some where', id: '14' },
-      { name: 'Jack', age: 28, address: 'some where', id: '15' },
-      { name: 'Rose', age: 36, address: 'some where', id: '16' },
-      { name: 'Jack', age: 28, address: 'some where', id: '17' },
-      { name: 'Rose', age: 36, address: 'some where', id: '18' },
-    ],
+  const useStore = zustand((set, get) => ({
+    loading: false,
+    data: [],
+    page: 1,
+    limit: 10,
+    total: 0,
     columns: [],
+    columnSetting: {action_: true, check_: true},
     isAllSelected: false,
     selected: {},
     selectedArr: [],
-
     filterOpen: false,
+    apiPath: 'http://localhost:3001/v1/user',
+
+    _fetch: async (params = {}) => {
+      if (params.page == null || params.page == undefined)
+        params.page = get().page
+      if (params.limit == null || params.limit == undefined)
+        params.limit = get().limit
+
+      set({loading: true})
+      const res = await axios.get(get().apiPath, { params: params })
+       set(
+        immer((draft) => {
+          if (res.data) {
+            draft.data = res.data.items
+            draft.page = parseInt(res.data.page)
+            draft.limit = parseInt(res.data.limit)
+            draft.total = parseInt(res.data.total)
+            draft.loading = false
+          }
+        })
+      )
+    },
 
     _setColumns: (columns) => {
       return set(
         immer((draft) => {
           draft.columns = columns
+        })
+      )
+    },
+
+    _setColumnSetting: (columnSetting) => {
+      return set(
+        immer((draft) => {
+          draft.columnSetting = columnSetting
+        })
+      )
+    },
+
+    _toggleColumn: (key) => {
+      return set(
+        immer((draft) => {
+          draft.columnSetting[key] = !draft.columnSetting[key]
         })
       )
     },
