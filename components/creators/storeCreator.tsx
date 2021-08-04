@@ -25,6 +25,8 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     page: 1,
     limit: 10,
     total: 0,
+    sort: 'id',
+    order: 'ASC',
     columns: [],
     columnSetting: {action_: true, check_: true},
     isAllSelected: false,
@@ -39,8 +41,19 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       if (params.limit == null || params.limit == undefined)
         params.limit = get().limit
 
+      var query = {...params}
+      if(query.order && query.sort) {
+        if(query.order == 'ASC') {
+          query.order = '^'+query.sort
+        } else {
+          query.order = '-'+query.sort
+        }
+
+        delete query.sort
+      }
+
       set({loading: true})
-      const res = await axios.get(get().apiPath, { params: params })
+      const res = await axios.get(get().apiPath, { params: query })
        set(
         immer((draft) => {
           if (res.data) {
@@ -49,7 +62,18 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
             draft.limit = parseInt(res.data.limit)
             draft.total = parseInt(res.data.total)
             draft.loading = false
+            if(params.sort) draft.sort = params.sort
+            if(params.order) draft.order = params.order
           }
+        })
+      )
+    },
+
+    _setSort: (sort, order) => {
+      return set(
+        immer((draft) => {
+          draft.sort = sort
+          draft.order = order
         })
       )
     },
