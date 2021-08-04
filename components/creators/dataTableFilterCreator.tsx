@@ -135,12 +135,18 @@ export function dataTableFilterCreator(useStore) {
     )
 
     const defaultValues = useStore(
-      (state) => ({sort: state.sort, order: state.order, page: state.page, limit: state.limit}),
+      (state) => ({
+        sort: state.sort,
+        order: state.order,
+        page: state.page,
+        limit: state.limit,
+        filter: state.filter,
+      }),
       (ps, ns) => JSON.stringify(ps) == JSON.stringify(ns)
     )
 
     const { control, handleSubmit } = useForm({
-      defaultValues
+      defaultValues,
     })
 
     const onSubmit = (data) => {
@@ -149,6 +155,7 @@ export function dataTableFilterCreator(useStore) {
         order: data.order,
         page: defaultValues.page,
         limit: defaultValues.limit,
+        filter: defaultValues.filter,
       })
     }
     return (
@@ -172,9 +179,11 @@ export function dataTableFilterCreator(useStore) {
               <Select
                 labelId="id-kolom-label"
                 id="id-kolom"
-                value={value}
+                value={value?value:''}
+                defaultValue=""
                 onChange={onChange}
               >
+                <MenuItem value=''></MenuItem>
                 {columns
                   .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
                   .map((d) => {
@@ -200,9 +209,11 @@ export function dataTableFilterCreator(useStore) {
               <Select
                 labelId="id-sort-label"
                 id="id-sort"
-                value={value}
+                defaultValue=""
+                value={value?value:''}
                 onChange={onChange}
               >
+                <MenuItem value=''></MenuItem>
                 <MenuItem value={'ASC'}>ASC</MenuItem>
                 <MenuItem value={'DESC'}>DESC</MenuItem>
               </Select>
@@ -227,89 +238,152 @@ export function dataTableFilterCreator(useStore) {
   }
 
   const ColumnFilter = () => {
-    const { control, handleSubmit } = useForm()
-    const onSubmit = (data) => console.log(data)
+    const [columns, _fetch] = useStore(
+      (state) => [state.columns, state._fetch],
+      (ps, ns) => true
+    )
+
+    const defaultValues = useStore(
+      (state) => ({
+        sort: state.sort,
+        order: state.order,
+        page: state.page,
+        limit: state.limit,
+        filter: state.filter,
+      }),
+      (ps, ns) => JSON.stringify(ps) == JSON.stringify(ns)
+    )
+
+    const { control, handleSubmit, reset } = useForm({
+      defaultValues,
+    })
+
+    const onSubmit = (data) => {
+      _fetch({
+        sort: defaultValues.sort,
+        order: defaultValues.order,
+        page: defaultValues.page,
+        limit: defaultValues.limit,
+        filter: data,
+      })
+    }
+
+    const _clear = ()=> {
+      reset({})
+      _fetch({
+        sort: defaultValues.sort,
+        order: defaultValues.order,
+        page: defaultValues.page,
+        limit: defaultValues.limit,
+      })
+    }
+
     return (
-      <form onSubmit={handleSubmit(onSubmit)} className="">
-        <div className="grid grid-cols-12 gap-4 p-4">
-          <Typography
-            // className={classes.dividerFullWidth}
-            className="col-span-12"
-            color="textSecondary"
-            display="block"
-            variant="caption"
-          >
-            Pencarian
-          </Typography>
-          <Controller
-            name="column"
-            control={control}
-            defaultValue=""
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <FormControl className="col-span-12" variant="filled">
-                <InputLabel id="demo-simple-select-label">Kolom</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={value}
-                  onChange={onChange}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                {error && <FormHelperText>{error.message}</FormHelperText>}
-              </FormControl>
-            )}
-            rules={{ required: 'First name required' }}
-          />
-          <Controller
-            name="criteria"
-            control={control}
-            defaultValue=""
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <FormControl className="col-span-12" variant="filled">
-                <InputLabel id="demo-simple-select-label">Kriteria</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={value}
-                  onChange={onChange}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                {error && <FormHelperText>{error.message}</FormHelperText>}
-              </FormControl>
-            )}
-            rules={{ required: 'First name required' }}
-          />
-          <Controller
-            name="key"
-            control={control}
-            defaultValue=""
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextField
-                label="Kata Kunci"
-                className="col-span-12"
-                variant="filled"
-                value={value}
+      <div className="grid grid-cols-12 gap-4 p-4">
+        <Typography
+          // className={classes.dividerFullWidth}
+          className="col-span-12"
+          color="textSecondary"
+          display="block"
+          variant="caption"
+        >
+          Pencarian
+        </Typography>
+        <Controller
+          name="field"
+          control={control}
+          defaultValue=""
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <FormControl className="col-span-12" variant="filled">
+              <InputLabel id="id-field-input-label">Kolom</InputLabel>
+              <Select
+                labelId="id-field-label"
+                id="id-field"
+                defaultValue=""
+                value={value?value:''}
                 onChange={onChange}
-                error={!!error}
-                helperText={error ? error.message : null}
-              />
-            )}
-            rules={{ required: 'First name required' }}
-          />
-          <div className="flex col-span-12">
-            <div className="flex-1" />
-            <Button variant="contained" color="secondary">
-              Cari
-            </Button>
-          </div>
+              >
+                <MenuItem value=''></MenuItem>
+                {columns
+                  .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
+                  .map((d) => {
+                    return (
+                      <MenuItem key={d.key} value={d.key}>
+                        {d.title}
+                      </MenuItem>
+                    )
+                  })}
+              </Select>
+              {error && <FormHelperText>{error.message}</FormHelperText>}
+            </FormControl>
+          )}
+          rules={{ required: 'First name required' }}
+        />
+        <Controller
+          name="criteria"
+          control={control}
+          defaultValue=""
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <FormControl className="col-span-12" variant="filled">
+              <InputLabel id="id-criteria-select-label">Kriteria</InputLabel>
+              <Select
+                labelId="id-criteria-label"
+                id="id-criteria"
+                value={value?value:''}
+                defaultValue=""
+                onChange={onChange}
+              >
+                <MenuItem value=''></MenuItem>
+                <MenuItem value="contains">contains</MenuItem>
+                <MenuItem value="startswith">starts with</MenuItem>
+                <MenuItem value="endswith">ends with</MenuItem>\
+                <MenuItem value="isnull">is null</MenuItem>
+                <MenuItem value="lt">lt</MenuItem>
+                <MenuItem value="lte">lte</MenuItem>
+                <MenuItem value="gt">gt</MenuItem>
+                <MenuItem value="gte">gte</MenuItem>
+              </Select>
+              {error && <FormHelperText>{error.message}</FormHelperText>}
+            </FormControl>
+          )}
+          rules={{ required: 'First name required' }}
+        />
+        <Controller
+          name="key"
+          control={control}
+          defaultValue=""
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <TextField
+              label="Kata Kunci"
+              className="col-span-12"
+              variant="filled"
+              value={value?value:''}
+              onChange={onChange}
+              error={!!error}
+              helperText={error ? error.message : null}
+            />
+          )}
+          rules={{ required: 'First name required' }}
+        />
+        <div className="flex col-span-12">
+          <div className="flex-1" />
+          <Button
+            variant="text"
+            color="secondary"
+            onClick={_clear}
+          >
+            Clear
+          </Button>
+
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSubmit(onSubmit)}
+          >
+            Cari
+          </Button>
         </div>
-      </form>
+      </div>
     )
   }
 

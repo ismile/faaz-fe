@@ -27,8 +27,9 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     total: 0,
     sort: 'id',
     order: 'ASC',
+    filter: {},
     columns: [],
-    columnSetting: {action_: true, check_: true},
+    columnSetting: { action_: true, check_: true },
     isAllSelected: false,
     selected: {},
     selectedArr: [],
@@ -41,20 +42,25 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       if (params.limit == null || params.limit == undefined)
         params.limit = get().limit
 
-      var query = {...params}
-      if(query.order && query.sort) {
-        if(query.order == 'ASC') {
-          query.order = '^'+query.sort
+      var query = { ...params }
+      if (query.order && query.sort) {
+        if (query.order == 'ASC') {
+          query.order = '^' + query.sort
         } else {
-          query.order = '-'+query.sort
+          query.order = '-' + query.sort
         }
-
         delete query.sort
       }
 
-      set({loading: true})
+      if (query.filter && query.filter.field && query.filter.criteria) {
+        query[query.filter.field + '__' + query.filter.criteria] = query.filter.key
+      }
+
+      delete query.filter
+
+      set({ loading: true })
       const res = await axios.get(get().apiPath, { params: query })
-       set(
+      set(
         immer((draft) => {
           if (res.data) {
             draft.data = res.data.items
@@ -62,8 +68,13 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
             draft.limit = parseInt(res.data.limit)
             draft.total = parseInt(res.data.total)
             draft.loading = false
-            if(params.sort) draft.sort = params.sort
-            if(params.order) draft.order = params.order
+            if (params.sort) draft.sort = params.sort
+            if (params.order) draft.order = params.order
+            if (params.filter) {
+              draft.filter = params.filter
+            } else {
+              draft.filter = {}
+            }
           }
         })
       )
