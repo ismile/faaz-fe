@@ -7,7 +7,11 @@ import TablePaginationMaterial from '@material-ui/core/TablePagination'
 import MenuIcon from '@material-ui/icons/Menu'
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
-
+import LinearProgress from '@material-ui/core/LinearProgress'
+import Button from '@material-ui/core/Button'
+import AddIcon from '@material-ui/icons/Add'
+import RefreshIcon from '@material-ui/icons/Refresh'
+import FilterListIcon from '@material-ui/icons/FilterList'
 
 interface IDataTableCreatorConfig {
   rowKey?: String
@@ -44,8 +48,7 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
 
     const loading = config.useStore(
       (state) => state.loading,
-      (oldTreats, newTreats) =>
-        oldTreats == newTreats
+      (oldTreats, newTreats) => oldTreats == newTreats
     )
 
     const squareRef = useRef(null)
@@ -54,6 +57,16 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
     return (
       <div className="h-full w-full" ref={squareRef}>
         <div className="fixed" style={{ width, height }}>
+          {loading && (
+            <LinearProgress
+              style={{
+                position: 'absolute',
+                marginTop: '52px',
+                zIndex: 200,
+                width: '100%',
+              }}
+            />
+          )}
           <RCTable
             // tableLayout="fixed"
             // sticky
@@ -63,7 +76,6 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
             scroll={{ x: width, y: height - 53 }}
             rowKey={config.rowKey}
             components={TableComponents}
-            onHeaderRow={()=> ({loading: loading})}
           />
         </div>
       </div>
@@ -82,26 +94,25 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
       () => true
     )
 
-    const _onChangePage = async (e, p)=> {
+    const _onChangePage = async (e, p) => {
       await _fetch({
-        page: p+1,
-        limit: limit
+        page: p + 1,
+        limit: limit,
       })
     }
 
-    const _onChangeRowsPerPage = async (e, s, d)=> {
+    const _onChangeRowsPerPage = async (e, s, d) => {
       await _fetch({
         page: page,
-        limit: e.target.value
+        limit: e.target.value,
       })
     }
-
 
     return (
       <TablePaginationMaterial
         component="div"
         count={total}
-        page={page-1}
+        page={page - 1}
         onChangePage={_onChangePage}
         rowsPerPage={limit}
         onChangeRowsPerPage={_onChangeRowsPerPage}
@@ -111,10 +122,50 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
 
   const TableFilter = dataTableFilterCreator(config.useStore)
 
+  const DefaultTopAction = () => {
+    const [_toggleFilterOpen, _fetch] = config.useStore(
+      (state) => [state._toggleFilterOpen, state._fetch],
+      (ps, ns) => true
+    )
+
+    const _handleReload = ()=> _fetch()
+
+    return (
+      <>
+        <Button
+          variant="text"
+          // color="secondary"
+          onClick={_handleReload}
+          className="mr-2"
+          startIcon={<RefreshIcon />}
+        >
+          Refresh
+        </Button>
+        <Button
+          variant="text"
+          // color="secondary"
+          onClick={_handleReload}
+          startIcon={<AddIcon />}
+          className="mr-2"
+        >
+          Tambah
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={_toggleFilterOpen}
+        >
+          <FilterListIcon />
+        </Button>
+      </>
+    )
+  }
+
   return {
     DataTable,
     TableFilter,
     TablePagination,
+    DefaultTopAction
   }
 }
 
@@ -123,24 +174,27 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
   var rowKey = config.rowKey
   const useStore = config.useStore
 
-  columns.forEach(v=> {
+  columns.forEach((v) => {
     v.onHeaderCell = (record) => {
       return {
-        keyId: v.key
+        keyid: v.key,
       }
     }
     v.onCell = (record) => ({
-      keyId: v.key
+      keyid: v.key,
     })
   })
 
   // set column settings
-  config.useStore.getState()._setColumnSetting(columns.reduce((pv, cv)=> {
-    pv[cv.key] = !cv.hide
-    return pv
-  }, {action_: true, check_: true}))
-
-
+  config.useStore.getState()._setColumnSetting(
+    columns.reduce(
+      (pv, cv) => {
+        pv[cv.key] = !cv.hide
+        return pv
+      },
+      { action_: true, check_: true }
+    )
+  )
 
   if (config.ActionElement) {
     columns.unshift({
@@ -150,10 +204,10 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
       width: 80,
       fixed: 'left',
       onHeaderCell: (column) => ({
-        keyId: 'action_',
+        keyid: 'action_',
       }),
       onCell: (column) => ({
-        keyId: 'action_',
+        keyid: 'action_',
       }),
       render: (d) => {
         const [anchorEl, setAnchorEl] = useState(null)
@@ -183,12 +237,12 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
       width: 60,
       fixed: 'left',
       onCell: (column) => ({
-        keyId: 'check_',
+        keyid: 'check_',
       }),
       onHeaderCell: (column) => ({
         width: column.width,
         type: 'checkbox',
-        keyId: 'check_',
+        keyid: 'check_',
         Element: () => {
           const [isAllSelected, _handleSelectAll] = useStore((state) => [
             state.isAllSelected,

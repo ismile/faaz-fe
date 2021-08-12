@@ -334,14 +334,14 @@ export function dataTableFilterCreator(useStore) {
                 onChange={onChange}
               >
                 <MenuItem value=''></MenuItem>
-                <MenuItem value="contains">contains</MenuItem>
-                <MenuItem value="startswith">starts with</MenuItem>
-                <MenuItem value="endswith">ends with</MenuItem>\
-                <MenuItem value="isnull">is null</MenuItem>
-                <MenuItem value="lt">lt</MenuItem>
-                <MenuItem value="lte">lte</MenuItem>
-                <MenuItem value="gt">gt</MenuItem>
-                <MenuItem value="gte">gte</MenuItem>
+                <MenuItem value="contains">Contains</MenuItem>
+                <MenuItem value="startswith">Starts with</MenuItem>
+                <MenuItem value="endswith">Ends with</MenuItem>\
+                <MenuItem value="isnull">Is null</MenuItem>
+                <MenuItem value="lt">Lower than</MenuItem>
+                <MenuItem value="lte">Lower than equals</MenuItem>
+                <MenuItem value="gt">Greater than</MenuItem>
+                <MenuItem value="gte">Greater than equals</MenuItem>
               </Select>
               {error && <FormHelperText>{error.message}</FormHelperText>}
             </FormControl>
@@ -370,6 +370,7 @@ export function dataTableFilterCreator(useStore) {
           <Button
             variant="text"
             color="secondary"
+            className="mr-2"
             onClick={_clear}
           >
             Clear

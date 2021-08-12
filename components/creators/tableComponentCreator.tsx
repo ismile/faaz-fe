@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import LinearProgress from '@material-ui/core/LinearProgress'
+
 import clsx from 'clsx'
 
 const tableComponentCreator = (config) => ({
@@ -16,16 +16,6 @@ const tableComponentCreator = (config) => ({
       return (
         <>
           <TableRow {...props} />
-          {props.loading && (
-            <LinearProgress
-              style={{
-                position: 'absolute',
-                marginTop: '-4px',
-                zIndex: 200,
-                width: '100%',
-              }}
-            />
-          )}
         </>
       )
     }),
@@ -37,12 +27,12 @@ const tableComponentCreator = (config) => ({
         children,
         Element,
         className,
-        keyId,
+        keyid,
         ...restProps
       } = props
 
       const [columnSetting] = config.useStore(
-        (state) => [state.columnSetting[keyId], state._toggleColumn],
+        (state) => [state.columnSetting[keyid], state._toggleColumn],
         (ps, ns) => ps[0] == ns[0]
       )
       if (Element) {
@@ -77,7 +67,7 @@ const tableComponentCreator = (config) => ({
     row: memo((props) => <TableRow {...props} />),
     cell: memo((props) => {
       const [columnSetting] = config.useStore(
-        (state) => [state.columnSetting[props.keyId], state._toggleColumn],
+        (state) => [state.columnSetting[props.keyid], state._toggleColumn],
         (ps, ns) => ps[0] == ns[0]
       )
       return <TableCell {...props} className={clsx(props.className, {'hidden': !columnSetting})} />
