@@ -14,6 +14,8 @@ import { useEffect } from 'react'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
+import useModal from '../components/hooks/useModal'
+import { useSnackbar } from 'notistack'
 
 export default function Home() {
   const [_toggleFilterOpen, _fetch] = useStore(
@@ -61,6 +63,28 @@ const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
     useStore: useStore,
     colAction: true,
     ActionElement: ({ data, anchorEl, handleClick, handleClose }) => {
+      const { _open } = useModal(
+        (state) => ({ _open: state._open }),
+        () => true
+      )
+      const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+      const { _delete } = useStore(
+        (state) => ({ _delete: state._delete }),
+        () => true
+      )
+
+      const _handleDelete = async () => {
+        var d = await _open({
+          body: 'Apakah anda yakin akan menghapus data ini?',
+        })
+        handleClose()
+        if (d) {
+          await _delete(data.id, true)
+          enqueueSnackbar('Data telah berhasil di hapus.', {
+            variant: 'success',
+          })
+        }
+      }
       return (
         <>
           <IconButton
@@ -85,7 +109,7 @@ const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
               </ListItemIcon>
               Edit
             </MenuItem>
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={_handleDelete}>
               <ListItemIcon>
                 <DeleteIcon fontSize="small" />
               </ListItemIcon>

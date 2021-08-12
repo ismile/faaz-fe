@@ -8,6 +8,8 @@ import Toolbar from '@material-ui/core/Toolbar'
 
 import '../styles/globals.css'
 import Layout from '../components/layout'
+import { AppDialog } from '../components/hooks/useModal'
+import { SnackbarProvider } from 'notistack'
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -29,9 +31,17 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Layout>
-          <Component {...pageProps} />
-          </Layout>
+          <SnackbarProvider
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+          >
+            <Layout>
+              <Component {...pageProps} />
+              <AppDialog />
+            </Layout>
+          </SnackbarProvider>
         </ThemeProvider>
       </StylesProvider>
     </>

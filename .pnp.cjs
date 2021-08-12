@@ -50,6 +50,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["interactive-tools", "npm:0.0.1"],
             ["lodash", "npm:4.17.21"],
             ["next", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:11.0.1"],
+            ["notistack", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:1.0.10"],
             ["postcss", "npm:8.3.0"],
             ["rc-table", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:7.17.1"],
             ["react", "npm:17.0.2"],
@@ -2297,6 +2298,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["interactive-tools", "npm:0.0.1"],
             ["lodash", "npm:4.17.21"],
             ["next", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:11.0.1"],
+            ["notistack", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:1.0.10"],
             ["postcss", "npm:8.3.0"],
             ["rc-table", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:7.17.1"],
             ["react", "npm:17.0.2"],
@@ -3895,6 +3897,38 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/normalize-range-npm-0.1.2-bec5e259e2-9b2f14f093.zip/node_modules/normalize-range/",
           "packageDependencies": [
             ["normalize-range", "npm:0.1.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["notistack", [
+        ["npm:1.0.10", {
+          "packageLocation": "./.yarn/cache/notistack-npm-1.0.10-d186e6ed24-50223dbb30.zip/node_modules/notistack/",
+          "packageDependencies": [
+            ["notistack", "npm:1.0.10"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:1.0.10", {
+          "packageLocation": "./.yarn/__virtual__/notistack-virtual-19164e9fe1/0/cache/notistack-npm-1.0.10-d186e6ed24-50223dbb30.zip/node_modules/notistack/",
+          "packageDependencies": [
+            ["notistack", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:1.0.10"],
+            ["@material-ui/core", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:4.11.4"],
+            ["@types/material-ui__core", null],
+            ["@types/react", "npm:17.0.15"],
+            ["@types/react-dom", null],
+            ["clsx", "npm:1.1.1"],
+            ["hoist-non-react-statics", "npm:3.3.2"],
+            ["react", "npm:17.0.2"],
+            ["react-dom", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:17.0.2"]
+          ],
+          "packagePeers": [
+            "@material-ui/core",
+            "@types/material-ui__core",
+            "@types/react-dom",
+            "@types/react",
+            "react-dom",
+            "react"
           ],
           "linkType": "HARD",
         }]

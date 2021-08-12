@@ -209,7 +209,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
       onCell: (column) => ({
         keyid: 'action_',
       }),
-      render: (d) => {
+      render: (d, row, i) => {
         const [anchorEl, setAnchorEl] = useState(null)
         const handleClick = (event) => {
           setAnchorEl(event.currentTarget)
@@ -220,7 +220,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
 
         return (
           <config.ActionElement
-            data={d}
+            data={row}
             anchorEl={anchorEl}
             handleClick={handleClick}
             handleClose={handleClose}

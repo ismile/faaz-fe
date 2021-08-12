@@ -53,7 +53,8 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       }
 
       if (query.filter && query.filter.field && query.filter.criteria) {
-        query[query.filter.field + '__' + query.filter.criteria] = query.filter.key
+        query[query.filter.field + '__' + query.filter.criteria] =
+          query.filter.key
       }
 
       delete query.filter
@@ -78,6 +79,11 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
           }
         })
       )
+    },
+
+    _delete: async (id, fetch = false) => {
+      const res = await axios.delete(get().apiPath + '/' + id)
+      if (fetch) get()._fetch()
     },
 
     _setSort: (sort, order) => {
