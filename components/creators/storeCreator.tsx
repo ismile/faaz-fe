@@ -86,6 +86,19 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       if (fetch) get()._fetch()
     },
 
+    _handleDelete: async ({data, openModal, closeMenu, enqueueSnackbar}) => {
+      var d = await openModal({
+        body: 'Apakah anda yakin akan menghapus data ini?',
+      })
+      closeMenu()
+      if (d) {
+        await get()._delete(data.id, true)
+        enqueueSnackbar('Data telah berhasil di hapus.', {
+          variant: 'success',
+        })
+      }
+    },
+
     _setSort: (sort, order) => {
       return set(
         immer((draft) => {

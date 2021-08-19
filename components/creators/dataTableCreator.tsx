@@ -12,13 +12,18 @@ import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import FilterListIcon from '@material-ui/icons/FilterList'
+import useModal from '../hooks/useModal'
+import { useSnackbar } from 'notistack'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 
 interface IDataTableCreatorConfig {
   rowKey?: String
   useStore?: any
   dataTableFilterCreator: Function
   colCheckbox?: Boolean
-  ActionElement: Function
+  actions?: Array<any>
   columns?: Array<any>
 }
 
@@ -196,7 +201,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
     )
   )
 
-  if (config.ActionElement) {
+  if (config.actions) {
     columns.unshift({
       title: 'Action',
       dataIndex: 'action',
@@ -218,13 +223,38 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
           setAnchorEl(null)
         }
 
+        const { _openModal } = useModal((state) => ({ _openModal: state._openModal }),() => true)
+        const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
         return (
-          <config.ActionElement
-            data={row}
+          <>
+          <IconButton
+            size="small"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleClick}
+            edge="start"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="simple-menu"
             anchorEl={anchorEl}
-            handleClick={handleClick}
-            handleClose={handleClose}
-          />
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            {config.actions.map((d, i)=> {
+              return <MenuItem key={i} onClick={()=> d.action({data:row, openModal:_openModal, closeMenu:handleClose, enqueueSnackbar})}>
+                <ListItemIcon>
+                  <d.icon fontSize="small" />
+                </ListItemIcon>
+                {d.label}
+              </MenuItem>
+            })}
+
+          </Menu>
+        </>
         )
       },
     })

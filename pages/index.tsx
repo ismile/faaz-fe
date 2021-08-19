@@ -2,20 +2,18 @@ import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
+
 import storeCreator from '../components/creators/storeCreator'
 import dataTableCreator from '../components/creators/dataTableCreator'
-import MenuIcon from '@material-ui/icons/Menu'
+
 import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
+
 import { useEffect } from 'react'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
-import useModal from '../components/hooks/useModal'
-import { useSnackbar } from 'notistack'
+
 
 export default function Home() {
   const [_toggleFilterOpen, _fetch] = useStore(
@@ -62,63 +60,19 @@ const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
   dataTableCreator({
     useStore: useStore,
     colAction: true,
-    ActionElement: ({ data, anchorEl, handleClick, handleClose }) => {
-      const { _open } = useModal(
-        (state) => ({ _open: state._open }),
-        () => true
-      )
-      const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-      const { _delete } = useStore(
-        (state) => ({ _delete: state._delete }),
-        () => true
-      )
-
-      const _handleDelete = async () => {
-        var d = await _open({
-          body: 'Apakah anda yakin akan menghapus data ini?',
-        })
-        handleClose()
-        if (d) {
-          await _delete(data.id, true)
-          enqueueSnackbar('Data telah berhasil di hapus.', {
-            variant: 'success',
-          })
+    actions: [
+      {
+        label: 'Edit',
+        icon: EditIcon,
+        action: () => {}
+      },{
+        label: 'Delete',
+        icon: DeleteIcon,
+        action: ({data, openModal, closeMenu, enqueueSnackbar}) => {
+          useStore.getState()._handleDelete({data, openModal, closeMenu, enqueueSnackbar})
         }
       }
-      return (
-        <>
-          <IconButton
-            size="small"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleClick}
-            edge="start"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              Edit
-            </MenuItem>
-            <MenuItem onClick={_handleDelete}>
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              Delete
-            </MenuItem>
-          </Menu>
-        </>
-      )
-    },
+    ],
     columns: [
       {
         title: 'First Name',

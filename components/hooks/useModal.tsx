@@ -16,7 +16,7 @@ const useModal = zustand((set, get) => ({
   cancelText: 'Batalkan',
   _resolve: ()=> {},
 
-  _close: () => {
+  _closeModal: () => {
     return set(
       immer((draft) => {
         draft.open = false
@@ -24,7 +24,7 @@ const useModal = zustand((set, get) => ({
     )
   },
 
-  _open: ({ title, body }={}) => {
+  _openModal: ({ title, body }={}) => {
     const promise = new Promise((resolve, reject) => {
       set(
         immer((draft) => {
@@ -51,25 +51,25 @@ export const AppDialog = () => {
     _resolve: state._resolve,
   }))
 
-  const { _close } = useModal(
-    (state) => ({ _close: state._close }),
+  const { _closeModal } = useModal(
+    (state) => ({ _closeModal: state._closeModal }),
     () => true
   )
 
   const _handleOk = ()=> {
     _resolve({})
-    _close()
+    _closeModal()
   }
 
   const _handleCancel = ()=> {
     _resolve(false)
-    _close()
+    _closeModal()
   }
 
   return (
     <Dialog
       open={open}
-      onClose={_close}
+      onClose={_closeModal}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
