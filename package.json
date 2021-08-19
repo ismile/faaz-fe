@@ -1,5 +1,6 @@
 {
   "name": "faaz-fe",
+	"description": "frontend ui starter",
   "version": "0.1.0",
   "private": true,
   "scripts": {
