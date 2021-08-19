@@ -1833,6 +1833,7 @@ __metadata:
     interactive-tools: ^0.0.1
     lodash: ^4.17.21
     next: 11.0.1
+    next-compose-plugins: ^2.2.1
     notistack: ^1.0.10
     postcss: ^8.3.0
     rc-table: ^7.17.1
@@ -3069,6 +3070,13 @@ fsevents@~2.3.1:
   dependencies:
     querystring: ^0.2.0
   checksum: 2c82baa9d0e71bd67bd893d139d33b29acb34d4ac4d39251625c1ee6e31663ae4ce62349c7b926d2d4a7056c6730ef96827d437e65bc71599edfef2006367bcc
+  languageName: node
+  linkType: hard
+
+"next-compose-plugins@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "next-compose-plugins@npm:2.2.1"
+  checksum: 771762fda2b12b81daf10431cbb494816cff96be02b44009692c6c0eefbacd62cbf51ddb93af8d3380ec00254c6a95d64d10f744d4b9ddadefc21efee7dc69fc
   languageName: node
   linkType: hard
 

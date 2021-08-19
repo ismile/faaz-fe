@@ -19,7 +19,7 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 
 interface IDataTableCreatorConfig {
-  rowKey?: String
+  rowKey?: string
   useStore?: any
   dataTableFilterCreator: Function
   colCheckbox?: Boolean
@@ -106,7 +106,7 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
       })
     }
 
-    const _onChangeRowsPerPage = async (e, s, d) => {
+    const _onChangeRowsPerPage = async (e) => {
       await _fetch({
         page: page,
         limit: e.target.value,

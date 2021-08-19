@@ -50,6 +50,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["interactive-tools", "npm:0.0.1"],
             ["lodash", "npm:4.17.21"],
             ["next", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:11.0.1"],
+            ["next-compose-plugins", "npm:2.2.1"],
             ["notistack", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:1.0.10"],
             ["postcss", "npm:8.3.0"],
             ["rc-table", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:7.17.1"],
@@ -2298,6 +2299,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["interactive-tools", "npm:0.0.1"],
             ["lodash", "npm:4.17.21"],
             ["next", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:11.0.1"],
+            ["next-compose-plugins", "npm:2.2.1"],
             ["notistack", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:1.0.10"],
             ["postcss", "npm:8.3.0"],
             ["rc-table", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:7.17.1"],
@@ -3780,6 +3782,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "react-dom",
             "react",
             "sass"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["next-compose-plugins", [
+        ["npm:2.2.1", {
+          "packageLocation": "./.yarn/cache/next-compose-plugins-npm-2.2.1-a9c8f4fdca-771762fda2.zip/node_modules/next-compose-plugins/",
+          "packageDependencies": [
+            ["next-compose-plugins", "npm:2.2.1"]
           ],
           "linkType": "HARD",
         }]

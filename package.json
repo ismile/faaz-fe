@@ -1,6 +1,6 @@
 {
   "name": "faaz-fe",
-	"description": "frontend ui starter",
+  "description": "frontend ui starter",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -36,6 +36,7 @@
     "@types/node": "^16.4.7",
     "@types/react": "^17.0.15",
     "autoprefixer": "^10.2.5",
+    "next-compose-plugins": "^2.2.1",
     "postcss": "^8.3.0",
     "tailwindcss": "^2.1.2",
     "typescript": "^4.3.5"
