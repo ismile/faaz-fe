@@ -34,7 +34,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     selected: {},
     selectedArr: [],
     filterOpen: false,
-    apiPath: 'http://faaz-be.herokuapp.com/v1/user',
+    apiPath: 'https://faaz-be.herokuapp.com/v1/user',
 
     _fetch: async (params = {}) => {
       if (params.page == null || params.page == undefined)
