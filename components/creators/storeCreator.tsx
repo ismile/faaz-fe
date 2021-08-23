@@ -6,7 +6,7 @@ import { asyncTimeout } from '../../configs/utils'
 interface IStoreCreatorConfig {
   rowKey?: String
   apiPath?: String
-  store: Function
+  store?: Function
 }
 
 const defaultConfig = {
@@ -187,5 +187,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     useStore,
   }
 }
+
+storeCreator.immer = immer
 
 export default storeCreator
