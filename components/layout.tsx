@@ -87,7 +87,7 @@ export default function Layout({ children }) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6">asd</Typography>
+            <Typography variant="h6">FAAZ FE</Typography>
             <div className="flex-1" />
             <div className={classes.search}>
               <div className={classes.searchIcon}>

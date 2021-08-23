@@ -10,8 +10,11 @@ import '../styles/globals.css'
 import Layout from '../components/layout'
 import { AppDialog } from '../components/hooks/useModal'
 import { SnackbarProvider } from 'notistack'
-
+import httpConfig from '../configs/http'
 function MyApp({ Component, pageProps }: AppProps) {
+  // init config
+  httpConfig()
+
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side')
     if (jssStyles) {
@@ -59,5 +62,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 //   return { ...appProps }
 // }
+
+MyApp.getInitialProps = async function (ctx) {
+  httpConfig()
+  return {}
+};
 
 export default MyApp

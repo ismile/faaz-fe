@@ -55,7 +55,9 @@ export default function Home() {
   )
 }
 
-const { useStore } = storeCreator()
+const { useStore } = storeCreator({
+  apiPath: '/user'
+})
 const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
   dataTableCreator({
     useStore: useStore,

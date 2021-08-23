@@ -5,10 +5,16 @@ import Table from 'rc-table'
 import { asyncTimeout } from '../../configs/utils'
 interface IStoreCreatorConfig {
   rowKey?: String
+  apiPath?: String
+  store: Function
 }
 
 const defaultConfig = {
   rowKey: 'id',
+  apiPath: '/user',
+  store: (set, get) => {
+    return {}
+  }
 }
 
 function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
@@ -34,7 +40,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     selected: {},
     selectedArr: [],
     filterOpen: false,
-    apiPath: 'https://faaz-be.herokuapp.com/v1/user',
+    apiPath: config.apiPath,
 
     _fetch: async (params = {}) => {
       if (params.page == null || params.page == undefined)
@@ -86,7 +92,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       if (fetch) get()._fetch()
     },
 
-    _handleDelete: async ({data, openModal, closeMenu, enqueueSnackbar}) => {
+    _handleDelete: async ({ data, openModal, closeMenu, enqueueSnackbar }) => {
       var d = await openModal({
         body: 'Apakah anda yakin akan menghapus data ini?',
       })
@@ -174,6 +180,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
           })
         })
       ),
+    ...config.store(set, get)
   }))
 
   return {
