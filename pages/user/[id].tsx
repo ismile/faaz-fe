@@ -3,24 +3,46 @@ import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
 import TextField from '../../components/form/TextField'
+import CheckBox from '../../components/form/CheckBox'
 import { useUserStore } from '../../stores/UserStore'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/dist/client/router'
 import Button from '@material-ui/core/Button'
+import { useEffect } from 'react'
 
 export default function UserForm() {
-  const { control, handleSubmit } = useForm({})
+  const { control, handleSubmit, reset } = useForm({})
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const router = useRouter()
-
-  const [_create] = useUserStore(
-    (state) => [state._create],
+  const [_create, _getOne, _update] = useUserStore(
+    (state) => [state._create, state._getOne, state._update],
     (ps, ns) => true
   )
 
+  useEffect(() => {
+    if(router.query.id != 'new') {
+      _getInitialValues()
+    }
+  }, [router.query.id])
+
+  const _getInitialValues = async () => {
+    var res = await _getOne(router.query.id)
+    reset(res.data)
+  }
+
   const _onSubmit = async (data) => {
-    await _create({...data, isActive: true})
-    enqueueSnackbar('Data telah berhasil dibuat')
+    if(router.query.id != 'new') {
+      await _update(data)
+      enqueueSnackbar('Data telah berhasil diupdate', {
+        variant: 'success',
+      })
+    } else {
+      await _create(data)
+      enqueueSnackbar('Data telah berhasil dibuat', {
+        variant: 'success',
+      })
+    }
+
     router.back()
   }
 
@@ -47,6 +69,13 @@ export default function UserForm() {
             label="Last Name"
             name="lastName"
             className="col-span-6"
+            rules={{ required: 'First name required' }}
+          />
+          <CheckBox
+            control={control}
+            label="Is Active"
+            name="isActive"
+            className="col-span-12"
             rules={{ required: 'First name required' }}
           />
         </div>

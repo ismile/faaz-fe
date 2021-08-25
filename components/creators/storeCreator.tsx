@@ -90,6 +90,11 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       )
     },
 
+    _getOne: async (id) => {
+      const res = await axios.get(get().apiPath + '/' + id)
+      return res
+    },
+
     _delete: async (id, fetch = false) => {
       const res = await axios.delete(get().apiPath + '/' + id)
       if (fetch) get()._fetch()
@@ -101,17 +106,10 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
       return res;
     },
 
-    _handleDelete: async ({ data, openModal, closeMenu, enqueueSnackbar }) => {
-      var d = await openModal({
-        body: 'Apakah anda yakin akan menghapus data ini?',
-      })
-      closeMenu()
-      if (d) {
-        await get()._delete(data.id, true)
-        enqueueSnackbar('Data telah berhasil di hapus.', {
-          variant: 'success',
-        })
-      }
+    _update: async (data, fetch = false) => {
+      const res = await axios.put(get().apiPath+"/"+data.id, data)
+      if (fetch) get()._fetch()
+      return res;
     },
 
     _setSort: (sort, order) => {

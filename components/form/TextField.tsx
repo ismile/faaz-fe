@@ -8,6 +8,13 @@ export default function TextField({
   name,
   variant = 'filled',
   rules = {},
+}:{
+  control: any,
+  label: string,
+  className?: string,
+  name: string,
+  variant?: 'filled' | 'standard' | 'outlined',
+  rules?: Object
 }) {
   const {
     field: { ref, onChange, value },

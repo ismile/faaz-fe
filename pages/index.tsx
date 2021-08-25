@@ -62,12 +62,23 @@ const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
       {
         label: 'Edit',
         icon: EditIcon,
-        action: () => {}
+        action: ({data, router}) => {
+          router.push(`${useUserStore.getState().apiPath}/${data.id}`)
+        }
       },{
         label: 'Delete',
         icon: DeleteIcon,
-        action: ({data, openModal, closeMenu, enqueueSnackbar}) => {
-          useStore.getState()._handleDelete({data, openModal, closeMenu, enqueueSnackbar})
+        action: async ({data, openModal, closeMenu, enqueueSnackbar}) => {
+          var d = await openModal({
+            body: 'Apakah anda yakin akan menghapus data ini?',
+          })
+          closeMenu()
+          if (d) {
+            await useUserStore.getState()._delete(data.id, true)
+            enqueueSnackbar('Data telah berhasil di hapus.', {
+              variant: 'success',
+            })
+          }
         }
       }
     ],

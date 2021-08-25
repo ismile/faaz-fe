@@ -229,6 +229,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
 
         const { _openModal } = useModal((state) => ({ _openModal: state._openModal }),() => true)
         const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+        const router = useRouter();
 
         return (
           <>
@@ -249,7 +250,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
             onClose={handleClose}
           >
             {config.actions.map((d, i)=> {
-              return <MenuItem key={i} onClick={()=> d.action({data:row, openModal:_openModal, closeMenu:handleClose, enqueueSnackbar})}>
+              return <MenuItem key={i} onClick={()=> d.action({data:row, openModal:_openModal, closeMenu:handleClose, enqueueSnackbar, router})}>
                 <ListItemIcon>
                   <d.icon fontSize="small" />
                 </ListItemIcon>
