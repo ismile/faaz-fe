@@ -24,9 +24,10 @@
     "rc-table": "^7.17.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.11.1",
+    "react-hook-form": "^7.13.0",
     "react-resizable": "^3.0.4",
     "react-swipeable-views": "^0.14.0",
+    "react-tiny-transition": "^2.4.0",
     "stage": "^1.0.0",
     "styled-jsx": "^3.4.4",
     "zustand": "^3.5.7"
@@ -38,6 +39,7 @@
     "autoprefixer": "^10.2.5",
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.3.0",
+    "prop-types": "^15.7.2",
     "tailwindcss": "^2.1.2",
     "typescript": "^4.3.5"
   }

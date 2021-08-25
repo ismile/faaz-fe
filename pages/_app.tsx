@@ -10,14 +10,22 @@ import '../styles/globals.css'
 import Layout from '../components/layout'
 import { AppDialog } from '../components/hooks/useModal'
 import { SnackbarProvider } from 'notistack'
+import httpConfig from '../configs/http'
+import { useRouter } from 'next/dist/client/router'
+import TinyTransition from "react-tiny-transition";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // init config
+  httpConfig()
+
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side')
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
   }, [])
+
+  const router = useRouter()
 
   return (
     <>
@@ -38,7 +46,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             }}
           >
             <Layout>
-              <Component {...pageProps} />
+              <TinyTransition duration={800} key={router.pathname}>
+                <Component {...pageProps} />
+              </TinyTransition>
               <AppDialog />
             </Layout>
           </SnackbarProvider>
@@ -59,5 +69,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 //   return { ...appProps }
 // }
+
+MyApp.getInitialProps = async function (ctx) {
+  httpConfig()
+  return {}
+};
 
 export default MyApp

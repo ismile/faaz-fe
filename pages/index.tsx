@@ -6,17 +6,16 @@ import Toolbar from '@material-ui/core/Toolbar'
 import storeCreator from '../components/creators/storeCreator'
 import dataTableCreator from '../components/creators/dataTableCreator'
 
-import Checkbox from '@material-ui/core/Checkbox'
 import IconButton from '@material-ui/core/IconButton'
 
 import { useEffect } from 'react'
 import FilterListIcon from '@material-ui/icons/FilterList'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
+import { useUserStore } from '../stores/UserStore'
 
-
-export default function Home() {
-  const [_toggleFilterOpen, _fetch] = useStore(
+export default function User() {
+  const [_toggleFilterOpen, _fetch] = useUserStore(
     (state) => [state._toggleFilterOpen, state._fetch],
     (ps, ns) => true
   )
@@ -55,21 +54,31 @@ export default function Home() {
   )
 }
 
-const { useStore } = storeCreator()
 const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
   dataTableCreator({
-    useStore: useStore,
+    useStore: useUserStore,
     colAction: true,
     actions: [
       {
         label: 'Edit',
         icon: EditIcon,
-        action: () => {}
+        action: ({data, router}) => {
+          router.push(`${useUserStore.getState().apiPath}/${data.id}`)
+        }
       },{
         label: 'Delete',
         icon: DeleteIcon,
-        action: ({data, openModal, closeMenu, enqueueSnackbar}) => {
-          useStore.getState()._handleDelete({data, openModal, closeMenu, enqueueSnackbar})
+        action: async ({data, openModal, closeMenu, enqueueSnackbar}) => {
+          var d = await openModal({
+            body: 'Apakah anda yakin akan menghapus data ini?',
+          })
+          closeMenu()
+          if (d) {
+            await useUserStore.getState()._delete(data.id, true)
+            enqueueSnackbar('Data telah berhasil di hapus.', {
+              variant: 'success',
+            })
+          }
         }
       }
     ],
