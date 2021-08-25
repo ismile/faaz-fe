@@ -17,6 +17,7 @@ import { useSnackbar } from 'notistack'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { useRouter } from 'next/dist/client/router'
 
 interface IDataTableCreatorConfig {
   rowKey?: string
@@ -128,12 +129,15 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
   const TableFilter = dataTableFilterCreator(config.useStore)
 
   const DefaultTopAction = () => {
-    const [_toggleFilterOpen, _fetch] = config.useStore(
-      (state) => [state._toggleFilterOpen, state._fetch],
+    const [_toggleFilterOpen, _fetch, routerPath] = config.useStore(
+      (state) => [state._toggleFilterOpen, state._fetch, state.routerPath],
       (ps, ns) => true
     )
 
+    const router = useRouter()
+
     const _handleReload = ()=> _fetch()
+    const _handleNewButton = ()=> router.push(`${routerPath}/new`)
 
     return (
       <>
@@ -149,7 +153,7 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
         <Button
           variant="text"
           // color="secondary"
-          onClick={_handleReload}
+          onClick={_handleNewButton}
           startIcon={<AddIcon />}
           className="mr-2"
         >

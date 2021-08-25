@@ -6,12 +6,14 @@ import { asyncTimeout } from '../../configs/utils'
 interface IStoreCreatorConfig {
   rowKey?: String
   apiPath?: String
-  store?: Function
+  store?: Function,
+  routerPath?: String,
 }
 
 const defaultConfig = {
   rowKey: 'id',
   apiPath: '/user',
+  routerPath: '/user',
   store: (set, get) => {
     return {}
   }
@@ -41,6 +43,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     selectedArr: [],
     filterOpen: false,
     apiPath: config.apiPath,
+    routerPath: config.routerPath,
 
     _fetch: async (params = {}) => {
       if (params.page == null || params.page == undefined)
@@ -90,6 +93,12 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     _delete: async (id, fetch = false) => {
       const res = await axios.delete(get().apiPath + '/' + id)
       if (fetch) get()._fetch()
+    },
+
+    _create: async (data, fetch = false) => {
+      const res = await axios.post(get().apiPath, data)
+      if (fetch) get()._fetch()
+      return res;
     },
 
     _handleDelete: async ({ data, openModal, closeMenu, enqueueSnackbar }) => {

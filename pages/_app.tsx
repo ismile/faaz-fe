@@ -11,6 +11,9 @@ import Layout from '../components/layout'
 import { AppDialog } from '../components/hooks/useModal'
 import { SnackbarProvider } from 'notistack'
 import httpConfig from '../configs/http'
+import { useRouter } from 'next/dist/client/router'
+import TinyTransition from "react-tiny-transition";
+
 function MyApp({ Component, pageProps }: AppProps) {
   // init config
   httpConfig()
@@ -21,6 +24,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
   }, [])
+
+  const router = useRouter()
 
   return (
     <>
@@ -41,7 +46,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             }}
           >
             <Layout>
-              <Component {...pageProps} />
+              <TinyTransition duration={800} key={router.pathname}>
+                <Component {...pageProps} />
+              </TinyTransition>
               <AppDialog />
             </Layout>
           </SnackbarProvider>

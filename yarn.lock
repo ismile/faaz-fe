@@ -1836,12 +1836,14 @@ __metadata:
     next-compose-plugins: ^2.2.1
     notistack: ^1.0.10
     postcss: ^8.3.0
+    prop-types: ^15.7.2
     rc-table: ^7.17.1
     react: 17.0.2
     react-dom: 17.0.2
-    react-hook-form: ^7.11.1
+    react-hook-form: ^7.13.0
     react-resizable: ^3.0.4
     react-swipeable-views: ^0.14.0
+    react-tiny-transition: ^2.4.0
     stage: ^1.0.0
     styled-jsx: ^3.4.4
     tailwindcss: ^2.1.2
@@ -3910,12 +3912,12 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.11.1":
-  version: 7.11.1
-  resolution: "react-hook-form@npm:7.11.1"
+"react-hook-form@npm:^7.13.0":
+  version: 7.13.0
+  resolution: "react-hook-form@npm:7.13.0"
   peerDependencies:
     react: ^16.8.0 || ^17
-  checksum: 457fed57940d945aee9baefc57a72901b8bdd70978abf6a5e90e9d4ca2a1308d311130475c2819173239f560314c8a16acf3e828a8b38dc18ec01a81bd7d99f8
+  checksum: 763aefa3ceb26846dbd6f8fefe85d176a033c73aa5e2cffa460afb972bf6032b80a174b13a46543d4412741617d9ff4ef5b161956fcc64200cd7b7b9299174ad
   languageName: node
   linkType: hard
 
@@ -3988,6 +3990,17 @@ fsevents@~2.3.1:
   peerDependencies:
     react: ^15.3.0 || ^16.0.0 || ^17.0.0
   checksum: 477bcf2d6b88312cd74c069c23aff48983209ce74b8d10c0d6adabf00795735f55a9c12dc3f23e5d7168308959f18c178d486821abec02e8a562295eada3568b
+  languageName: node
+  linkType: hard
+
+"react-tiny-transition@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "react-tiny-transition@npm:2.4.0"
+  peerDependencies:
+    prop-types: ^15.6.0
+    react: ^16.7.0 || ^17.0.0
+    react-dom: ^16.7.0 || ^17.0.0
+  checksum: 094f0df5ecba513c41b8f89b3e00247c682c53aa0f5733431f3627127269bac494356fe88a38b20b95e36025756bcdb9768a2887533211cbc3195448397a2d7a
   languageName: node
   linkType: hard
 
