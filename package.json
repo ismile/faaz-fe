@@ -15,6 +15,7 @@
     "@material-ui/icons": "^4.11.2",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
+    "dayjs": "^1.10.6",
     "debounce": "1.2.0",
     "immer": "^9.0.5",
     "interactive-tools": "^0.0.1",

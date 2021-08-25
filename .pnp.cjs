@@ -45,6 +45,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["autoprefixer", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:10.2.5"],
             ["axios", "npm:0.21.1"],
             ["clsx", "npm:1.1.1"],
+            ["dayjs", "npm:1.10.6"],
             ["debounce", "npm:1.2.0"],
             ["immer", "npm:9.0.5"],
             ["interactive-tools", "npm:0.0.1"],
@@ -1924,6 +1925,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["dayjs", [
+        ["npm:1.10.6", {
+          "packageLocation": "./.yarn/cache/dayjs-npm-1.10.6-c9596cd594-a79af6d19c.zip/node_modules/dayjs/",
+          "packageDependencies": [
+            ["dayjs", "npm:1.10.6"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["debounce", [
         ["npm:1.2.0", {
           "packageLocation": "./.yarn/cache/debounce-npm-1.2.0-c8db510cc0-e39cb593ae.zip/node_modules/debounce/",
@@ -2296,6 +2306,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["autoprefixer", "virtual:722ad0de733c24851b57e6a1bfeeef38e1a9c21284e9ba9afbb4d403c7def5ec45904fcbf4c891f63121dedc7a2b9eef0e55f08d96371fe159c4c01092923328#npm:10.2.5"],
             ["axios", "npm:0.21.1"],
             ["clsx", "npm:1.1.1"],
+            ["dayjs", "npm:1.10.6"],
             ["debounce", "npm:1.2.0"],
             ["immer", "npm:9.0.5"],
             ["interactive-tools", "npm:0.0.1"],
