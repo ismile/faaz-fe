@@ -9,6 +9,7 @@ import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/dist/client/router'
 import Button from '@material-ui/core/Button'
 import { useEffect } from 'react'
+import tw from 'twin.macro'
 
 export default function UserForm() {
   const { control, handleSubmit, reset } = useForm({})
@@ -50,39 +51,39 @@ export default function UserForm() {
     router.back()
   }
   return (
-    <div className="h-full w-full flex flex-col">
+    <div tw="h-full w-full flex flex-col">
       <Toolbar>
         <Typography variant="h6">SAMPLE GRID</Typography>
-        <div className="flex-1" />
+        <div tw="flex-1" />
       </Toolbar>
-      <Paper className="ag-theme-material mb-1">
-        <div className="grid grid-cols-12 gap-4 p-4">
+      <Paper tw="mb-1">
+        <div tw="grid grid-cols-12 gap-4 p-4">
           <TextField
             control={control}
             label="First Name"
             name="firstName"
-            className="col-span-6"
+            tw="col-span-6"
             rules={{ required: 'First name required' }}
           />
           <TextField
             control={control}
             label="Last Name"
             name="lastName"
-            className="col-span-6"
+            tw="col-span-6"
             rules={{ required: 'First name required' }}
           />
           <CheckBox
             control={control}
             label="Is Active"
             name="isActive"
-            className="col-span-12"
+            tw="col-span-12"
             rules={{ required: 'First name required' }}
           />
         </div>
-        <div className="p-4 bg-gray-100 flex flex-row">
-          <div className="flex-1"></div>
+        <div tw="p-4 bg-gray-100 flex flex-row">
+          <div tw="flex-1"></div>
           <Button
-            className="mr-2"
+            tw="mr-2"
             variant="text"
             onClick={_handleBack}
           >

@@ -23,6 +23,7 @@ import AppBar from '@material-ui/core/AppBar'
 import { useState } from 'react'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import tw, {css} from 'twin.macro'
 
 export function dataTableFilterCreator(useStore) {
   const SwitchTable = ({ dataKey }) => {
@@ -50,13 +51,7 @@ export function dataTableFilterCreator(useStore) {
     const _handleChangeIndex = (v) => setActiveTab(v)
     return (
       <div
-        className={clsx(
-          'flex flex-col h-full bg-gray-100 border-0 border-r border-gray-200 border-solid transition-width transition-slowest ease-in-out transform ',
-          {
-            'w-80': filterOpen,
-            'w-0': !filterOpen,
-          }
-        )}
+        css={['flex flex-col h-full bg-gray-100 border-0 border-r border-gray-200 border-solid transition-width transition-slowest ease-in-out transform', filterOpen && tw`w-80`, !filterOpen && tw`w-0`]}
       >
         {/* <AppBar position="static" > */}
         <Tabs
@@ -64,20 +59,20 @@ export function dataTableFilterCreator(useStore) {
           onChange={_handleChangeTab}
           variant="standard"
           indicatorColor="primary"
-          className="h-16"
+          tw="h-16"
           // textColor="primary"
           // centered
         >
-          <Tab className="h-16" icon={<FilterListIcon />} />
-          <Tab className="h-16" icon={<ViewColumnIcon />} />
+          <Tab tw="h-16" icon={<FilterListIcon />} />
+          <Tab tw="h-16" icon={<ViewColumnIcon />} />
         </Tabs>
 
         <SwipeableViews
-          className="flex-1"
+          tw="flex-1"
           index={activeTab}
           onChangeIndex={_handleChangeIndex}
         >
-          <div className="flex-1">
+          <div tw="flex-1">
             <ColumnSort />
             <Divider />
             <ColumnFilter />
@@ -102,8 +97,8 @@ export function dataTableFilterCreator(useStore) {
       <List
         subheader={
           <Typography
-            // className={classes.dividerFullWidth}
-            className="p-4"
+            // tw={classes.dividerFullWidth}
+            tw="p-4"
             color="textSecondary"
             display="block"
             variant="caption"
@@ -159,10 +154,10 @@ export function dataTableFilterCreator(useStore) {
       })
     }
     return (
-      <div className="grid grid-cols-12 gap-4 p-4">
+      <div tw="grid grid-cols-12 gap-4 p-4">
         <Typography
-          // className={classes.dividerFullWidth}
-          className="col-span-12"
+          // tw={classes.dividerFullWidth}
+          tw="col-span-12"
           color="textSecondary"
           display="block"
           variant="caption"
@@ -174,7 +169,7 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl className="col-span-7" variant="filled">
+            <FormControl tw="col-span-7" variant="filled">
               <InputLabel id="id-kolom-input-label">Kolom</InputLabel>
               <Select
                 labelId="id-kolom-label"
@@ -204,7 +199,7 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl className="col-span-5" variant="filled">
+            <FormControl tw="col-span-5" variant="filled">
               <InputLabel id="id-sort-input-label">ORDER</InputLabel>
               <Select
                 labelId="id-sort-label"
@@ -223,8 +218,8 @@ export function dataTableFilterCreator(useStore) {
           rules={{ required: 'First name required' }}
         />
 
-        <div className="flex col-span-12">
-          <div className="flex-1" />
+        <div tw="flex col-span-12">
+          <div tw="flex-1" />
           <Button
             variant="contained"
             color="secondary"
@@ -279,10 +274,10 @@ export function dataTableFilterCreator(useStore) {
     }
 
     return (
-      <div className="grid grid-cols-12 gap-4 p-4">
+      <div tw="grid grid-cols-12 gap-4 p-4">
         <Typography
-          // className={classes.dividerFullWidth}
-          className="col-span-12"
+          // tw={classes.dividerFullWidth}
+          tw="col-span-12"
           color="textSecondary"
           display="block"
           variant="caption"
@@ -294,7 +289,7 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl className="col-span-12" variant="filled">
+            <FormControl tw="col-span-12" variant="filled">
               <InputLabel id="id-field-input-label">Kolom</InputLabel>
               <Select
                 labelId="id-field-label"
@@ -324,7 +319,7 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl className="col-span-12" variant="filled">
+            <FormControl tw="col-span-12" variant="filled">
               <InputLabel id="id-criteria-select-label">Kriteria</InputLabel>
               <Select
                 labelId="id-criteria-label"
@@ -355,7 +350,7 @@ export function dataTableFilterCreator(useStore) {
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
               label="Kata Kunci"
-              className="col-span-12"
+              tw="col-span-12"
               variant="filled"
               value={value?value:''}
               onChange={onChange}
@@ -365,12 +360,12 @@ export function dataTableFilterCreator(useStore) {
           )}
           rules={{ required: 'First name required' }}
         />
-        <div className="flex col-span-12">
-          <div className="flex-1" />
+        <div tw="flex col-span-12">
+          <div tw="flex-1" />
           <Button
             variant="text"
             color="secondary"
-            className="mr-2"
+            tw="mr-2"
             onClick={_clear}
           >
             Clear

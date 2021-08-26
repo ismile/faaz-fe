@@ -1,13 +1,12 @@
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import color from '@material-ui/core/colors/lightBlue'
-import colorSec from '@material-ui/core/colors/amber'
+import {createTheme} from '@material-ui/core/styles'
+import {lightBlue, amber} from '@material-ui/core/colors'
 
 // Create a theme instance.
-const theme = createMuiTheme({
+const theme = createTheme({
   spacing: (factor) => `${0.25 * factor}rem`,
   palette: {
-    primary: color,
-    secondary: colorSec,
+    primary: lightBlue,
+    secondary: amber,
     background: {
       default: '#fff',
     },
@@ -18,3 +17,4 @@ const theme = createMuiTheme({
 })
 
 export default theme
+

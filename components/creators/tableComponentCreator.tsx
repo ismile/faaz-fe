@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
 import clsx from 'clsx'
-
+import tw, { css } from 'twin.macro'
 const tableComponentCreator = (config) => ({
   table: memo((props) => <Table {...props} />),
   header: {
@@ -38,7 +38,7 @@ const tableComponentCreator = (config) => ({
       if (Element) {
         return (
           <TableCell
-            className={clsx(className + ' h-16', { hidden: !columnSetting })}
+            css={[className, tw`h-16`, !columnSetting && tw`hidden`]}
             {...restProps}
             width={width}
           >
@@ -49,13 +49,13 @@ const tableComponentCreator = (config) => ({
 
       return (
         <TableCell
-          className={clsx(className + ' h-16', { hidden: !columnSetting })}
+          css={[className, tw`h-16`, !columnSetting && tw`hidden`]}
           {...restProps}
           width={width}
         >
-          <div className="flex">
+          <div tw="flex">
             {children}
-            <div className="flex-1" />
+            <div tw="flex-1" />
             {/* <ExpandLess style={{fontSize:10}} /> */}
           </div>
         </TableCell>
@@ -63,14 +63,16 @@ const tableComponentCreator = (config) => ({
     }),
   },
   body: {
-    wrapper: memo((props) => <TableBody {...props} className={'asdasdsdad'} />),
+    wrapper: memo((props) => <TableBody {...props} />),
     row: memo((props) => <TableRow {...props} />),
     cell: memo((props) => {
       const [columnSetting] = config.useStore(
         (state) => [state.columnSetting[props.keyid], state._toggleColumn],
         (ps, ns) => ps[0] == ns[0]
       )
-      return <TableCell {...props} className={clsx(props.className, {'hidden': !columnSetting})} />
+      return (
+        <TableCell {...props} css={[props.className, !columnSetting && tw`hidden`]} />
+      )
     }),
   },
 })

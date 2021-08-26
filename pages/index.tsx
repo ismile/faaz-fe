@@ -13,6 +13,7 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useUserStore } from '../stores/UserStore'
+import tw from 'twin.macro'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
@@ -25,25 +26,25 @@ export default function User() {
   }, [])
 
   return (
-    <div className="h-full w-full flex flex-col">
+    <div tw="h-full w-full flex flex-col">
       <Toolbar>
         <Typography variant="h6">SAMPLE GRID</Typography>
-        <div className="flex-1" />
+        <div tw="flex-1" />
         <DefaultTopAction />
       </Toolbar>
 
-      {/* <Paper className="mt-2 p-6"> */}
-      <Paper className="flex flex-1 flex-row ag-theme-material mb-1">
+      {/* <Paper tw="mt-2 p-6"> */}
+      <Paper tw="flex flex-1 flex-row mb-1">
         <TableFilter />
-        <div className="flex-1 flex flex-col w-full">
-          <div className="flex-1 flex-row">
+        <div tw="flex-1 flex flex-col w-full">
+          <div tw="flex-1 flex-row">
             <DataTable />
           </div>
-          <Toolbar className="flex flex-row">
+          <Toolbar tw="flex flex-row">
             <IconButton onClick={_toggleFilterOpen}>
               <FilterListIcon />
             </IconButton>
-            <div className="flex-1" />
+            <div tw="flex-1" />
             <TablePagination />
           </Toolbar>
         </div>

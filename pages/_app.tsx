@@ -1,6 +1,6 @@
 import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'
-import { StylesProvider, ThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../configs/theme'
 import { useEffect } from 'react'
@@ -13,8 +13,17 @@ import { SnackbarProvider } from 'notistack'
 import httpConfig from '../configs/http'
 import { useRouter } from 'next/dist/client/router'
 import TinyTransition from "react-tiny-transition";
+import createCache, { EmotionCache } from '@emotion/cache'
+import { CacheProvider } from '@emotion/react'
+import { StyleCache } from '../configs/cache'
 
-function MyApp({ Component, pageProps }: AppProps) {
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+
+function MyApp(props: MyAppProps) {
+  const { Component, emotionCache = StyleCache, pageProps } = props;
   // init config
   httpConfig()
 
@@ -29,7 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <StylesProvider injectFirst>
+      <CacheProvider value={emotionCache}>
         <Head>
           <title>My page</title>
           <meta
@@ -53,7 +62,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Layout>
           </SnackbarProvider>
         </ThemeProvider>
-      </StylesProvider>
+      </CacheProvider>
     </>
   )
 }

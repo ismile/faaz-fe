@@ -18,6 +18,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import { useRouter } from 'next/dist/client/router'
+import tw, {css} from 'twin.macro'
 
 interface IDataTableCreatorConfig {
   rowKey?: string
@@ -61,8 +62,8 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
     const { width, height } = useElementSize(squareRef)
 
     return (
-      <div className="h-full w-full" ref={squareRef}>
-        <div className="fixed" style={{ width, height }}>
+      <div tw="h-full w-full" ref={squareRef}>
+        <div tw="fixed" style={{ width, height }}>
           {loading && (
             <LinearProgress
               style={{
@@ -145,7 +146,7 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
           variant="text"
           // color="secondary"
           onClick={_handleReload}
-          className="mr-2"
+          tw="mr-2 text-black"
           startIcon={<RefreshIcon />}
         >
           Refresh
@@ -155,7 +156,7 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
           // color="secondary"
           onClick={_handleNewButton}
           startIcon={<AddIcon />}
-          className="mr-2"
+          tw="mr-2 text-black"
         >
           Tambah
         </Button>
@@ -286,7 +287,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
           return (
             <Checkbox
               key={`check-all`}
-              className="p-0"
+              tw="p-0"
               checked={isAllSelected}
               onChange={_handleSelectAll}
               inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -302,7 +303,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
         return (
           <Checkbox
             key={`checkbox-${d[rowKey]}`}
-            className="p-0"
+            tw="p-0"
             checked={!!selected[d[rowKey]]}
             onChange={function (ev, val) {
               _handleSingleSelect(d, val)
