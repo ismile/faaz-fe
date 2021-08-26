@@ -28,6 +28,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import Badge from '@material-ui/core/Badge'
 import useSidebarStore from './hooks/useSidebarStore'
+import tw, {css} from 'twin.macro'
 
 const MenuItemView = memo(function ({ text, index }) {
   return (
@@ -68,9 +69,9 @@ export default function Layout({ children }) {
   ])
 
   return (
-    <div className="flex w-full min-h-full absolute z-1000 top-0 left-0 overflow-hidden">
-      <div className="w-full min-h-full z-1 flex flex-row">
-        <AppBar position="fixed" open={open} >
+    <div tw="flex w-full min-h-full absolute z-1000 top-0 left-0 overflow-hidden">
+      <div tw="w-full min-h-full z-1 flex flex-row">
+        <AppBar elevation={0} position="fixed" open={open} >
           <Toolbar>
             <IconButton
               color="inherit"
@@ -78,21 +79,22 @@ export default function Layout({ children }) {
               onClick={_toggle}
               edge="start"
               sx={{
-                marginRight: '36px',
+                marginLeft: '6px',
+                marginRight: '22px',
                 ...(open && { display: 'none' }),
               }}
             >
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
+              FAAZ FE
             </Typography>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             <IconButton onClick={_toggle}>
-                <ChevronRightIcon />
+                <ChevronLeftIcon />
             </IconButton>
           </DrawerHeader>
           <Divider />
@@ -118,14 +120,14 @@ export default function Layout({ children }) {
             ))}
           </List>
         </Drawer>
-        <main className="w-full min-h-full bg-gray-100 block p-3 pl-0">
-          <div
-            className={clsx('w-full fixed top-0 left-0', classes.bg)}
+        <main tw="w-full min-h-full bg-gray-100 block p-3 pl-0">
+          <BGDiv
+            tw={'w-full fixed top-0 left-0'}
             style={{ height: 184 }}
-          ></div>
-          <div className={clsx('h-full relative ml-3 flex flex-col')}>
-            <div className="h-15"></div>
-            <div className="flex-1">{children}</div>
+          ></BGDiv>
+          <div tw='h-full relative ml-3 flex flex-col'>
+            <div tw="h-15"></div>
+            <div tw="flex-1">{children}</div>
           </div>
         </main>
       </div>
@@ -163,6 +165,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
+}))
+
+const BGDiv = styled('div')(({ theme }) => ({
+  background: theme.palette.primary.main,
 }))
 
 interface AppBarProps extends MuiAppBarProps {

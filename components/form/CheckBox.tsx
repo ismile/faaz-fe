@@ -5,7 +5,7 @@ import FormGroup from '@material-ui/core/FormGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import Checkbox from '@material-ui/core/Checkbox'
-
+import tw from 'twin.macro'
 export default function CheckBox({
   control,
   label,
@@ -49,7 +49,7 @@ export default function CheckBox({
         label={label}
         inputRef={ref}
       />
-      {error && <FormHelperText className="ml-4">{error.message}</FormHelperText>}
+      {error && <FormHelperText tw="ml-4">{error.message}</FormHelperText>}
     </FormControl>
   )
 }
