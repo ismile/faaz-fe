@@ -8,11 +8,11 @@
     "build": "next build",
     "start": "next start"
   },
-	"babelMacros": {
-		"twin": {
-			"preset": "emotion"
-		}
-	},
+  "babelMacros": {
+    "twin": {
+      "preset": "emotion"
+    }
+  },
   "dependencies": {
     "@emotion/cache": "^11.4.0",
     "@emotion/react": "^11.4.1",
