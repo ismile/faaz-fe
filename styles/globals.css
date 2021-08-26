@@ -1,7 +1,7 @@
 /* ./styles/globals.css */
 /* @tailwind base; */
-@tailwind components;
-@tailwind utilities;
+/* @tailwind components;
+@tailwind utilities; */
 
 .rc-table {
   position: relative;
