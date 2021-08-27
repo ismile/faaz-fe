@@ -3,13 +3,15 @@ import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
 import TextField from '../../components/form/TextField'
-import CheckBox from '../../components/form/CheckBox'
+import CheckBoxField from '../../components/form/CheckBoxField'
 import { useUserStore } from '../../stores/UserStore'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/dist/client/router'
 import Button from '@material-ui/core/Button'
 import { useEffect } from 'react'
 import tw from 'twin.macro'
+import RadioField from '../../components/form/RadioField'
+
 
 export default function UserForm() {
   const { control, handleSubmit, reset } = useForm({})
@@ -28,10 +30,12 @@ export default function UserForm() {
 
   const _getInitialValues = async () => {
     var res = await _getOne(router.query.id)
-    reset(res.data)
+    reset({...res.data, role: 'user', gender: {name: 'male'}})
   }
 
   const _onSubmit = async (data) => {
+    console.log(data)
+    return true
     if(router.query.id != 'new') {
       await _update(data)
       enqueueSnackbar('Data telah berhasil diupdate', {
@@ -72,10 +76,28 @@ export default function UserForm() {
             tw="col-span-6"
             rules={{ required: 'First name required' }}
           />
-          <CheckBox
+          <CheckBoxField
             control={control}
             label="Is Active"
             name="isActive"
+            tw="col-span-12"
+            rules={{ required: 'First name required' }}
+          />
+          <RadioField
+            control={control}
+            label="Roles"
+            name="role"
+            options={[{value: 'user', label: 'user'}, {value: 'admin', label: 'admin'}]}
+            tw="col-span-12"
+            rules={{ required: 'First name required' }}
+          />
+          <RadioField
+            control={control}
+            label="Gender"
+            name="gender"
+            options={[{id: 'male', name: 'Male'}, {id: 'female', name: 'Female'}]}
+            valueField='id'
+            labelField='name'
             tw="col-span-12"
             rules={{ required: 'First name required' }}
           />

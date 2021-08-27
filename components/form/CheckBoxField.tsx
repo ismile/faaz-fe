@@ -6,7 +6,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import Checkbox from '@material-ui/core/Checkbox'
 import tw from 'twin.macro'
-export default function CheckBox({
+
+export default function CheckBoxField({
   control,
   label,
   className,
