@@ -17,7 +17,10 @@ export default function RadioField({
   rules = {},
   options = [],
   valueField = null,
+  dataKey = null,
   labelField = null,
+  getOptionValue= (d, valueField)=> (d[valueField]),
+  getOptionLabel= (d, labelField)=> (d[labelField])
 }: {
   control: any
   label: string
@@ -25,7 +28,11 @@ export default function RadioField({
   name: string
   rules?: Object
   valueField?: string
+  dataKey?: string
+  getOptionValue?: Function
   labelField?: string
+  getOptionLabel?: Function
+  get
   options: Array<{value: any, label: string}| any>
 }) {
   const [optionMap, setOptionMap] = useState({})
@@ -43,18 +50,32 @@ export default function RadioField({
   useEffect(()=> {
     if(valueField) {
       setOptionMap(options.reduce((pv, cv)=> {
-        pv[cv[valueField]] = cv
+        if(valueField === 'object') {
+          pv[cv[dataKey]] = cv
+        } else {
+          pv[cv[valueField]] = cv
+        }
         return pv
       }, {}))
     }
   }, [JSON.stringify(options)])
 
   const _handleChange = (e) => {
-    if(valueField) {
-      onChange({...e, target: {...e.target, value: optionMap[e.target.value]}})
+    if(valueField && valueField === 'object') {
+        onChange({...e, target: {...e.target, value: optionMap[e.target.value]}})
     } else {
       onChange(e)
     }
+  }
+
+  const getInputValue = ()=> {
+    var v = null
+    if(valueField && valueField === 'object') {
+      v = value?value[dataKey]:null
+    } else {
+      v = value
+    }
+    return v?v:''
   }
 
   return (
@@ -68,15 +89,19 @@ export default function RadioField({
       <RadioGroup
         aria-label={`${name}-label`}
         name={name}
-        value={valueField?value[valueField]:value}
+        value={getInputValue()}
         onChange={_handleChange}
       >
         {options.map((d, i)=> {
           var value = d.value;
           var label = d.label
           if(valueField) {
-            value = d[valueField]
-            label = d[labelField]
+            if(valueField === 'object') {
+              value = getOptionValue(d, dataKey)
+            } else {
+              value = getOptionValue(d, valueField)
+            }
+            label = getOptionLabel(d, labelField)
           }
           return <FormControlLabel key={`${name}-${i}`} value={value} label={label} control={<Radio />} />
         })}
