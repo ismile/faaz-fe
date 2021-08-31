@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 import tw from 'twin.macro'
 import RadioField from '../../components/form/RadioField'
 import AutocompleteField from '../../components/form/AutocompleteField'
-
+import DateField from '../../components/form/DateField'
 
 export default function UserForm() {
   const { control, handleSubmit, reset } = useForm({})
@@ -24,20 +24,20 @@ export default function UserForm() {
   )
 
   useEffect(() => {
-    if(router.query.id != 'new') {
+    if (router.query.id != 'new') {
       _getInitialValues()
     }
   }, [router.query.id])
 
   const _getInitialValues = async () => {
     var res = await _getOne(router.query.id)
-    reset({...res.data, role: 'user', gender: {id: 'male', name: 'male'}})
+    reset({ ...res.data, role: 'user', gender: { id: 'male', name: 'male' }, birthdate: '2021-08-20T08:10:48.000Z' })
   }
 
   const _onSubmit = async (data) => {
     console.log(data)
     return true
-    if(router.query.id != 'new') {
+    if (router.query.id != 'new') {
       await _update(data)
       enqueueSnackbar('Data telah berhasil diupdate', {
         variant: 'success',
@@ -88,7 +88,10 @@ export default function UserForm() {
             control={control}
             label="Roles"
             name="role"
-            options={[{value: 'user', label: 'user'}, {value: 'admin', label: 'admin'}]}
+            options={[
+              { value: 'user', label: 'user' },
+              { value: 'admin', label: 'admin' },
+            ]}
             tw="col-span-12"
             rules={{ required: 'First name required' }}
           />
@@ -96,10 +99,13 @@ export default function UserForm() {
             control={control}
             label="Gender"
             name="gender"
-            options={[{id: 'male', name: 'Male'}, {id: 'female', name: 'Female'}]}
-            valueField='object'
-            dataKey='id'
-            labelField='name'
+            options={[
+              { id: 'male', name: 'Male' },
+              { id: 'female', name: 'Female' },
+            ]}
+            valueField="object"
+            dataKey="id"
+            labelField="name"
             tw="col-span-12"
             rules={{ required: 'First name required' }}
           />
@@ -110,7 +116,7 @@ export default function UserForm() {
             name="country"
             options={countries}
             // valueField='code'
-            labelField='label'
+            labelField="label"
             tw="col-span-12"
             rules={{ required: 'First name required' }}
           />
@@ -119,25 +125,31 @@ export default function UserForm() {
             control={control}
             label="User"
             name="user"
-            labelField='firstName'
+            labelField="firstName"
             tw="col-span-12"
-            fetchOption={async (text)=> {
+            fetchOption={async (text) => {
               var params = {
-                page: 0, limit: 15
+                page: 0,
+                limit: 15,
               }
-              if(text) params['firstName__contains'] = text
+              if (text) params['firstName__contains'] = text
               const res = await _fetch(params)
               return res.data.items
             }}
           />
+          <DateField
+            control={control}
+            label="Birthdate"
+            name="birthdate"
+            tw="col-span-12"
+            serialize={DateField.jsonSerialize}
+            normalize={DateField.jsonNormalize}
+            rules={{ required: 'First name required' }}
+          />
         </div>
         <div tw="p-4 bg-gray-100 flex flex-row">
           <div tw="flex-1"></div>
-          <Button
-            tw="mr-2"
-            variant="text"
-            onClick={_handleBack}
-          >
+          <Button tw="mr-2" variant="text" onClick={_handleBack}>
             Kembali
           </Button>
           <Button
@@ -576,4 +588,4 @@ const countries = [
   { code: 'ZA', label: 'South Africa', phone: '27' },
   { code: 'ZM', label: 'Zambia', phone: '260' },
   { code: 'ZW', label: 'Zimbabwe', phone: '263' },
-];
+]

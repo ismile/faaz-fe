@@ -158,6 +158,7 @@ export default function AutocompleteField({
       renderInput={(params) => (
         <TextFieldReact
           {...params}
+          variant={variant}
           label={label}
           error={!!error}
           helperText={error ? error.message : null}

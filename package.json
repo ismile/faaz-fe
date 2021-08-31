@@ -14,12 +14,14 @@
     }
   },
   "dependencies": {
+    "@date-io/dayjs": "^2.11.0",
     "@emotion/cache": "^11.4.0",
     "@emotion/react": "^11.4.1",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@material-ui/core": "next",
     "@material-ui/icons": "next",
+    "@material-ui/lab": "next",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "dayjs": "^1.10.6",
