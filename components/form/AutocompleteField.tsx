@@ -5,10 +5,10 @@ import {
   useFormContext,
 } from 'react-hook-form'
 import tw from 'twin.macro'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import TextFieldReact from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/core/Autocomplete'
-
+import debounce from 'lodash/debounce'
 export default function AutocompleteField({
   control,
   label,
@@ -22,6 +22,8 @@ export default function AutocompleteField({
   getOptionLabel = (d, labelField) => d[labelField],
   renderOption = null,
   multiple = false,
+  fetchOption = undefined,
+  isOptionEqualToValue = undefined
 }: {
   control: any
   label: string
@@ -35,6 +37,8 @@ export default function AutocompleteField({
   getOptionLabel?: Function
   renderOption?: Function
   multiple?: boolean
+  fetchOption?: Function
+  isOptionEqualToValue?: Function
 }) {
   const {
     field: { ref, onChange, value },
@@ -49,6 +53,8 @@ export default function AutocompleteField({
 
   const [inputValue, setInputValue] = useState('')
   const [optionMap, setOptionMap] = useState({})
+  const [open, setOpen] = React.useState(false)
+  const [asyncOption, setAsyncOption] = useState([])
 
   useEffect(() => {
     if (valueField && valueField != 'object') {
@@ -64,8 +70,8 @@ export default function AutocompleteField({
   const _handleChange = (e, value) => {
     if (valueField && valueField != 'object') {
       var v = value[valueField]
-      if(multiple) {
-        v = value.map(d => d[valueField])
+      if (multiple) {
+        v = value.map((d) => d[valueField])
       }
       onChange({ ...e, target: { ...e.target, value: v } })
     } else {
@@ -74,6 +80,7 @@ export default function AutocompleteField({
   }
 
   const _handleInputChange = (event, newInputValue) => {
+    _fetchData(inputValue)
     setInputValue(newInputValue)
   }
 
@@ -86,29 +93,58 @@ export default function AutocompleteField({
   const getInputValue = () => {
     var v = value
     if (valueField && valueField != 'object') {
-      if(multiple) {
-        v = v.map((d)=> optionMap[d])
+      if (multiple) {
+        v = v.map((d) => optionMap[d])
       } else {
         v = optionMap[value]
       }
-
     }
     if (!v) {
       if (multiple) {
         v = []
       } else {
-        v = {}
+        v = null
       }
     }
     return v
+  }
+
+  // async
+
+  useEffect(() => {
+    if (!open) {
+      _fetchData()
+    }
+  }, [open])
+
+  useEffect(() => {}, [inputValue])
+
+  const _fetchData = useMemo(
+    () =>
+      debounce(async (text) => {
+        if (fetchOption) {
+          const res = await fetchOption(text)
+          setAsyncOption(res)
+        }
+      }, 1000),
+    []
+  )
+
+  const _handleOpen = () => {
+    setOpen(true)
+  }
+  const _handleClose = () => {
+    setOpen(false)
   }
 
   return (
     <Autocomplete
       multiple={multiple}
       disablePortal
+      onOpen={fetchOption ? _handleOpen : null}
+      onClose={fetchOption ? _handleClose : null}
       id={`${name}-select`}
-      options={options}
+      options={fetchOption ? asyncOption : options}
       value={getInputValue()}
       onChange={_handleChange}
       inputValue={inputValue}
@@ -118,6 +154,7 @@ export default function AutocompleteField({
         root: className,
       }}
       renderOption={renderOption}
+      isOptionEqualToValue={isOptionEqualToValue}
       renderInput={(params) => (
         <TextFieldReact
           {...params}

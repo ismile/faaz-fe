@@ -18,8 +18,8 @@ export default function UserForm() {
   const { control, handleSubmit, reset } = useForm({})
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const router = useRouter()
-  const [_create, _getOne, _update] = useUserStore(
-    (state) => [state._create, state._getOne, state._update],
+  const [_create, _getOne, _update, _fetch] = useUserStore(
+    (state) => [state._create, state._getOne, state._update, state._fetch],
     (ps, ns) => true
   )
 
@@ -113,6 +113,22 @@ export default function UserForm() {
             labelField='label'
             tw="col-span-12"
             rules={{ required: 'First name required' }}
+          />
+
+          <AutocompleteField
+            control={control}
+            label="User"
+            name="user"
+            labelField='firstName'
+            tw="col-span-12"
+            fetchOption={async (text)=> {
+              var params = {
+                page: 0, limit: 15
+              }
+              if(text) params['firstName__contains'] = text
+              const res = await _fetch(params)
+              return res.data.items
+            }}
           />
         </div>
         <div tw="p-4 bg-gray-100 flex flex-row">
