@@ -13,6 +13,7 @@ import tw from 'twin.macro'
 import RadioField from '../../components/form/RadioField'
 import AutocompleteField from '../../components/form/AutocompleteField'
 import DateField from '../../components/form/DateField'
+import SwitchField from '../../components/form/SwitchField'
 
 export default function UserForm() {
   const { control, handleSubmit, reset } = useForm({})
@@ -78,6 +79,13 @@ export default function UserForm() {
             rules={{ required: 'First name required' }}
           />
           <CheckBoxField
+            control={control}
+            label="Is Active"
+            name="isActive"
+            tw="col-span-12"
+            rules={{ required: 'First name required' }}
+          />
+          <SwitchField
             control={control}
             label="Is Active"
             name="isActive"
