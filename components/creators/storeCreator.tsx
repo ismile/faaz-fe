@@ -88,6 +88,8 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
           }
         })
       )
+
+      return res
     },
 
     _getOne: async (id) => {

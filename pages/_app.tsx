@@ -12,18 +12,19 @@ import { AppDialog } from '../components/hooks/useModal'
 import { SnackbarProvider } from 'notistack'
 import httpConfig from '../configs/http'
 import { useRouter } from 'next/dist/client/router'
-import TinyTransition from "react-tiny-transition";
+import TinyTransition from 'react-tiny-transition'
 import createCache, { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { StyleCache } from '../configs/cache'
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider'
+import DateAdapter from '@material-ui/lab/AdapterDayjs';
 
 interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache;
+  emotionCache?: EmotionCache
 }
 
-
 function MyApp(props: MyAppProps) {
-  const { Component, emotionCache = StyleCache, pageProps } = props;
+  const { Component, emotionCache = StyleCache, pageProps } = props
   // init config
   httpConfig()
 
@@ -54,12 +55,14 @@ function MyApp(props: MyAppProps) {
               horizontal: 'center',
             }}
           >
-            <Layout>
-              <TinyTransition duration={800} key={router.pathname}>
-                <Component {...pageProps} />
-              </TinyTransition>
-              <AppDialog />
-            </Layout>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <Layout>
+                <TinyTransition duration={800} key={router.pathname}>
+                  <Component {...pageProps} />
+                </TinyTransition>
+                <AppDialog />
+              </Layout>
+            </LocalizationProvider>
           </SnackbarProvider>
         </ThemeProvider>
       </CacheProvider>
@@ -82,6 +85,6 @@ function MyApp(props: MyAppProps) {
 MyApp.getInitialProps = async function (ctx) {
   httpConfig()
   return {}
-};
+}
 
 export default MyApp

@@ -120,9 +120,9 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
         component="div"
         count={total}
         page={page - 1}
-        onChangePage={_onChangePage}
+        onPageChange={_onChangePage}
         rowsPerPage={limit}
-        onChangeRowsPerPage={_onChangeRowsPerPage}
+        onRowsPerPageChange={_onChangeRowsPerPage}
       />
     )
   }
