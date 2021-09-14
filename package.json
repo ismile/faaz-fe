@@ -19,9 +19,10 @@
     "@emotion/react": "^11.4.1",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.3.0",
-    "@material-ui/core": "next",
-    "@material-ui/icons": "next",
-    "@material-ui/lab": "next",
+    "@mui/icons-material": "next",
+    "@mui/lab": "next",
+    "@mui/material": "next",
+    "add": "^2.0.6",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "dayjs": "^1.10.6",
@@ -29,7 +30,7 @@
     "immer": "^9.0.5",
     "interactive-tools": "^0.0.1",
     "lodash": "^4.17.21",
-    "next": "11.0.1",
+    "next": "11.1.2",
     "notistack": "next",
     "rc-table": "^7.17.1",
     "react": "17.0.2",
@@ -40,6 +41,7 @@
     "react-tiny-transition": "^2.4.0",
     "stage": "^1.0.0",
     "styled-jsx": "^4.0.0",
+    "yarn": "^1.22.11",
     "zustand": "^3.5.7"
   },
   "devDependencies": {
@@ -52,8 +54,8 @@
     "next-compose-plugins": "^2.2.1",
     "postcss": "^8.3.0",
     "prop-types": "^15.7.2",
-    "tailwindcss": "^2.1.2",
+    "tailwindcss": "^2.2.15",
     "twin.macro": "^2.7.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.3"
   }
 }

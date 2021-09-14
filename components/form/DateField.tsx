@@ -4,9 +4,9 @@ import {
   useController,
   useFormContext,
 } from 'react-hook-form'
-import TextFieldReact from '@material-ui/core/TextField'
+import TextFieldReact from '@mui/material/TextField'
 import tw from 'twin.macro'
-import DatePicker from '@material-ui/lab/DatePicker'
+import DatePicker from '@mui/lab/DatePicker'
 import Dayjs from 'dayjs'
 
 export default function DateField({
