@@ -19,9 +19,10 @@
     "@emotion/react": "^11.4.1",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.3.0",
-    "@material-ui/core": "next",
-    "@material-ui/icons": "next",
-    "@material-ui/lab": "next",
+    "@mui/icons-material": "next",
+    "@mui/lab": "next",
+    "@mui/material": "next",
+    "add": "^2.0.6",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "dayjs": "^1.10.6",
@@ -40,6 +41,7 @@
     "react-tiny-transition": "^2.4.0",
     "stage": "^1.0.0",
     "styled-jsx": "^4.0.0",
+    "yarn": "^1.22.11",
     "zustand": "^3.5.7"
   },
   "devDependencies": {

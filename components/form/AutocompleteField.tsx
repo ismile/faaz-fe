@@ -6,8 +6,8 @@ import {
 } from 'react-hook-form'
 import tw from 'twin.macro'
 import React, { useEffect, useMemo, useState } from 'react'
-import TextFieldReact from '@material-ui/core/TextField'
-import Autocomplete from '@material-ui/core/Autocomplete'
+import TextFieldReact from '@mui/material/TextField'
+import Autocomplete from '@mui/material/Autocomplete'
 import debounce from 'lodash/debounce'
 export default function AutocompleteField({
   control,

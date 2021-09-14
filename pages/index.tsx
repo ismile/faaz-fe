@@ -1,17 +1,17 @@
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
-import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Paper from '@mui/material/Paper'
+import Toolbar from '@mui/material/Toolbar'
 
 import storeCreator from '../components/creators/storeCreator'
 import dataTableCreator from '../components/creators/dataTableCreator'
 
-import IconButton from '@material-ui/core/IconButton'
+import IconButton from '@mui/material/IconButton'
 
 import { useEffect } from 'react'
-import FilterListIcon from '@material-ui/icons/FilterList'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { useUserStore } from '../stores/UserStore'
 import tw from 'twin.macro'
 

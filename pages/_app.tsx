@@ -1,10 +1,10 @@
 import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'
-import { ThemeProvider } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import { ThemeProvider } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
 import theme from '../configs/theme'
 import { useEffect } from 'react'
-import Toolbar from '@material-ui/core/Toolbar'
+import Toolbar from '@mui/material/Toolbar'
 
 import '../styles/globals.css'
 import Layout from '../components/layout'
@@ -16,8 +16,8 @@ import TinyTransition from 'react-tiny-transition'
 import createCache, { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { StyleCache } from '../configs/cache'
-import LocalizationProvider from '@material-ui/lab/LocalizationProvider'
-import DateAdapter from '@material-ui/lab/AdapterDayjs';
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import DateAdapter from '@mui/lab/AdapterDayjs';
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
