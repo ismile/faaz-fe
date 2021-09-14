@@ -36,8 +36,6 @@ export default function UserForm() {
   }
 
   const _onSubmit = async (data) => {
-    console.log(data)
-    return true
     if (router.query.id != 'new') {
       await _update(data)
       enqueueSnackbar('Data telah berhasil diupdate', {
