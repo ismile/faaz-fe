@@ -1,6 +1,6 @@
 import immer from 'immer'
 import zustand from 'zustand'
-import axios from 'axios'
+import axios, {AxiosResponse} from 'axios'
 import Table from 'rc-table'
 import { asyncTimeout } from '../../configs/utils'
 interface IStoreCreatorConfig {
@@ -8,6 +8,50 @@ interface IStoreCreatorConfig {
   apiPath?: String
   store?: Function,
   routerPath?: String,
+}
+
+export interface IStoreState<IData> {
+  loading: boolean
+  data: Array<IData>
+  page: number
+  limit: number
+  total: number
+  sort: string
+  order: 'ASC' | 'DSC'
+  filter: Object
+  columns: Array<Object>
+  columnSetting: {action_: boolean, check_: boolean}
+  isAllSelected: boolean
+  selected: Object
+  selectedArr: Array<Object>
+  filterOpen: boolean
+  apiPath: string
+  routerPath: string
+
+  _fetch: (params?: IFetchParams) => AxiosResponse<{
+    items: Array<IData>
+    page: number
+    limit: number
+    total: number
+  }>
+  _getOne: (id: string|string[]) => AxiosResponse<IData>
+  _create: (data: IData, fetch?: boolean) => AxiosResponse<IData>
+  _update: (data: IData, fetch?: boolean) => AxiosResponse<IData>
+  _delete: (id: string, fetch?: boolean) => AxiosResponse<IData>
+  _toggleColumn: (key: string)=>void
+  _toggleFilterOpen: ()=>void
+  _setSort: (sort: string, order: 'ASC' | 'DSC') => void
+  _setColumns: (columns:Array<Object>)=>void
+  _setColumnSetting: (columnSetting:{action_: boolean, check_: boolean})=> void
+  _handleSingleSelect:(d:IData, val: boolean) => void
+  _handleSelectAll: ()=>void
+}
+
+export interface IFetchParams {
+  page?: number
+  limit?: number
+  order?: 'ASC' | 'DSC'
+  sort?: string
 }
 
 const defaultConfig = {
@@ -19,7 +63,7 @@ const defaultConfig = {
   }
 }
 
-function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
+function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
   config = {
     ...defaultConfig,
     ...config,
@@ -27,7 +71,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
 
   const rowKey = config.rowKey
 
-  const useStore = zustand((set, get) => ({
+  const useStore = zustand<IStoreState<IData>>((set, get) => ({
     loading: false,
     data: [],
     page: 1,
@@ -45,7 +89,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     apiPath: config.apiPath,
     routerPath: config.routerPath,
 
-    _fetch: async (params = {}) => {
+    _fetch: async (params:any = {}) => {
       if (params.page == null || params.page == undefined)
         params.page = get().page
       if (params.limit == null || params.limit == undefined)
@@ -100,6 +144,7 @@ function storeCreator(config: IStoreCreatorConfig = defaultConfig) {
     _delete: async (id, fetch = false) => {
       const res = await axios.delete(get().apiPath + '/' + id)
       if (fetch) get()._fetch()
+      return res
     },
 
     _create: async (data, fetch = false) => {
