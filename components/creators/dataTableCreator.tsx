@@ -107,6 +107,8 @@ function dataTableCreator<IData>(
   }
 
   const TablePagination = () => {
+    const router = useRouter()
+
     const { page, total, limit } = config.useStore(
       (state) => ({ page: state.page, total: state.total, limit: state.limit }),
       (oldTreats, newTreats) =>
@@ -119,6 +121,19 @@ function dataTableCreator<IData>(
     )
 
     const _onChangePage = async (e, p) => {
+      // console.log(router, 'router')
+      // router.push({
+      //   pathname: router.pathname,
+      //   query: {
+      //     ...router.query,
+      //     page: p+1,
+      //     limit
+      //   }
+      // }, undefined, { shallow: true })
+      // refreshQuery(date) {
+      //   const dateString = formatDate(date) // YYYY-MM-DD
+      //   window.history.pushState('', '', `?d=${dateString}`)
+      // }
       await _fetch({
         page: p + 1,
         limit: limit,
@@ -126,10 +141,10 @@ function dataTableCreator<IData>(
     }
 
     const _onChangeRowsPerPage = async (e) => {
-      await _fetch({
-        page: page,
-        limit: e.target.value,
-      })
+      // await _fetch({
+      //   page: page,
+      //   limit: e.target.value,
+      // })
     }
 
     return (
