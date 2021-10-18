@@ -14,16 +14,14 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { IUserModel, useUserStore } from '../stores/UserStore'
 import tw from 'twin.macro'
+import {useHash} from 'react-use/lib/useHash'
+import queryString from 'query-string'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
     (state) => [state._toggleFilterOpen, state._fetch],
     (ps, ns) => true
   )
-
-  useEffect(() => {
-    _fetch()
-  }, [])
 
   return (
     <div tw="h-full w-full flex flex-col">
@@ -49,13 +47,14 @@ export default function User() {
           </Toolbar>
         </div>
       </Paper>
+      <TableWatcher />
 
       {/* </Paper> */}
     </div>
   )
 }
 
-const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
+const { DataTable, TableFilter, TablePagination, TableWatcher, DefaultTopAction } =
   dataTableCreator<IUserModel>({
     useStore: useUserStore,
     actions: [

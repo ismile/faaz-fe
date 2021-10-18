@@ -1,5 +1,5 @@
 import RCTable from 'rc-table'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useElementSize from '../hooks/useElementSize'
 import tableComponentCreator from './tableComponentCreator'
 import { dataTableFilterCreator } from './dataTableFilterCreator'
@@ -20,8 +20,11 @@ import MenuItem from '@mui/material/MenuItem'
 import { useRouter, NextRouter } from 'next/dist/client/router'
 import tw, { css } from 'twin.macro'
 import React from 'react'
-import {UseStore, State} from 'zustand'
+import { UseStore, State } from 'zustand'
 import { IStoreState } from './storeCreator'
+import { useHash } from 'react-use/lib/useHash'
+import queryString from 'query-string'
+
 interface ITableMenuActionParams<IData> {
   data: IData
   router: NextRouter
@@ -39,7 +42,7 @@ export interface IDataTableCreatorConfig<IData> {
     label: String
     icon?: any
     disabled?: boolean | ((d: IData, i: number) => boolean)
-    action: (d:ITableMenuActionParams<IData>) => any
+    action: (d: ITableMenuActionParams<IData>) => any
   }>
   columns?: Array<any>
 }
@@ -62,6 +65,21 @@ function dataTableCreator<IData>(
 
   var columns = _columnGenerator(config)
   var TableComponents = tableComponentCreator(config)
+
+  const TableWatcher = () => {
+    const [hash, setHash] = useHash()
+    const [_fetch] = config.useStore(
+      (state) => [state._fetch],
+      (ps, ns) => true
+    )
+    useEffect(() => {
+      var query = queryString.parse(hash)
+
+      _fetch(query)
+    }, [hash])
+
+    return <div />
+  }
 
   const DataTable = () => {
     const data = config.useStore(
@@ -111,8 +129,8 @@ function dataTableCreator<IData>(
 
     const { page, total, limit } = config.useStore(
       (state) => ({ page: state.page, total: state.total, limit: state.limit }),
-      (oldTreats, newTreats) =>
-        JSON.stringify(oldTreats) == JSON.stringify(newTreats)
+      (oldData, newData) =>
+        JSON.stringify(oldData) == JSON.stringify(newData)
     )
 
     const _fetch = config.useStore(
@@ -121,30 +139,17 @@ function dataTableCreator<IData>(
     )
 
     const _onChangePage = async (e, p) => {
-      // console.log(router, 'router')
-      // router.push({
-      //   pathname: router.pathname,
-      //   query: {
-      //     ...router.query,
-      //     page: p+1,
-      //     limit
-      //   }
-      // }, undefined, { shallow: true })
-      // refreshQuery(date) {
-      //   const dateString = formatDate(date) // YYYY-MM-DD
-      //   window.history.pushState('', '', `?d=${dateString}`)
-      // }
-      await _fetch({
-        page: p + 1,
-        limit: limit,
-      })
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.page = p + 1
+      window.location.hash = '#' + queryString.stringify(query)
     }
 
-    const _onChangeRowsPerPage = async (e) => {
-      // await _fetch({
-      //   page: page,
-      //   limit: e.target.value,
-      // })
+    const _onChangeRowsPerPage = async (e:any) => {
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.limit = e.target.value;
+      window.location.hash = '#' + queryString.stringify(query)
     }
 
     return (
@@ -208,6 +213,7 @@ function dataTableCreator<IData>(
     TableFilter,
     TablePagination,
     DefaultTopAction,
+    TableWatcher,
   }
 }
 

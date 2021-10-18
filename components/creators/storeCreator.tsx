@@ -105,12 +105,14 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
         delete query.sort
       }
 
-      if (query.filter && query.filter.field && query.filter.criteria) {
-        query[query.filter.field + '__' + query.filter.criteria] =
-          query.filter.key
+      if (query.field && query.criteria) {
+        query[query.field + '__' + query.criteria] =
+          query.key
       }
 
-      delete query.filter
+      delete query.field
+      delete query.criteria
+      delete query.key
 
       set({ loading: true })
       const res = await axios.get(get().apiPath, { params: query })

@@ -24,6 +24,7 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import tw, {css} from 'twin.macro'
+import queryString from 'query-string'
 
 export function dataTableFilterCreator(useStore) {
   const SwitchTable = ({ dataKey }) => {
@@ -145,13 +146,12 @@ export function dataTableFilterCreator(useStore) {
     })
 
     const onSubmit = (data) => {
-      _fetch({
-        sort: data.sort,
-        order: data.order,
-        page: defaultValues.page,
-        limit: defaultValues.limit,
-        filter: defaultValues.filter,
-      })
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.sort = data.sort
+      query.order= data.order
+
+      window.location.hash = '#' + queryString.stringify(query)
     }
     return (
       <div tw="grid grid-cols-12 gap-4 p-4">
@@ -250,27 +250,22 @@ export function dataTableFilterCreator(useStore) {
     )
 
     const { control, handleSubmit, reset } = useForm({
-      defaultValues,
+      defaultValues: {...defaultValues, ...queryString.parse(window.location.hash)},
     })
 
     const onSubmit = (data) => {
-      _fetch({
-        sort: defaultValues.sort,
-        order: defaultValues.order,
-        page: defaultValues.page,
-        limit: defaultValues.limit,
-        filter: data,
-      })
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.field = data.field
+      query.criteria = data.criteria
+      query.key = data.key
+
+      window.location.hash = '#' + queryString.stringify(query)
     }
 
     const _clear = ()=> {
       reset({})
-      _fetch({
-        sort: defaultValues.sort,
-        order: defaultValues.order,
-        page: defaultValues.page,
-        limit: defaultValues.limit,
-      })
+      window.location.hash = '#'
     }
 
     return (
