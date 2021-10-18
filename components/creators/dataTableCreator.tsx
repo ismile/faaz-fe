@@ -1,5 +1,5 @@
 import RCTable from 'rc-table'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useElementSize from '../hooks/useElementSize'
 import tableComponentCreator from './tableComponentCreator'
 import { dataTableFilterCreator } from './dataTableFilterCreator'
@@ -12,20 +12,38 @@ import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import FilterListIcon from '@mui/icons-material/FilterList'
-import useModal from '../hooks/useModal'
-import { useSnackbar } from 'notistack'
+import useModal, { IOpenModalFunctionType } from '../hooks/useModal'
+import { useSnackbar, ProviderContext } from 'notistack'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import { useRouter } from 'next/dist/client/router'
-import tw, {css} from 'twin.macro'
+import { useRouter, NextRouter } from 'next/dist/client/router'
+import tw, { css } from 'twin.macro'
+import React from 'react'
+import { UseStore, State } from 'zustand'
+import { IStoreState } from './storeCreator'
+import { useHash } from 'react-use/lib/useHash'
+import queryString from 'query-string'
 
-interface IDataTableCreatorConfig {
+interface ITableMenuActionParams<IData> {
+  data: IData
+  router: NextRouter
+  closeMenu: Function
+  openModal: IOpenModalFunctionType
+  enqueueSnackbar: ProviderContext['enqueueSnackbar']
+}
+
+export interface IDataTableCreatorConfig<IData> {
   rowKey?: string
-  useStore?: any
-  dataTableFilterCreator: Function
+  useStore?: UseStore<IStoreState<IData>>
+  dataTableFilterCreator?: Function
   colCheckbox?: Boolean
-  actions?: Array<any>
+  actions?: Array<{
+    label: String
+    icon?: any
+    disabled?: boolean | ((d: IData, i: number) => boolean)
+    action: (d: ITableMenuActionParams<IData>) => any
+  }>
   columns?: Array<any>
 }
 
@@ -37,7 +55,9 @@ const defaultConfig = {
   columns: [],
 }
 
-function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
+function dataTableCreator<IData>(
+  config: IDataTableCreatorConfig<IData> = defaultConfig
+) {
   config = {
     ...defaultConfig,
     ...config,
@@ -45,6 +65,21 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
 
   var columns = _columnGenerator(config)
   var TableComponents = tableComponentCreator(config)
+
+  const TableWatcher = () => {
+    const [hash, setHash] = useHash()
+    const [_fetch] = config.useStore(
+      (state) => [state._fetch],
+      (ps, ns) => true
+    )
+    useEffect(() => {
+      var query = queryString.parse(hash)
+
+      _fetch(query)
+    }, [hash])
+
+    return <div />
+  }
 
   const DataTable = () => {
     const data = config.useStore(
@@ -90,10 +125,12 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
   }
 
   const TablePagination = () => {
+    const router = useRouter()
+
     const { page, total, limit } = config.useStore(
       (state) => ({ page: state.page, total: state.total, limit: state.limit }),
-      (oldTreats, newTreats) =>
-        JSON.stringify(oldTreats) == JSON.stringify(newTreats)
+      (oldData, newData) =>
+        JSON.stringify(oldData) == JSON.stringify(newData)
     )
 
     const _fetch = config.useStore(
@@ -102,17 +139,17 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
     )
 
     const _onChangePage = async (e, p) => {
-      await _fetch({
-        page: p + 1,
-        limit: limit,
-      })
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.page = p + 1
+      window.location.hash = '#' + queryString.stringify(query)
     }
 
-    const _onChangeRowsPerPage = async (e) => {
-      await _fetch({
-        page: page,
-        limit: e.target.value,
-      })
+    const _onChangeRowsPerPage = async (e:any) => {
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.limit = e.target.value;
+      window.location.hash = '#' + queryString.stringify(query)
     }
 
     return (
@@ -137,8 +174,8 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
 
     const router = useRouter()
 
-    const _handleReload = ()=> _fetch()
-    const _handleNewButton = ()=> router.push(`${routerPath}/new`)
+    const _handleReload = () => _fetch()
+    const _handleNewButton = () => router.push(`${routerPath}/new`)
 
     return (
       <>
@@ -175,11 +212,12 @@ function dataTableCreator(config: IDataTableCreatorConfig = defaultConfig) {
     DataTable,
     TableFilter,
     TablePagination,
-    DefaultTopAction
+    DefaultTopAction,
+    TableWatcher,
   }
 }
 
-function _columnGenerator(config: IDataTableCreatorConfig) {
+function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
   var columns = [...config.columns]
   var rowKey = config.rowKey
   const useStore = config.useStore
@@ -208,10 +246,10 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
 
   if (config.actions) {
     columns.unshift({
-      title: 'Action',
+      title: '',
       dataIndex: 'action',
       key: 'action_',
-      width: 80,
+      width: 60,
       fixed: 'left',
       onHeaderCell: (column) => ({
         keyid: 'action_',
@@ -219,7 +257,7 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
       onCell: (column) => ({
         keyid: 'action_',
       }),
-      render: (d, row, i) => {
+      render: (data, row, index) => {
         const [anchorEl, setAnchorEl] = useState(null)
         const handleClick = (event) => {
           setAnchorEl(event.currentTarget)
@@ -228,39 +266,59 @@ function _columnGenerator(config: IDataTableCreatorConfig) {
           setAnchorEl(null)
         }
 
-        const { _openModal } = useModal((state) => ({ _openModal: state._openModal }),() => true)
-        const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-        const router = useRouter();
+        const { _openModal } = useModal(
+          (state) => ({ _openModal: state._openModal }),
+          () => true
+        )
+        const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+        const router = useRouter()
 
         return (
           <>
-          <IconButton
-            size="small"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleClick}
-            edge="start"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            {config.actions.map((d, i)=> {
-              return <MenuItem key={i} onClick={()=> d.action({data:row, openModal:_openModal, closeMenu:handleClose, enqueueSnackbar, router})}>
-                <ListItemIcon>
-                  <d.icon fontSize="small" />
-                </ListItemIcon>
-                {d.label}
-              </MenuItem>
-            })}
+            <IconButton
+              size="small"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleClick}
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              {config.actions.map((d, i) => {
+                let disabled: boolean = false
+                if (typeof d.disabled == 'function')
+                  disabled = d.disabled(row, index)
 
-          </Menu>
-        </>
+                return (
+                  <MenuItem
+                    key={i}
+                    disabled={disabled}
+                    onClick={() =>
+                      d.action({
+                        data: row,
+                        openModal: _openModal,
+                        closeMenu: handleClose,
+                        enqueueSnackbar,
+                        router,
+                      })
+                    }
+                  >
+                    <ListItemIcon>
+                      <d.icon fontSize="small" />
+                    </ListItemIcon>
+                    {d.label}
+                  </MenuItem>
+                )
+              })}
+            </Menu>
+          </>
         )
       },
     })

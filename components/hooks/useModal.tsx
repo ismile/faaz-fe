@@ -8,13 +8,29 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
-const useModal = zustand((set, get) => ({
+export interface IOpenModalParam {
+  title: string | React.ElementType
+  body: string | React.ElementType
+}
+
+export type IOpenModalFunctionType = (IOpenModalParam) => Promise<any>
+
+const useModal = zustand<{
+  title: string | React.ElementType
+  body: string | React.ElementType
+  okText: string,
+  cancelText: string,
+  open: boolean
+  _openModal: IOpenModalFunctionType
+  _closeModal: ()=>void
+  _resolve: (d:any)=>void
+}>((set, get) => ({
   title: 'Konfirmasi',
   body: '',
   open: false,
   okText: 'Ya',
   cancelText: 'Batalkan',
-  _resolve: ()=> {},
+  _resolve: () => {},
 
   _closeModal: () => {
     return set(
@@ -24,7 +40,7 @@ const useModal = zustand((set, get) => ({
     )
   },
 
-  _openModal: ({ title, body }={}) => {
+  _openModal: ({ title, body }) => {
     const promise = new Promise((resolve, reject) => {
       set(
         immer((draft) => {
@@ -42,26 +58,28 @@ const useModal = zustand((set, get) => ({
 export default useModal
 
 export const AppDialog = () => {
-  const { open, title, body, okText, cancelText, _resolve } = useModal((state) => ({
-    open: state.open,
-    title: state.title,
-    body: state.body,
-    okText: state.okText,
-    cancelText: state.cancelText,
-    _resolve: state._resolve,
-  }))
+  const { open, title, body, okText, cancelText, _resolve } = useModal(
+    (state) => ({
+      open: state.open,
+      title: state.title,
+      body: state.body,
+      okText: state.okText,
+      cancelText: state.cancelText,
+      _resolve: state._resolve,
+    })
+  )
 
   const { _closeModal } = useModal(
     (state) => ({ _closeModal: state._closeModal }),
     () => true
   )
 
-  const _handleOk = ()=> {
+  const _handleOk = () => {
     _resolve({})
     _closeModal()
   }
 
-  const _handleCancel = ()=> {
+  const _handleCancel = () => {
     _resolve(false)
     _closeModal()
   }
@@ -83,7 +101,12 @@ export const AppDialog = () => {
         <Button onClick={_handleCancel} color="primary">
           {cancelText}
         </Button>
-        <Button variant="contained" onClick={_handleOk} color="primary" autoFocus>
+        <Button
+          variant="contained"
+          onClick={_handleOk}
+          color="primary"
+          autoFocus
+        >
           {okText}
         </Button>
       </DialogActions>

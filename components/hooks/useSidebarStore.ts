@@ -1,7 +1,9 @@
 import immer from 'immer';
 import zustand from 'zustand'
 
-const useSidebarStore = zustand(set => ({
+const useSidebarStore = zustand<{
+  open: boolean
+}>(set => ({
   open: false,
   _toggle: () => {
     if(window) window.dispatchEvent(new Event('resize'))

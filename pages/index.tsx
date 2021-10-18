@@ -12,18 +12,16 @@ import { useEffect } from 'react'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useUserStore } from '../stores/UserStore'
+import { IUserModel, useUserStore } from '../stores/UserStore'
 import tw from 'twin.macro'
+import {useHash} from 'react-use/lib/useHash'
+import queryString from 'query-string'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
     (state) => [state._toggleFilterOpen, state._fetch],
     (ps, ns) => true
   )
-
-  useEffect(() => {
-    _fetch()
-  }, [])
 
   return (
     <div tw="h-full w-full flex flex-col">
@@ -49,20 +47,23 @@ export default function User() {
           </Toolbar>
         </div>
       </Paper>
+      <TableWatcher />
 
       {/* </Paper> */}
     </div>
   )
 }
 
-const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
-  dataTableCreator({
+const { DataTable, TableFilter, TablePagination, TableWatcher, DefaultTopAction } =
+  dataTableCreator<IUserModel>({
     useStore: useUserStore,
-    colAction: true,
     actions: [
       {
         label: 'Edit',
         icon: EditIcon,
+        disabled: (d, i)=> {
+          return d.firstName == 'Ismail'
+        },
         action: ({data, router}) => {
           router.push(`${useUserStore.getState().apiPath}/${data.id}`)
         }
@@ -75,7 +76,7 @@ const { DataTable, TableFilter, TablePagination, DefaultTopAction } =
           })
           closeMenu()
           if (d) {
-            await useUserStore.getState()._delete(data.id, true)
+            var res = await useUserStore.getState()._delete(data.id, true)
             enqueueSnackbar('Data telah berhasil di hapus.', {
               variant: 'success',
             })
