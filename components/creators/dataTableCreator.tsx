@@ -20,7 +20,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { useRouter, NextRouter } from 'next/dist/client/router'
 import tw, { css } from 'twin.macro'
 import React from 'react'
-import { UseStore, State } from 'zustand'
+import { UseBoundStore, State } from 'zustand'
 import { IStoreState } from './storeCreator'
 import { useHash } from 'react-use/lib/useHash'
 import queryString from 'query-string'
@@ -35,7 +35,7 @@ interface ITableMenuActionParams<IData> {
 
 export interface IDataTableCreatorConfig<IData> {
   rowKey?: string
-  useStore?: UseStore<IStoreState<IData>>
+  useStore?: UseBoundStore<IStoreState<IData>>
   dataTableFilterCreator?: Function
   colCheckbox?: Boolean
   actions?: Array<{
