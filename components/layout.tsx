@@ -3,32 +3,20 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useState, memo } from 'react'
-import clsx from 'clsx'
 import InputBase from '@mui/material/InputBase'
 import MuiDrawer from '@mui/material/Drawer'
-import MuiAppBar, {
-  AppBarProps as MuiAppBarProps,
-} from '@mui/material/AppBar'
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles'
 import List from '@mui/material/List'
-import CssBaseline from '@mui/material/CssBaseline'
 import Divider from '@mui/material/Divider'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import SettingsIcon from '@mui/icons-material/Settings'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
-import Avatar from '@mui/material/Avatar'
-import SearchIcon from '@mui/icons-material/Search'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import Badge from '@mui/material/Badge'
 import useSidebarStore from './hooks/useSidebarStore'
-import tw, {css} from 'twin.macro'
+import Box from '@mui/material/Box'
 
 const MenuItemView = memo(function ({ text, index }) {
   return (
@@ -69,9 +57,28 @@ export default function Layout({ children }) {
   ])
 
   return (
-    <div tw="flex w-full min-h-full absolute z-1000 top-0 left-0 overflow-hidden">
-      <div tw="w-full min-h-full z-1 flex flex-row">
-        <AppBar elevation={0} position="fixed" open={open} >
+    <Box
+      sx={{
+        display: 'flex',
+        width: '100%',
+        minHeight: '100%',
+        position: 'absolute',
+        zIndex: 1000,
+        top: 0,
+        left: 0,
+        overflow: 'hidden',
+      }}
+    >
+      <Box
+        sx={{
+          width: '100%',
+          minHeight: '100%',
+          zIndex: 1,
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        <AppBar elevation={0} position="fixed" open={open}>
           <Toolbar>
             <IconButton
               color="inherit"
@@ -94,7 +101,7 @@ export default function Layout({ children }) {
         <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             <IconButton onClick={_toggle}>
-                <ChevronLeftIcon />
+              <ChevronLeftIcon />
             </IconButton>
           </DrawerHeader>
           <Divider />
@@ -120,18 +127,45 @@ export default function Layout({ children }) {
             ))}
           </List>
         </Drawer>
-        <main tw="w-full min-h-full bg-gray-100 block p-3 pl-0">
-          <BGDiv
-            tw={'w-full fixed top-0 left-0'}
+        <Box
+          sx={{
+            width: '100%',
+            minHeight: '100%',
+            background: 'rgb(243, 244, 246)',
+            display: 'block',
+            padding: '0.75rem',
+            paddingLeft: 0,
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              bgcolor: 'primary.main',
+            }}
             style={{ height: 184 }}
-          ></BGDiv>
-          <div tw='h-full relative ml-3 flex flex-col'>
-            <div tw="h-15"></div>
-            <div tw="flex-1">{children}</div>
-          </div>
-        </main>
-      </div>
-    </div>
+          ></Box>
+          <Box
+            sx={{
+              height: '100%',
+              position: 'relative',
+              marginLeft: '0.75rem',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <Box
+              sx={{
+                height: '3.8rem'
+              }}
+            ></Box>
+            <Box sx={{ flex: 1 }}>{children}</Box>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 

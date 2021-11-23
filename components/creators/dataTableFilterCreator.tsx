@@ -1,4 +1,3 @@
-import ListItemIcon from '@mui/material/ListItemIcon'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import ViewColumnIcon from '@mui/icons-material/ViewColumn'
 import { useForm, Controller } from 'react-hook-form'
@@ -14,17 +13,15 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemText from '@mui/material/ListItemText'
-import ListSubheader from '@mui/material/ListSubheader'
 import Switch from '@mui/material/Switch'
-import clsx from 'clsx'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import AppBar from '@mui/material/AppBar'
 import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import tw, {css} from 'twin.macro'
 import queryString from 'query-string'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 
 export function dataTableFilterCreator(useStore) {
   const SwitchTable = ({ dataKey }) => {
@@ -51,21 +48,29 @@ export function dataTableFilterCreator(useStore) {
     const _handleChangeTab = (e, v) => setActiveTab(v)
     const _handleChangeIndex = (v) => setActiveTab(v)
     return (
-      <div
-        css={['flex flex-col h-full bg-gray-100 border-0 border-r border-gray-200 border-solid transition-width transition-slowest ease-in-out transform', filterOpen && tw`w-80`, !filterOpen && tw`w-0`]}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          background: 'rgb(243, 244, 246)',
+          borderRight: '1px solid rgb(229, 231, 235)',
+          width: filterOpen?260:0,
+        }}
+        // css={['flex flex-col h-full bg-gray-100 border-0 border-r border-gray-200 border-solid transition-width transition-slowest ease-in-out transform', filterOpen && tw`w-80`, !filterOpen && tw`w-0`]}
       >
         {/* <AppBar position="static" > */}
         <Tabs
+          sx={{ height: '4rem' }}
           value={activeTab}
           onChange={_handleChangeTab}
           variant="standard"
           indicatorColor="primary"
-          tw="h-16"
           // textColor="primary"
           // centered
         >
-          <Tab tw="h-16" icon={<FilterListIcon />} />
-          <Tab tw="h-16" icon={<ViewColumnIcon />} />
+          <Tab sx={{ height: '4rem' }} icon={<FilterListIcon />} />
+          <Tab sx={{ height: '4rem' }} icon={<ViewColumnIcon />} />
         </Tabs>
 
         <SwipeableViews
@@ -73,18 +78,18 @@ export function dataTableFilterCreator(useStore) {
           index={activeTab}
           onChangeIndex={_handleChangeIndex}
         >
-          <div tw="flex-1">
+          <Box sx={{ flex: 1 }}>
             <ColumnSort />
             <Divider />
             <ColumnFilter />
-          </div>
+          </Box>
           <div>
             <ColumnSelector />
           </div>
         </SwipeableViews>
 
         {/* </AppBar> */}
-      </div>
+      </Box>
     )
   }
 
@@ -99,7 +104,7 @@ export function dataTableFilterCreator(useStore) {
         subheader={
           <Typography
             // tw={classes.dividerFullWidth}
-            tw="p-4"
+            sx={{ padding: '1rem' }}
             color="textSecondary"
             display="block"
             variant="caption"
@@ -149,15 +154,17 @@ export function dataTableFilterCreator(useStore) {
       var query = queryString.parse(window.location.hash)
       if (!query) query = {}
       query.sort = data.sort
-      query.order= data.order
+      query.order = data.order
 
       window.location.hash = '#' + queryString.stringify(query)
     }
     return (
-      <div tw="grid grid-cols-12 gap-4 p-4">
+      <Grid container spacing={2}>
         <Typography
           // tw={classes.dividerFullWidth}
-          tw="col-span-12"
+          sx={{
+            gridColumn: 12,
+          }}
           color="textSecondary"
           display="block"
           variant="caption"
@@ -169,16 +176,16 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl tw="col-span-7" variant="filled">
+            <FormControl sx={{ gridColumn: 'span 7' }} variant="filled">
               <InputLabel id="id-kolom-input-label">Kolom</InputLabel>
               <Select
                 labelId="id-kolom-label"
                 id="id-kolom"
-                value={value?value:''}
+                value={value ? value : ''}
                 defaultValue=""
                 onChange={onChange}
               >
-                <MenuItem value=''></MenuItem>
+                <MenuItem value=""></MenuItem>
                 {columns
                   .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
                   .map((d) => {
@@ -199,16 +206,16 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl tw="col-span-5" variant="filled">
+            <FormControl sx={{ gridColumn: 'span 5' }} variant="filled">
               <InputLabel id="id-sort-input-label">ORDER</InputLabel>
               <Select
                 labelId="id-sort-label"
                 id="id-sort"
                 defaultValue=""
-                value={value?value:''}
+                value={value ? value : ''}
                 onChange={onChange}
               >
-                <MenuItem value=''></MenuItem>
+                <MenuItem value=""></MenuItem>
                 <MenuItem value={'ASC'}>ASC</MenuItem>
                 <MenuItem value={'DESC'}>DESC</MenuItem>
               </Select>
@@ -218,8 +225,8 @@ export function dataTableFilterCreator(useStore) {
           rules={{ required: 'First name required' }}
         />
 
-        <div tw="flex col-span-12">
-          <div tw="flex-1" />
+        <Box sx={{ display: 'flex', gridColumn: 'span 12' }}>
+          <Box sx={{ flex: 1 }} />
           <Button
             variant="contained"
             color="secondary"
@@ -227,8 +234,8 @@ export function dataTableFilterCreator(useStore) {
           >
             Urutkan
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Grid>
     )
   }
 
@@ -250,7 +257,10 @@ export function dataTableFilterCreator(useStore) {
     )
 
     const { control, handleSubmit, reset } = useForm({
-      defaultValues: {...defaultValues, ...queryString.parse(window.location.hash)},
+      defaultValues: {
+        ...defaultValues,
+        ...queryString.parse(window.location.hash),
+      },
     })
 
     const onSubmit = (data) => {
@@ -263,16 +273,18 @@ export function dataTableFilterCreator(useStore) {
       window.location.hash = '#' + queryString.stringify(query)
     }
 
-    const _clear = ()=> {
+    const _clear = () => {
       reset({})
       window.location.hash = '#'
     }
 
     return (
-      <div tw="grid grid-cols-12 gap-4 p-4">
+      <Grid container spacing={2}>
         <Typography
           // tw={classes.dividerFullWidth}
-          tw="col-span-12"
+          sx={{
+            gridColumn: 12,
+          }}
           color="textSecondary"
           display="block"
           variant="caption"
@@ -284,16 +296,21 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl tw="col-span-12" variant="filled">
+            <FormControl
+              sx={{
+                gridColumn: 'span 12',
+              }}
+              variant="filled"
+            >
               <InputLabel id="id-field-input-label">Kolom</InputLabel>
               <Select
                 labelId="id-field-label"
                 id="id-field"
                 defaultValue=""
-                value={value?value:''}
+                value={value ? value : ''}
                 onChange={onChange}
               >
-                <MenuItem value=''></MenuItem>
+                <MenuItem value=""></MenuItem>
                 {columns
                   .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
                   .map((d) => {
@@ -314,16 +331,21 @@ export function dataTableFilterCreator(useStore) {
           control={control}
           defaultValue=""
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl tw="col-span-12" variant="filled">
+            <FormControl
+              sx={{
+                gridColumn: 'span 12',
+              }}
+              variant="filled"
+            >
               <InputLabel id="id-criteria-select-label">Kriteria</InputLabel>
               <Select
                 labelId="id-criteria-label"
                 id="id-criteria"
-                value={value?value:''}
+                value={value ? value : ''}
                 defaultValue=""
                 onChange={onChange}
               >
-                <MenuItem value=''></MenuItem>
+                <MenuItem value=""></MenuItem>
                 <MenuItem value="contains">Contains</MenuItem>
                 <MenuItem value="startswith">Starts with</MenuItem>
                 <MenuItem value="endswith">Ends with</MenuItem>\
@@ -345,9 +367,11 @@ export function dataTableFilterCreator(useStore) {
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
               label="Kata Kunci"
-              tw="col-span-12"
+              sx={{
+                gridColumn: 'span 12',
+              }}
               variant="filled"
-              value={value?value:''}
+              value={value ? value : ''}
               onChange={onChange}
               error={!!error}
               helperText={error ? error.message : null}
@@ -355,14 +379,9 @@ export function dataTableFilterCreator(useStore) {
           )}
           rules={{ required: 'First name required' }}
         />
-        <div tw="flex col-span-12">
-          <div tw="flex-1" />
-          <Button
-            variant="text"
-            color="secondary"
-            tw="mr-2"
-            onClick={_clear}
-          >
+        <Box sx={{display: 'flex', gridColumn: 'span 12',}}>
+          <Box sx={{flex: 1}} />
+          <Button sx={{marginRight: '0.5rem'}} variant="text" color="secondary" onClick={_clear}>
             Clear
           </Button>
 
@@ -373,8 +392,8 @@ export function dataTableFilterCreator(useStore) {
           >
             Cari
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Grid>
     )
   }
 

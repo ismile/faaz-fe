@@ -18,12 +18,12 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { useRouter, NextRouter } from 'next/dist/client/router'
-import tw, { css } from 'twin.macro'
 import React from 'react'
 import { UseBoundStore, State } from 'zustand'
 import { IStoreState } from './storeCreator'
 import { useHash } from 'react-use/lib/useHash'
 import queryString from 'query-string'
+import Box from '@mui/material/Box'
 
 interface ITableMenuActionParams<IData> {
   data: IData
@@ -97,15 +97,15 @@ function dataTableCreator<IData>(
     const { width, height } = useElementSize(squareRef)
 
     return (
-      <div tw="h-full w-full" ref={squareRef}>
-        <div tw="fixed" style={{ width, height }}>
+      <Box sx={{height: '100%', width: '100%'}} ref={squareRef}>
+        <Box sx={{position: 'fixed'}} style={{ width, height }}>
           {loading && (
             <LinearProgress
-              style={{
+              sx={{
                 position: 'absolute',
                 marginTop: '52px',
                 zIndex: 200,
-                width: '100%',
+                width: '100%'
               }}
             />
           )}
@@ -119,8 +119,8 @@ function dataTableCreator<IData>(
             rowKey={config.rowKey}
             components={TableComponents}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
     )
   }
 
@@ -183,7 +183,10 @@ function dataTableCreator<IData>(
           variant="text"
           // color="secondary"
           onClick={_handleReload}
-          tw="mr-2 text-black"
+          sx={{
+            marginRight: '0.5rem',
+            color: 'text.primary'
+          }}
           startIcon={<RefreshIcon />}
         >
           Refresh
@@ -193,7 +196,10 @@ function dataTableCreator<IData>(
           // color="secondary"
           onClick={_handleNewButton}
           startIcon={<AddIcon />}
-          tw="mr-2 text-black"
+          sx={{
+            marginRight: '0.5rem',
+            color: 'text.primary'
+          }}
         >
           Tambah
         </Button>
@@ -345,7 +351,7 @@ function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
           return (
             <Checkbox
               key={`check-all`}
-              tw="p-0"
+              sx={{padding: 0}}
               checked={isAllSelected}
               onChange={_handleSelectAll}
               inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -361,7 +367,7 @@ function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
         return (
           <Checkbox
             key={`checkbox-${d[rowKey]}`}
-            tw="p-0"
+            sx={{padding: 0}}
             checked={!!selected[d[rowKey]]}
             onChange={function (ev, val) {
               _handleSingleSelect(d, val)
