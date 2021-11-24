@@ -5,7 +5,6 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import Checkbox from '@mui/material/Checkbox'
-import tw from 'twin.macro'
 
 export default function CheckBoxField({
   control,
@@ -13,12 +12,14 @@ export default function CheckBoxField({
   className,
   name,
   rules = {},
+  sx
 }: {
   control: any
   label: string
   className?: string
   name: string
   rules?: Object
+  sx?: Object
 }) {
   const {
     field: { ref, onChange, value },
@@ -37,6 +38,7 @@ export default function CheckBoxField({
       error={!!error}
       component="fieldset"
       className={className}
+      sx={sx}
     >
       <FormControlLabel
         control={
@@ -50,7 +52,7 @@ export default function CheckBoxField({
         label={label}
         inputRef={ref}
       />
-      {error && <FormHelperText tw="ml-4">{error.message}</FormHelperText>}
+      {error && <FormHelperText sx={{marginLeft: '1rem'}}>{error.message}</FormHelperText>}
     </FormControl>
   )
 }

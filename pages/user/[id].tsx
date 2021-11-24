@@ -9,11 +9,12 @@ import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/dist/client/router'
 import Button from '@mui/material/Button'
 import { useEffect } from 'react'
-import tw from 'twin.macro'
 import RadioField from '../../components/form/RadioField'
 import AutocompleteField from '../../components/form/AutocompleteField'
 import DateField from '../../components/form/DateField'
 import SwitchField from '../../components/form/SwitchField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 
 export default function UserForm() {
   const { control, handleSubmit, reset } = useForm({})
@@ -32,7 +33,12 @@ export default function UserForm() {
 
   const _getInitialValues = async () => {
     var res = await _getOne(router.query.id)
-    reset({ ...res.data, role: 'user', gender: { id: 'male', name: 'male' }, birthdate: '2021-08-20T08:10:48.000Z' })
+    reset({
+      ...res.data,
+      role: 'user',
+      gender: { id: 'male', name: 'male' },
+      birthdate: '2021-08-20T08:10:48.000Z',
+    })
   }
 
   const _onSubmit = async (data) => {
@@ -55,107 +61,142 @@ export default function UserForm() {
     router.back()
   }
   return (
-    <div tw="h-full w-full flex flex-col">
+    <Box
+      sx={{
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <Toolbar>
         <Typography variant="h6">SAMPLE GRID</Typography>
-        <div tw="flex-1" />
+        <Box sx={{ flex: 1 }} />
       </Toolbar>
-      <Paper tw="mb-1">
-        <div tw="grid grid-cols-12 gap-4 p-4">
-          <TextField
-            control={control}
-            label="First Name"
-            name="firstName"
-            tw="col-span-6"
-            rules={{ required: 'First name required' }}
-          />
-          <TextField
-            control={control}
-            label="Last Name"
-            name="lastName"
-            tw="col-span-6"
-            rules={{ required: 'First name required' }}
-          />
-          <CheckBoxField
-            control={control}
-            label="Is Active"
-            name="isActive"
-            tw="col-span-12"
-            rules={{ required: 'First name required' }}
-          />
-          <SwitchField
-            control={control}
-            label="Is Active"
-            name="isActive"
-            tw="col-span-12"
-            rules={{ required: 'First name required' }}
-          />
-          <RadioField
-            control={control}
-            label="Roles"
-            name="role"
-            options={[
-              { value: 'user', label: 'user' },
-              { value: 'admin', label: 'admin' },
-            ]}
-            tw="col-span-12"
-            rules={{ required: 'First name required' }}
-          />
-          <RadioField
-            control={control}
-            label="Gender"
-            name="gender"
-            options={[
-              { id: 'male', name: 'Male' },
-              { id: 'female', name: 'Female' },
-            ]}
-            valueField="object"
-            dataKey="id"
-            labelField="name"
-            tw="col-span-12"
-            rules={{ required: 'First name required' }}
-          />
-          <AutocompleteField
-            // multiple={true}
-            control={control}
-            label="Negara"
-            name="country"
-            options={countries}
-            // valueField='code'
-            labelField="label"
-            tw="col-span-12"
-            rules={{ required: 'First name required' }}
-          />
-
-          <AutocompleteField
-            control={control}
-            label="User"
-            name="user"
-            labelField="firstName"
-            tw="col-span-12"
-            fetchOption={async (text) => {
-              var params = {
-                page: 0,
-                limit: 15,
-              }
-              if (text) params['firstName__contains'] = text
-              const res = await _fetch(params)
-              return res.data.items
-            }}
-          />
-          <DateField
-            control={control}
-            label="Birthdate"
-            name="birthdate"
-            tw="col-span-12"
-            serialize={DateField.jsonSerialize}
-            normalize={DateField.jsonNormalize}
-            rules={{ required: 'First name required' }}
-          />
-        </div>
-        <div tw="p-4 bg-gray-100 flex flex-row">
-          <div tw="flex-1"></div>
-          <Button tw="mr-2" variant="text" onClick={_handleBack}>
+      <Paper sx={{ marginBottom: '0.5rem' }}>
+        <Grid container spacing={2} padding={4}>
+          <Grid item xs={6}>
+            <TextField
+              sx={{ width: '100%' }}
+              control={control}
+              label="First Name"
+              name="firstName"
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              control={control}
+              label="Last Name"
+              name="lastName"
+              sx={{ width: '100%' }}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <CheckBoxField
+              control={control}
+              label="Is Active"
+              name="isActive"
+              sx={{ width: '100%' }}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <SwitchField
+              control={control}
+              label="Is Active"
+              name="isActive"
+              sx={{ width: '100%' }}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <RadioField
+              control={control}
+              label="Roles"
+              name="role"
+              options={[
+                { value: 'user', label: 'user' },
+                { value: 'admin', label: 'admin' },
+              ]}
+              sx={{ width: '100%' }}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <RadioField
+              control={control}
+              label="Gender"
+              name="gender"
+              options={[
+                { id: 'male', name: 'Male' },
+                { id: 'female', name: 'Female' },
+              ]}
+              valueField="object"
+              dataKey="id"
+              labelField="name"
+              sx={{ width: '100%' }}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <AutocompleteField
+              // multiple={true}
+              control={control}
+              label="Negara"
+              name="country"
+              options={countries}
+              // valueField='code'
+              labelField="label"
+              sx={{ width: '100%' }}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <AutocompleteField
+              control={control}
+              label="User"
+              name="user"
+              labelField="firstName"
+              sx={{ width: '100%' }}
+              fetchOption={async (text) => {
+                var params = {
+                  page: 0,
+                  limit: 15,
+                }
+                if (text) params['firstName__contains'] = text
+                const res = await _fetch(params)
+                return res.data.items
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <DateField
+              control={control}
+              label="Birthdate"
+              name="birthdate"
+              sx={{ width: '100%' }}
+              serialize={DateField.jsonSerialize}
+              normalize={DateField.jsonNormalize}
+              rules={{ required: 'First name required' }}
+            />
+          </Grid>
+        </Grid>
+        <Box
+          sx={{
+            background: 'rgb(243, 244, 246)',
+            padding: '1rem',
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          <Box sx={{ flex: 1 }}></Box>
+          <Button
+            sx={{ marginRight: '0.5rem' }}
+            variant="text"
+            onClick={_handleBack}
+          >
             Kembali
           </Button>
           <Button
@@ -165,9 +206,9 @@ export default function UserForm() {
           >
             Submit
           </Button>
-        </div>
+        </Box>
       </Paper>
-    </div>
+    </Box>
   )
 }
 

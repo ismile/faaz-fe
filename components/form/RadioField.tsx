@@ -6,7 +6,6 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
-import tw from 'twin.macro'
 import { useEffect, useState } from 'react'
 
 export default function RadioField({
@@ -20,7 +19,8 @@ export default function RadioField({
   dataKey = null,
   labelField = null,
   getOptionValue= (d, valueField)=> (d[valueField]),
-  getOptionLabel= (d, labelField)=> (d[labelField])
+  getOptionLabel= (d, labelField)=> (d[labelField]),
+  sx
 }: {
   control: any
   label: string
@@ -34,6 +34,7 @@ export default function RadioField({
   getOptionLabel?: Function
   get
   options: Array<{value: any, label: string}| any>
+  sx: Object
 }) {
   const [optionMap, setOptionMap] = useState({})
   const {
@@ -84,6 +85,7 @@ export default function RadioField({
       error={!!error}
       component="fieldset"
       className={className}
+      sx={sx}
     >
       <FormLabel component="legend" >{label}</FormLabel>
       <RadioGroup
@@ -106,7 +108,7 @@ export default function RadioField({
           return <FormControlLabel key={`${name}-${i}`} value={value} label={label} control={<Radio />} />
         })}
       </RadioGroup>
-      {error && <FormHelperText tw="ml-4">{error.message}</FormHelperText>}
+      {error && <FormHelperText sx={{marginLeft: '1rem'}}>{error.message}</FormHelperText>}
     </FormControl>
   )
 }

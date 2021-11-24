@@ -1,21 +1,13 @@
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Toolbar from '@mui/material/Toolbar'
-
-import storeCreator from '../components/creators/storeCreator'
 import dataTableCreator from '../components/creators/dataTableCreator'
-
 import IconButton from '@mui/material/IconButton'
-
-import { useEffect } from 'react'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { IUserModel, useUserStore } from '../stores/UserStore'
-import tw from 'twin.macro'
-import {useHash} from 'react-use/lib/useHash'
-import queryString from 'query-string'
+import Box from '@mui/material/Box'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
@@ -24,79 +16,105 @@ export default function User() {
   )
 
   return (
-    <div tw="h-full w-full flex flex-col">
+    <Box
+      sx={{
+        height: '100%',
+        weight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <Toolbar>
         <Typography variant="h6">SAMPLE GRID</Typography>
-        <div tw="flex-1" />
+        <Box sx={{ flex: 1 }} />
         <DefaultTopAction />
       </Toolbar>
 
-      {/* <Paper tw="mt-2 p-6"> */}
-      <Paper tw="flex flex-1 flex-row mb-1">
+      <Paper
+        sx={{
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'row',
+          marginBottom: '0.25rem',
+        }}
+      >
         <TableFilter />
-        <div tw="flex-1 flex flex-col w-full">
-          <div tw="flex-1 flex-row">
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%'
+          }}
+        >
+          <Box sx={{flex: 1, flexDirection: 'row'}}>
             <DataTable />
-          </div>
-          <Toolbar tw="flex flex-row">
+          </Box>
+          <Toolbar sx={{display: 'flex', flexDirection: 'row'}}>
             <IconButton onClick={_toggleFilterOpen}>
               <FilterListIcon />
             </IconButton>
-            <div tw="flex-1" />
+            <Box sx={{flex: 1}} />
             <TablePagination />
           </Toolbar>
-        </div>
+        </Box>
       </Paper>
       <TableWatcher />
 
       {/* </Paper> */}
-    </div>
+    </Box>
   )
 }
 
-const { DataTable, TableFilter, TablePagination, TableWatcher, DefaultTopAction } =
-  dataTableCreator<IUserModel>({
-    useStore: useUserStore,
-    actions: [
-      {
-        label: 'Edit',
-        icon: EditIcon,
-        disabled: (d, i)=> {
-          return d.firstName == 'Ismail'
-        },
-        action: ({data, router}) => {
-          router.push(`${useUserStore.getState().apiPath}/${data.id}`)
-        }
-      },{
-        label: 'Delete',
-        icon: DeleteIcon,
-        action: async ({data, openModal, closeMenu, enqueueSnackbar}) => {
-          var d = await openModal({
-            body: 'Apakah anda yakin akan menghapus data ini?',
+const {
+  DataTable,
+  TableFilter,
+  TablePagination,
+  TableWatcher,
+  DefaultTopAction,
+} = dataTableCreator<IUserModel>({
+  useStore: useUserStore,
+  actions: [
+    {
+      label: 'Edit',
+      icon: EditIcon,
+      disabled: (d, i) => {
+        return d.firstName == 'Ismail'
+      },
+      action: ({ data, router }) => {
+        router.push(`${useUserStore.getState().apiPath}/${data.id}`)
+      },
+    },
+    {
+      label: 'Delete',
+      icon: DeleteIcon,
+      action: async ({ data, openModal, closeMenu, enqueueSnackbar }) => {
+        var d = await openModal({
+          body: 'Apakah anda yakin akan menghapus data ini?',
+        })
+        closeMenu()
+        if (d) {
+          var res = await useUserStore.getState()._delete(data.id, true)
+          enqueueSnackbar('Data telah berhasil di hapus.', {
+            variant: 'success',
           })
-          closeMenu()
-          if (d) {
-            var res = await useUserStore.getState()._delete(data.id, true)
-            enqueueSnackbar('Data telah berhasil di hapus.', {
-              variant: 'success',
-            })
-          }
         }
-      }
-    ],
-    columns: [
-      {
-        title: 'First Name',
-        dataIndex: 'firstName',
-        key: 'firstName',
-        width: 100,
       },
-      {
-        title: 'Last Name',
-        dataIndex: 'lastName',
-        key: 'lastName',
-        resizeable: true,
-        width: 800,
-      },
-    ],
-  })
+    },
+  ],
+  columns: [
+    {
+      title: 'First Name',
+      dataIndex: 'firstName',
+      key: 'firstName',
+      width: 100,
+    },
+    {
+      title: 'Last Name',
+      dataIndex: 'lastName',
+      key: 'lastName',
+      resizeable: true,
+      width: 800,
+    },
+  ],
+})

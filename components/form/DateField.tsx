@@ -5,7 +5,6 @@ import {
   useFormContext,
 } from 'react-hook-form'
 import TextFieldReact from '@mui/material/TextField'
-import tw from 'twin.macro'
 import DatePicker from '@mui/lab/DatePicker'
 import Dayjs from 'dayjs'
 
@@ -17,7 +16,8 @@ export default function DateField({
   variant = 'filled',
   rules = {},
   serialize = null,
-  normalize = null
+  normalize = null,
+  sx
 }: {
   control: any
   label: string
@@ -27,6 +27,7 @@ export default function DateField({
   rules?: Object,
   serialize?: Function,
   normalize?: Function,
+  sx?: Object
 }) {
   const {
     field: { ref, onChange, value },
@@ -64,6 +65,7 @@ export default function DateField({
       inputRef={ref}
       renderInput={(params) => (
         <TextFieldReact
+          sx={sx}
           {...params}
           variant={variant}
           label={label}

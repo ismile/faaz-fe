@@ -6,9 +6,8 @@ import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TinyTransition from 'react-tiny-transition'
+import Box from '@mui/material/Box'
 
-import clsx from 'clsx'
-import tw, { css } from 'twin.macro'
 const tableComponentCreator = (config) => ({
   table: memo((props) => <Table {...props} />),
   header: {
@@ -39,7 +38,10 @@ const tableComponentCreator = (config) => ({
       if (Element) {
         return (
           <TableCell
-            css={[className, tw`h-16`, !columnSetting && tw`hidden`]}
+            sx={{
+              height: '4rem',
+              display: !columnSetting?'hidden':'auto'
+            }}
             {...restProps}
             width={width}
           >
@@ -50,15 +52,18 @@ const tableComponentCreator = (config) => ({
 
       return (
         <TableCell
-          css={[className, tw`h-16`, !columnSetting && tw`hidden`]}
+        sx={{
+          height: '4rem',
+          display: !columnSetting?'hidden':'auto'
+        }}
           {...restProps}
           width={width}
         >
-          <div tw="flex">
+          <Box sx={{display: 'flex'}}>
             {children}
-            <div tw="flex-1" />
+            <Box sx={{flex:1}} />
             {/* <ExpandLess style={{fontSize:10}} /> */}
-          </div>
+          </Box>
         </TableCell>
       )
     }),
@@ -72,7 +77,9 @@ const tableComponentCreator = (config) => ({
         (ps, ns) => ps[0] == ns[0]
       )
       return (
-        <TableCell {...props} css={[props.className, !columnSetting && tw`hidden`]} />
+        <TableCell {...props} sx={{
+          display: !columnSetting?'hidden':'auto'
+        }} />
       )
     }),
   },
