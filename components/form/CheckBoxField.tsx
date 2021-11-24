@@ -52,7 +52,7 @@ export default function CheckBoxField({
         label={label}
         inputRef={ref}
       />
-      {error && <FormHelperText tw="ml-4">{error.message}</FormHelperText>}
+      {error && <FormHelperText sx={{marginLeft: '1rem'}}>{error.message}</FormHelperText>}
     </FormControl>
   )
 }
