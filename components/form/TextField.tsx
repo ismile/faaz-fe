@@ -1,6 +1,5 @@
 import { useForm, Controller, useController, useFormContext} from 'react-hook-form'
 import TextFieldReact from '@mui/material/TextField'
-import tw from 'twin.macro'
 
 export default function TextField({
   control,
@@ -9,13 +8,15 @@ export default function TextField({
   name,
   variant = 'filled',
   rules = {},
+  sx={}
 }:{
   control: any,
   label: string,
   className?: string,
   name: string,
   variant?: 'filled' | 'standard' | 'outlined',
-  rules?: Object
+  rules?: Object,
+  sx?: Object
 }) {
   const {
     field: { ref, onChange, value },
@@ -38,6 +39,7 @@ export default function TextField({
       error={!!error}
       helperText={error ? error.message : null}
       inputRef={ref}
+      sx={sx}
     />
   )
 }

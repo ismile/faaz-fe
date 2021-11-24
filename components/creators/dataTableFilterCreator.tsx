@@ -55,7 +55,7 @@ export function dataTableFilterCreator(useStore) {
           height: '100%',
           background: 'rgb(243, 244, 246)',
           borderRight: '1px solid rgb(229, 231, 235)',
-          width: filterOpen?260:0,
+          width: filterOpen ? 260 : 0,
         }}
         // css={['flex flex-col h-full bg-gray-100 border-0 border-r border-gray-200 border-solid transition-width transition-slowest ease-in-out transform', filterOpen && tw`w-80`, !filterOpen && tw`w-0`]}
       >
@@ -74,7 +74,7 @@ export function dataTableFilterCreator(useStore) {
         </Tabs>
 
         <SwipeableViews
-          tw="flex-1"
+          sx={{flex: 1}}
           index={activeTab}
           onChangeIndex={_handleChangeIndex}
         >
@@ -103,7 +103,6 @@ export function dataTableFilterCreator(useStore) {
       <List
         subheader={
           <Typography
-            // tw={classes.dividerFullWidth}
             sx={{ padding: '1rem' }}
             color="textSecondary"
             display="block"
@@ -159,82 +158,86 @@ export function dataTableFilterCreator(useStore) {
       window.location.hash = '#' + queryString.stringify(query)
     }
     return (
-      <Grid container spacing={2}>
-        <Typography
-          // tw={classes.dividerFullWidth}
-          sx={{
-            gridColumn: 12,
-          }}
-          color="textSecondary"
-          display="block"
-          variant="caption"
-        >
-          Urutan
-        </Typography>
-        <Controller
-          name="sort"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl sx={{ gridColumn: 'span 7' }} variant="filled">
-              <InputLabel id="id-kolom-input-label">Kolom</InputLabel>
-              <Select
-                labelId="id-kolom-label"
-                id="id-kolom"
-                value={value ? value : ''}
-                defaultValue=""
-                onChange={onChange}
-              >
-                <MenuItem value=""></MenuItem>
-                {columns
-                  .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
-                  .map((d) => {
-                    return (
-                      <MenuItem key={d.key} value={d.key}>
-                        {d.title}
-                      </MenuItem>
-                    )
-                  })}
-              </Select>
-              {error && <FormHelperText>{error.message}</FormHelperText>}
-            </FormControl>
-          )}
-          rules={{ required: 'First name required' }}
-        />
-        <Controller
-          name="order"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl sx={{ gridColumn: 'span 5' }} variant="filled">
-              <InputLabel id="id-sort-input-label">ORDER</InputLabel>
-              <Select
-                labelId="id-sort-label"
-                id="id-sort"
-                defaultValue=""
-                value={value ? value : ''}
-                onChange={onChange}
-              >
-                <MenuItem value=""></MenuItem>
-                <MenuItem value={'ASC'}>ASC</MenuItem>
-                <MenuItem value={'DESC'}>DESC</MenuItem>
-              </Select>
-              {error && <FormHelperText>{error.message}</FormHelperText>}
-            </FormControl>
-          )}
-          rules={{ required: 'First name required' }}
-        />
-
-        <Box sx={{ display: 'flex', gridColumn: 'span 12' }}>
-          <Box sx={{ flex: 1 }} />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleSubmit(onSubmit)}
+      <Grid container spacing={2} padding={4}>
+        <Grid item xs={12}>
+          <Typography
+            color="textSecondary"
+            display="block"
+            variant="caption"
           >
-            Urutkan
-          </Button>
-        </Box>
+            Urutan
+          </Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Controller
+            name="sort"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormControl sx={{ width: '100%' }} variant="filled">
+                <InputLabel id="id-kolom-input-label">Kolom</InputLabel>
+                <Select
+                  labelId="id-kolom-label"
+                  id="id-kolom"
+                  value={value ? value : ''}
+                  defaultValue=""
+                  onChange={onChange}
+                >
+                  <MenuItem value=""></MenuItem>
+                  {columns
+                    .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
+                    .map((d) => {
+                      return (
+                        <MenuItem key={d.key} value={d.key}>
+                          {d.title}
+                        </MenuItem>
+                      )
+                    })}
+                </Select>
+                {error && <FormHelperText>{error.message}</FormHelperText>}
+              </FormControl>
+            )}
+            rules={{ required: 'First name required' }}
+          />
+        </Grid>
+        <Grid item xs={5}>
+          <Controller
+            name="order"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormControl sx={{ width: '100%' }} variant="filled">
+                <InputLabel id="id-sort-input-label">ORDER</InputLabel>
+                <Select
+                  labelId="id-sort-label"
+                  id="id-sort"
+                  defaultValue=""
+                  value={value ? value : ''}
+                  onChange={onChange}
+                >
+                  <MenuItem value=""></MenuItem>
+                  <MenuItem value={'ASC'}>ASC</MenuItem>
+                  <MenuItem value={'DESC'}>DESC</MenuItem>
+                </Select>
+                {error && <FormHelperText>{error.message}</FormHelperText>}
+              </FormControl>
+            )}
+            rules={{ required: 'First name required' }}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex' }}>
+            <Box sx={{ flex: 1 }} />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Urutkan
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
     )
   }
@@ -279,120 +282,122 @@ export function dataTableFilterCreator(useStore) {
     }
 
     return (
-      <Grid container spacing={2}>
-        <Typography
-          // tw={classes.dividerFullWidth}
-          sx={{
-            gridColumn: 12,
-          }}
-          color="textSecondary"
-          display="block"
-          variant="caption"
-        >
-          Pencarian
-        </Typography>
-        <Controller
-          name="field"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl
-              sx={{
-                gridColumn: 'span 12',
-              }}
-              variant="filled"
-            >
-              <InputLabel id="id-field-input-label">Kolom</InputLabel>
-              <Select
-                labelId="id-field-label"
-                id="id-field"
-                defaultValue=""
-                value={value ? value : ''}
-                onChange={onChange}
-              >
-                <MenuItem value=""></MenuItem>
-                {columns
-                  .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
-                  .map((d) => {
-                    return (
-                      <MenuItem key={d.key} value={d.key}>
-                        {d.title}
-                      </MenuItem>
-                    )
-                  })}
-              </Select>
-              {error && <FormHelperText>{error.message}</FormHelperText>}
-            </FormControl>
-          )}
-          rules={{ required: 'First name required' }}
-        />
-        <Controller
-          name="criteria"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <FormControl
-              sx={{
-                gridColumn: 'span 12',
-              }}
-              variant="filled"
-            >
-              <InputLabel id="id-criteria-select-label">Kriteria</InputLabel>
-              <Select
-                labelId="id-criteria-label"
-                id="id-criteria"
-                value={value ? value : ''}
-                defaultValue=""
-                onChange={onChange}
-              >
-                <MenuItem value=""></MenuItem>
-                <MenuItem value="contains">Contains</MenuItem>
-                <MenuItem value="startswith">Starts with</MenuItem>
-                <MenuItem value="endswith">Ends with</MenuItem>\
-                <MenuItem value="isnull">Is null</MenuItem>
-                <MenuItem value="lt">Lower than</MenuItem>
-                <MenuItem value="lte">Lower than equals</MenuItem>
-                <MenuItem value="gt">Greater than</MenuItem>
-                <MenuItem value="gte">Greater than equals</MenuItem>
-              </Select>
-              {error && <FormHelperText>{error.message}</FormHelperText>}
-            </FormControl>
-          )}
-          rules={{ required: 'First name required' }}
-        />
-        <Controller
-          name="key"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <TextField
-              label="Kata Kunci"
-              sx={{
-                gridColumn: 'span 12',
-              }}
-              variant="filled"
-              value={value ? value : ''}
-              onChange={onChange}
-              error={!!error}
-              helperText={error ? error.message : null}
-            />
-          )}
-          rules={{ required: 'First name required' }}
-        />
-        <Box sx={{display: 'flex', gridColumn: 'span 12',}}>
-          <Box sx={{flex: 1}} />
-          <Button sx={{marginRight: '0.5rem'}} variant="text" color="secondary" onClick={_clear}>
-            Clear
-          </Button>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleSubmit(onSubmit)}
+      <Grid container spacing={2} padding={4}>
+        <Grid item xs={12}>
+          <Typography
+            sx={{
+              gridColumn: 12,
+            }}
+            color="textSecondary"
+            display="block"
+            variant="caption"
           >
-            Cari
-          </Button>
-        </Box>
+            Pencarian
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="field"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormControl sx={{ width: '100%' }} variant="filled">
+                <InputLabel id="id-field-input-label">Kolom</InputLabel>
+                <Select
+                  labelId="id-field-label"
+                  id="id-field"
+                  defaultValue=""
+                  value={value ? value : ''}
+                  onChange={onChange}
+                >
+                  <MenuItem value=""></MenuItem>
+                  {columns
+                    .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
+                    .map((d) => {
+                      return (
+                        <MenuItem key={d.key} value={d.key}>
+                          {d.title}
+                        </MenuItem>
+                      )
+                    })}
+                </Select>
+                {error && <FormHelperText>{error.message}</FormHelperText>}
+              </FormControl>
+            )}
+            rules={{ required: 'First name required' }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="criteria"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormControl sx={{ width: '100%' }} variant="filled">
+                <InputLabel id="id-criteria-select-label">Kriteria</InputLabel>
+                <Select
+                  labelId="id-criteria-label"
+                  id="id-criteria"
+                  value={value ? value : ''}
+                  defaultValue=""
+                  onChange={onChange}
+                >
+                  <MenuItem value=""></MenuItem>
+                  <MenuItem value="contains">Contains</MenuItem>
+                  <MenuItem value="startswith">Starts with</MenuItem>
+                  <MenuItem value="endswith">Ends with</MenuItem>\
+                  <MenuItem value="isnull">Is null</MenuItem>
+                  <MenuItem value="lt">Lower than</MenuItem>
+                  <MenuItem value="lte">Lower than equals</MenuItem>
+                  <MenuItem value="gt">Greater than</MenuItem>
+                  <MenuItem value="gte">Greater than equals</MenuItem>
+                </Select>
+                {error && <FormHelperText>{error.message}</FormHelperText>}
+              </FormControl>
+            )}
+            rules={{ required: 'First name required' }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="key"
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                label="Kata Kunci"
+                sx={{ width: '100%' }}
+                variant="filled"
+                value={value ? value : ''}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+              />
+            )}
+            rules={{ required: 'First name required' }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex' }}>
+            <Box sx={{ flex: 1 }} />
+            <Button
+              sx={{ marginRight: '0.5rem' }}
+              variant="text"
+              color="secondary"
+              onClick={_clear}
+            >
+              Clear
+            </Button>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Cari
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
     )
   }

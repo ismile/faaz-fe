@@ -1,8 +1,6 @@
 import immer from 'immer'
 import zustand from 'zustand'
 import axios, {AxiosResponse} from 'axios'
-import Table from 'rc-table'
-import { asyncTimeout } from '../../configs/utils'
 interface IStoreCreatorConfig {
   rowKey?: String
   apiPath?: String

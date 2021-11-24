@@ -4,7 +4,6 @@ import FormControl from '@mui/material/FormControl'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormHelperText from '@mui/material/FormHelperText'
-import tw from 'twin.macro'
 import Switch from '@mui/material/Switch';
 
 export default function SwitchField({
@@ -13,12 +12,14 @@ export default function SwitchField({
   className,
   name,
   rules = {},
+  sx
 }: {
   control: any
   label: string
   className?: string
   name: string
   rules?: Object
+  sx?:Object
 }) {
   const {
     field: { ref, onChange, value },
@@ -37,6 +38,7 @@ export default function SwitchField({
       error={!!error}
       component="fieldset"
       className={className}
+      sx={sx}
     >
       <FormControlLabel
         control={
@@ -50,7 +52,7 @@ export default function SwitchField({
         label={label}
         inputRef={ref}
       />
-      {error && <FormHelperText tw="ml-4">{error.message}</FormHelperText>}
+      {error && <FormHelperText sx={{marginLeft: '1rem'}}>{error.message}</FormHelperText>}
     </FormControl>
   )
 }

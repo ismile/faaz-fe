@@ -8,20 +8,15 @@
     "build": "next build",
     "start": "next start"
   },
-  "babelMacros": {
-    "twin": {
-      "preset": "emotion"
-    }
-  },
   "dependencies": {
     "@date-io/dayjs": "^2.11.0",
     "@emotion/cache": "^11.6.0",
     "@emotion/react": "^11.6.0",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.1.1",
-    "@mui/lab": "^5.0.0-alpha.55",
-    "@mui/material": "^5.1.1",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/lab": "^5.0.0-alpha.56",
+    "@mui/material": "^5.2.0",
     "add": "^2.0.6",
     "axios": "^0.24.0",
     "clsx": "^1.1.1",
@@ -33,10 +28,10 @@
     "next": "11.1.2",
     "notistack": "^2.0.3",
     "query-string": "^7.0.1",
-    "rc-table": "^7.19.2",
+    "rc-table": "7.18.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-hook-form": "^7.19.5",
+    "react-hook-form": "^7.20.2",
     "react-resizable": "^3.0.4",
     "react-swipeable-views": "^0.14.0",
     "react-tiny-transition": "^2.4.0",
@@ -50,15 +45,12 @@
     "@emotion/babel-plugin": "^11.3.0",
     "@mui/types": "^7.1.0",
     "@next/bundle-analyzer": "^12.0.4",
-    "@types/node": "^16.11.7",
-    "@types/react": "^17.0.35",
+    "@types/node": "^16.11.10",
+    "@types/react": "^17.0.36",
     "autoprefixer": "^10.4.0",
     "babel-plugin-macros": "^3.1.0",
     "next-compose-plugins": "^2.2.1",
-    "postcss": "^8.3.11",
     "prop-types": "^15.7.2",
-    "tailwindcss": "^2.2.19",
-    "twin.macro": "^2.8.1",
     "typescript": "^4.4.4"
   },
   "packageManager": "yarn@3.1.0"

@@ -192,24 +192,23 @@ function dataTableCreator<IData>(
           Refresh
         </Button>
         <Button
-          variant="text"
-          // color="secondary"
+          color="secondary"
+          variant="contained"
           onClick={_handleNewButton}
           startIcon={<AddIcon />}
           sx={{
-            marginRight: '0.5rem',
             color: 'text.primary'
           }}
         >
           Tambah
         </Button>
-        <Button
+        {/* <Button
           variant="contained"
           color="secondary"
           onClick={_toggleFilterOpen}
         >
           <FilterListIcon />
-        </Button>
+        </Button> */}
       </>
     )
   }

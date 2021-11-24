@@ -30,7 +30,6 @@ export default function User() {
         <DefaultTopAction />
       </Toolbar>
 
-      {/* <Paper tw="mt-2 p-6"> */}
       <Paper
         sx={{
           display: 'flex',

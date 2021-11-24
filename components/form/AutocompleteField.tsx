@@ -4,7 +4,6 @@ import {
   useController,
   useFormContext,
 } from 'react-hook-form'
-import tw from 'twin.macro'
 import React, { useEffect, useMemo, useState } from 'react'
 import TextFieldReact from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
@@ -23,7 +22,8 @@ export default function AutocompleteField({
   renderOption = null,
   multiple = false,
   fetchOption = undefined,
-  isOptionEqualToValue = undefined
+  isOptionEqualToValue = undefined,
+  sx
 }: {
   control: any
   label: string
@@ -38,7 +38,8 @@ export default function AutocompleteField({
   renderOption?: Function
   multiple?: boolean
   fetchOption?: Function
-  isOptionEqualToValue?: Function
+  isOptionEqualToValue?: Function,
+  sx?: Object
 }) {
   const {
     field: { ref, onChange, value },
@@ -139,6 +140,7 @@ export default function AutocompleteField({
 
   return (
     <Autocomplete
+      sx={sx}
       multiple={multiple}
       disablePortal
       onOpen={fetchOption ? _handleOpen : null}
