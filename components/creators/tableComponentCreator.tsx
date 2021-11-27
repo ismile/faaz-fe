@@ -40,7 +40,7 @@ const tableComponentCreator = (config) => ({
           <TableCell
             sx={{
               height: '4rem',
-              display: !columnSetting?'hidden':'auto'
+              display: !columnSetting?'none':'auto'
             }}
             {...restProps}
             width={width}
@@ -54,7 +54,7 @@ const tableComponentCreator = (config) => ({
         <TableCell
         sx={{
           height: '4rem',
-          display: !columnSetting?'hidden':'auto'
+          display: !columnSetting?'none':'auto'
         }}
           {...restProps}
           width={width}
@@ -78,7 +78,7 @@ const tableComponentCreator = (config) => ({
       )
       return (
         <TableCell {...props} sx={{
-          display: !columnSetting?'hidden':'auto'
+          display: !columnSetting?'none':'auto'
         }} />
       )
     }),
