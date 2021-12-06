@@ -5,7 +5,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import TinyTransition from 'react-tiny-transition'
 import Box from '@mui/material/Box'
 
 const tableComponentCreator = (config) => ({
@@ -50,6 +49,7 @@ const tableComponentCreator = (config) => ({
         )
       }
 
+
       return (
         <TableCell
         sx={{
@@ -70,7 +70,7 @@ const tableComponentCreator = (config) => ({
   },
   body: {
     wrapper: memo((props) => <TableBody {...props} />),
-    row: memo((props) => <TinyTransition duration={800}><TableRow {...props} /></TinyTransition>),
+    row: memo((props) =><TableRow {...props} />),
     cell: memo((props) => {
       const [columnSetting] = config.useStore(
         (state) => [state.columnSetting[props.keyid], state._toggleColumn],

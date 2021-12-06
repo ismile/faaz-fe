@@ -21,7 +21,7 @@ import { useRouter, NextRouter } from 'next/dist/client/router'
 import React from 'react'
 import { UseBoundStore, State } from 'zustand'
 import { IStoreState } from './storeCreator'
-import { useHash } from 'react-use/lib/useHash'
+import {useHash} from '../../components/others/react-use/useHash'
 import queryString from 'query-string'
 import Box from '@mui/material/Box'
 

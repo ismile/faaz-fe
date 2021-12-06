@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { IUserModel, useUserStore } from '../stores/UserStore'
 import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
@@ -24,41 +25,47 @@ export default function User() {
         flexDirection: 'column',
       }}
     >
-      <Toolbar>
-        <Typography variant="h6">SAMPLE GRID</Typography>
+      <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
         <Box sx={{ flex: 1 }} />
-        <DefaultTopAction />
+        <Typography variant="h6" sx={{fontWeight: 'bold'}}>SAMPLE GRID</Typography>
+        <Box sx={{ flex: 1, display: 'flex'}} >
+          <Box sx={{ flex: 1 }} />
+          <DefaultTopAction />
+        </Box>
+
       </Toolbar>
 
-      <Paper
-        sx={{
-          display: 'flex',
-          flex: 1,
-          flexDirection: 'row',
-          marginBottom: '0.25rem',
-        }}
-      >
-        <TableFilter />
-        <Box
+      <Container sx={{flex: 1, display: 'flex'}}>
+        <Paper
           sx={{
-            flex: 1,
             display: 'flex',
-            flexDirection: 'column',
-            width: '100%'
+            flex: 1,
+            flexDirection: 'row',
+            marginBottom: '0.25rem',
           }}
         >
-          <Box sx={{flex: 1, flexDirection: 'row'}}>
-            <DataTable />
+          <TableFilter />
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <Box sx={{ flex: 1, flexDirection: 'row' }}>
+              <DataTable />
+            </Box>
+            <Toolbar sx={{ display: 'flex', flexDirection: 'row' }}>
+              <IconButton onClick={_toggleFilterOpen}>
+                <FilterListIcon />
+              </IconButton>
+              <Box sx={{ flex: 1 }} />
+              <TablePagination />
+            </Toolbar>
           </Box>
-          <Toolbar sx={{display: 'flex', flexDirection: 'row'}}>
-            <IconButton onClick={_toggleFilterOpen}>
-              <FilterListIcon />
-            </IconButton>
-            <Box sx={{flex: 1}} />
-            <TablePagination />
-          </Toolbar>
-        </Box>
-      </Paper>
+        </Paper>
+      </Container>
       <TableWatcher />
 
       {/* </Paper> */}

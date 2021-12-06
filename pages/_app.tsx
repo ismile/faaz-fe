@@ -12,12 +12,13 @@ import { AppDialog } from '../components/hooks/useModal'
 import { SnackbarProvider } from 'notistack'
 import httpConfig from '../configs/http'
 import { useRouter } from 'next/dist/client/router'
-import TinyTransition from 'react-tiny-transition'
 import createCache, { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { StyleCache } from '../configs/cache'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import DateAdapter from '@mui/lab/AdapterDayjs';
+import DateAdapter from '@mui/lab/AdapterDayjs'
+import CSSTransition from 'react-transition-group/CSSTransition'
+import SwitchTransition from 'react-transition-group/SwitchTransition'
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
@@ -57,9 +58,18 @@ function MyApp(props: MyAppProps) {
           >
             <LocalizationProvider dateAdapter={DateAdapter}>
               <Layout>
-                <TinyTransition duration={800} key={router.pathname}>
-                  <Component {...pageProps} />
-                </TinyTransition>
+                <SwitchTransition mode="out-in">
+                  <CSSTransition
+                    timeout={100}
+                    key={router.pathname}
+                    classNames="page"
+                    // addEndListener={(node, done) => {
+                    //   node.addEventListener("transitionend", done, false);
+                    // }}
+                  >
+                    <Component {...pageProps} />
+                  </CSSTransition>
+                </SwitchTransition>
                 <AppDialog />
               </Layout>
             </LocalizationProvider>

@@ -83,7 +83,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     isAllSelected: false,
     selected: {},
     selectedArr: [],
-    filterOpen: false,
+    filterOpen: true,
     apiPath: config.apiPath,
     routerPath: config.routerPath,
 

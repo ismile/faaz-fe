@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography'
 import queryString from 'query-string'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
+import DataFilterField from '../form/DataFilterField'
 
 export function dataTableFilterCreator(useStore) {
   const SwitchTable = ({ dataKey }) => {
@@ -74,7 +75,7 @@ export function dataTableFilterCreator(useStore) {
         </Tabs>
 
         <SwipeableViews
-          sx={{flex: 1}}
+          sx={{ flex: 1 }}
           index={activeTab}
           onChangeIndex={_handleChangeIndex}
         >
@@ -160,11 +161,7 @@ export function dataTableFilterCreator(useStore) {
     return (
       <Grid container spacing={2} padding={4}>
         <Grid item xs={12}>
-          <Typography
-            color="textSecondary"
-            display="block"
-            variant="caption"
-          >
+          <Typography color="textSecondary" display="block" variant="caption">
             Urutan
           </Typography>
         </Grid>
@@ -254,25 +251,43 @@ export function dataTableFilterCreator(useStore) {
         order: state.order,
         page: state.page,
         limit: state.limit,
-        filter: state.filter,
+        filter: state.filter?state.filter:[]
       }),
-      (ps, ns) => JSON.stringify(ps) == JSON.stringify(ns)
+      (ps, ns) => true
     )
 
     const { control, handleSubmit, reset } = useForm({
       defaultValues: {
         ...defaultValues,
-        ...queryString.parse(window.location.hash),
+        filter:Object.keys(queryString.parse(
+          typeof window !== 'undefined' ? window.location.hash : '#'
+        )).filter(x => x.search("__") >= 0).map(x => {
+          var d = x.split("__");
+
+          return {field: d[0], operator: d[1], value: queryString.parse(
+            typeof window !== 'undefined' ? window.location.hash : '#'
+          )[x]}
+        }),
+        ...queryString.parse(
+          typeof window !== 'undefined' ? window.location.hash : '#'
+        ),
       },
     })
 
     const onSubmit = (data) => {
       var query = queryString.parse(window.location.hash)
       if (!query) query = {}
-      query.field = data.field
-      query.criteria = data.criteria
-      query.key = data.key
 
+      Object.keys(query).forEach(x => {
+        if(x.search("__") >= 0) {
+          delete query[x]
+        }
+      })
+      query.filter = data.filter.forEach(x => {
+        query[`${x.field}__${x.operator}`] = x.value
+      })
+
+      console.log(data, 'data')
       window.location.hash = '#' + queryString.stringify(query)
     }
 
@@ -296,85 +311,30 @@ export function dataTableFilterCreator(useStore) {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Controller
-            name="field"
+          <DataFilterField
             control={control}
-            defaultValue=""
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <FormControl sx={{ width: '100%' }} variant="filled">
-                <InputLabel id="id-field-input-label">Kolom</InputLabel>
-                <Select
-                  labelId="id-field-label"
-                  id="id-field"
-                  defaultValue=""
-                  value={value ? value : ''}
-                  onChange={onChange}
-                >
-                  <MenuItem value=""></MenuItem>
-                  {columns
-                    .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
-                    .map((d) => {
-                      return (
-                        <MenuItem key={d.key} value={d.key}>
-                          {d.title}
-                        </MenuItem>
-                      )
-                    })}
-                </Select>
-                {error && <FormHelperText>{error.message}</FormHelperText>}
-              </FormControl>
-            )}
-            rules={{ required: 'First name required' }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Controller
-            name="criteria"
-            control={control}
-            defaultValue=""
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <FormControl sx={{ width: '100%' }} variant="filled">
-                <InputLabel id="id-criteria-select-label">Kriteria</InputLabel>
-                <Select
-                  labelId="id-criteria-label"
-                  id="id-criteria"
-                  value={value ? value : ''}
-                  defaultValue=""
-                  onChange={onChange}
-                >
-                  <MenuItem value=""></MenuItem>
-                  <MenuItem value="contains">Contains</MenuItem>
-                  <MenuItem value="startswith">Starts with</MenuItem>
-                  <MenuItem value="endswith">Ends with</MenuItem>\
-                  <MenuItem value="isnull">Is null</MenuItem>
-                  <MenuItem value="lt">Lower than</MenuItem>
-                  <MenuItem value="lte">Lower than equals</MenuItem>
-                  <MenuItem value="gt">Greater than</MenuItem>
-                  <MenuItem value="gte">Greater than equals</MenuItem>
-                </Select>
-                {error && <FormHelperText>{error.message}</FormHelperText>}
-              </FormControl>
-            )}
-            rules={{ required: 'First name required' }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Controller
-            name="key"
-            control={control}
-            defaultValue=""
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <TextField
-                label="Kata Kunci"
-                sx={{ width: '100%' }}
-                variant="filled"
-                value={value ? value : ''}
-                onChange={onChange}
-                error={!!error}
-                helperText={error ? error.message : null}
-              />
-            )}
-            rules={{ required: 'First name required' }}
+            label="Filter"
+            name="filter"
+            options={columns
+              .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
+              .map((x) => {
+                var d = (() => {
+                  switch (x.type) {
+                    case 'string':
+                      return DataFilterField.TYPE_STRING
+                    case 'number':
+                      return DataFilterField.TYPE_NUMBER
+                    default:
+                      return DataFilterField.TYPE_STRING
+                  }
+                })()
+
+                return {
+                  field: x.key,
+                  title: x.label,
+                  ...d
+                }
+              })}
           />
         </Grid>
         <Grid item xs={12}>

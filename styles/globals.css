@@ -1,3 +1,5 @@
+
+
 .rc-table {
   position: relative;
   box-sizing: border-box;
@@ -227,23 +229,81 @@
 }
 
 /* ANIMATION */
-.before-enter {
+.page-enter {
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   transform: translateY(75px);
 }
-.entering {
-  transition: transform 0.5s, opacity 0.5s;
+.page-enter-active {
+  transition: transform 200ms, opacity 200ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 1;
   transform: translateY(0px);;
 }
-.before-leave {
+.page-exit {
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition: transform 0.5s, opacity 0.5s;
+  transition: transform 200ms, opacity 200ms;
 }
-.leaving {
+.page-exit-active {
   opacity: 0;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(50px);
+}
+
+/* Animate.css */
+:root {
+  --animate-duration: 1s;
+  --animate-delay: 200ms;
+  --animate-repeat: 1;
+}
+.animate__animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-duration: var(--animate-duration);
+  animation-duration: var(--animate-duration);
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.animate__animated.animate__delay-200ms {
+  -webkit-animation-delay: 200ms;
+  animation-delay: 200ms;
+}
+
+.animate__animated.animate__faster {
+  -webkit-animation-duration: calc(1s / 10);
+  animation-duration: calc(1s / 10);
+  -webkit-animation-duration: calc(var(--animate-duration) / 10);
+  animation-duration: calc(var(--animate-duration) / 10);
+}
+
+@-webkit-keyframes fadeInDown {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, -50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, -50%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+.animate__fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  animation-name: fadeInDown;
 }
