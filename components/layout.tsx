@@ -15,8 +15,11 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
+import TableChartIcon from '@mui/icons-material/TableChart';
+import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import useSidebarStore from './hooks/useSidebarStore'
 import Box from '@mui/material/Box'
+import { useRouter } from 'next/router'
 
 const MenuItemView = memo(function ({ text, index }) {
   return (
@@ -48,13 +51,12 @@ const MenuView = memo(function ({ menu1, menu2 }) {
 })
 
 export default function Layout({ children }) {
-  const classes = {}
-  const menu1 = ['Inbox', 'Starred', 'Send email', 'Drafts']
-  const menu2 = ['All mail', 'Trash', 'Spam']
   const [open, _toggle] = useSidebarStore((store) => [
     store.open,
     store._toggle,
   ])
+
+  const {push} = useRouter()
 
   return (
     <Box
@@ -106,25 +108,18 @@ export default function Layout({ children }) {
           </DrawerHeader>
           <Divider />
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
+            <ListItem button onClick={()=> push('/')}>
+              <ListItemIcon>
+                <TableChartIcon />
+              </ListItemIcon>
+              <ListItemText primary="Data Grid" />
+            </ListItem>
+            <ListItem button onClick={()=> push('/sample-dialog')}>
+              <ListItemIcon>
+                <ChatBubbleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Modal" />
+            </ListItem>
           </List>
         </Drawer>
         <Box
@@ -158,7 +153,7 @@ export default function Layout({ children }) {
           >
             <Box
               sx={{
-                height: '3.8rem'
+                height: '3.8rem',
               }}
             ></Box>
             <Box sx={{ flex: 1 }}>{children}</Box>
