@@ -105,7 +105,7 @@ export default function UserForm() {
     >
       <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
         <Box sx={{ flex: 1 }} />
-        <Typography variant="h6" sx={{fontWeight: 'bold'}}>SAMPLE GRID</Typography>
+        <Typography variant="h6" sx={{fontWeight: 'bold'}}>SAMPLE FORM</Typography>
         <Box sx={{ flex: 1, display: 'flex'}} ></Box>
       </Toolbar>
       <Container sx={{ flex: 1 }}>

@@ -5,8 +5,15 @@ import Typography from '@mui/material/Typography'
 import Toolbar from '@mui/material/Toolbar'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
 import useModal from '../components/hooks/useModal'
 import { useSnackbar } from 'notistack'
+import { useForm, Controller, FormProvider } from 'react-hook-form'
+import TextField from '../components/form/TextField'
+import { useEffect, useState } from 'react'
+import TabPanel from '../components/others/TabPanel'
+import AppBar from '@mui/material/AppBar'
 
 export default function UserForm() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -17,10 +24,11 @@ export default function UserForm() {
 
   const _handleConfirmDialog = async () => {
     var d = await _openModal({ body: 'Konfirmasi Dialog' })
-    if(d) {
-      enqueueSnackbar('Confirmed!', {variant: 'success'})
+    console.log(d)
+    if (d) {
+      enqueueSnackbar('Confirmed!', { variant: 'success' })
     } else {
-      enqueueSnackbar('Cancelled!', {variant: 'info'})
+      enqueueSnackbar('Cancelled!', { variant: 'info' })
     }
   }
 
@@ -31,19 +39,19 @@ export default function UserForm() {
       cancelText: 'Tutup',
       okText: false,
     })
-    enqueueSnackbar('closed', {variant: 'info'})
+    enqueueSnackbar('closed', { variant: 'info' })
   }
 
   const _handleCustomAction = async () => {
     var d = await _openModal({
       title: 'Custom Action',
       body: 'Hello World!',
-      Actions: ({ _resolve }) => (
+      actions: ({ _resolve }) => (
         <>
           <Button
             onClick={() => {
               _resolve('bye!', true)
-              enqueueSnackbar('Bye!', {variant: 'warning'})
+              enqueueSnackbar('Bye!', { variant: 'warning' })
             }}
             color="secondary"
           >
@@ -52,7 +60,7 @@ export default function UserForm() {
           <Button
             onClick={() => {
               _resolve('hi!', true)
-              enqueueSnackbar('Hi!', {variant: 'warning'})
+              enqueueSnackbar('Hi!', { variant: 'warning' })
             }}
             color="secondary"
           >
@@ -61,7 +69,7 @@ export default function UserForm() {
           <Button
             onClick={() => {
               _resolve('hello!', true)
-              enqueueSnackbar('Hello!', {variant: 'success'})
+              enqueueSnackbar('Hello!', { variant: 'success' })
             }}
             color="primary"
             variant="contained"
@@ -72,6 +80,176 @@ export default function UserForm() {
       ),
     })
     console.log(d)
+  }
+
+  const _handleFormDialog = async () => {
+    var d = await _openModal({
+      title: 'Sign Up',
+      body: ({ _setCustomProps }) => {
+        const { control, handleSubmit, reset } = useForm({})
+
+        useEffect(() => {
+          _setCustomProps({ handleSubmit, reset })
+        }, [_setCustomProps])
+
+        return (
+          <Box sx={{ padding: '20px 24px', paddingTop: 0 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: '100%' }}
+                  control={control}
+                  label="First Name"
+                  name="firstName"
+                  rules={{ required: 'First name required' }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: '100%' }}
+                  control={control}
+                  label="Lirst Name"
+                  name="lastName"
+                  rules={{ required: 'Last name required' }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        )
+      },
+      okText: 'Submit',
+      onOk: (_resolve, customProps) => {
+        customProps.handleSubmit((value) => {
+          _resolve(value, true)
+        })()
+      },
+    })
+
+    if (d) {
+      enqueueSnackbar(`hello ${d.lastName}, ${d.firstName}!`, {
+        variant: 'info',
+      })
+    }
+  }
+
+  const _handleFormDialogCustomAction = async () => {
+    var d = await _openModal({
+      title: 'Sign Up Custom Action',
+      body: ({ _setCustomProps }) => {
+        const { control, handleSubmit, reset } = useForm({
+          defaultValues: { firstName: '', lastName: '' },
+        })
+
+        useEffect(() => {
+          _setCustomProps({ handleSubmit, reset })
+        }, [_setCustomProps])
+
+        return (
+          <Box sx={{ padding: '20px 24px', paddingTop: 0 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: '100%' }}
+                  control={control}
+                  label="First Name"
+                  name="firstName"
+                  rules={{ required: 'First name required' }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: '100%' }}
+                  control={control}
+                  label="Lirst Name"
+                  name="lastName"
+                  rules={{ required: 'Last name required' }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        )
+      },
+      actions: ({ _resolve, customProps }) => (
+        <>
+          <Button
+            onClick={() => {
+              _resolve(false, true)
+            }}
+            color="primary"
+          >
+            Close
+          </Button>
+          <Button
+            onClick={() => {
+              customProps.reset()
+            }}
+            color="primary"
+          >
+            Reset
+          </Button>
+          <Button
+            onClick={() => {
+              customProps.handleSubmit((value) => {
+                _resolve(value, true)
+              })()
+            }}
+            color="primary"
+            variant="contained"
+          >
+            Submit
+          </Button>
+        </>
+      ),
+    })
+
+    if (d) {
+      enqueueSnackbar(`hello ${d.lastName}, ${d.firstName}!`, {
+        variant: 'info',
+      })
+    }
+  }
+
+  const _handleDialogWithTab = async () => {
+    var d = await _openModal({
+      title: false,
+      body: () => {
+        const [value, setValue] = useState('one')
+
+        const handleChange = (event, newValue) => {
+          setValue(newValue)
+        }
+        return (
+          <>
+            <AppBar position="static" color="transparent">
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="secondary"
+                textColor="inherit"
+                aria-label="wrapped label tabs example"
+              >
+                <Tab
+                  value="one"
+                  label="New Arrivals in the Longest Text of Nonfiction that should appear in the next line"
+                  wrapped
+                />
+                <Tab value="two" label="Item Two" />
+                <Tab value="three" label="Item Three" />
+              </Tabs>
+            </AppBar>
+            <TabPanel value="one" index={value} sx={{ height: 200 }}>
+              ONE (1)
+            </TabPanel>
+            <TabPanel value="two" index={value} sx={{ height: 200 }}>
+              TWO (2)
+            </TabPanel>
+            <TabPanel value="three" index={value} sx={{ height: 200 }}>
+              THREE (3)
+            </TabPanel>
+          </>
+        )
+      },
+    })
   }
 
   return (
@@ -86,7 +264,7 @@ export default function UserForm() {
       <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
         <Box sx={{ flex: 1 }} />
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          SAMPLE GRID
+          Modal/Dialog
         </Typography>
         <Box sx={{ flex: 1, display: 'flex' }}></Box>
       </Toolbar>
@@ -116,6 +294,32 @@ export default function UserForm() {
               onClick={_handleCustomAction}
             >
               Custom Action
+            </Button>
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              color="primary"
+              onClick={_handleFormDialog}
+            >
+              Form Dialog
+            </Button>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              color="primary"
+              onClick={_handleFormDialogCustomAction}
+            >
+              Form Dialog With Custom Action
+            </Button>
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              color="primary"
+              onClick={_handleDialogWithTab}
+            >
+              Dialog With Tab
             </Button>
           </Box>
         </Paper>

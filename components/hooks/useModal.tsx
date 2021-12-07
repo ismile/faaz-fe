@@ -13,18 +13,24 @@ import theme from '../../configs/theme'
 import isNil from 'lodash/isNil'
 
 export interface IOpenModalParam {
-  title: string | React.ElementType
+  title?: string | React.ElementType | boolean
   body: string | React.ElementType
-  okText: string
-  cancelText: string
+  okText?: string | boolean
+  cancelText?: string | boolean
 
-  Actions: React.ElementType
+  onOk?: (_resolve, customProps) => void
+  onCancel?: (_resolve, customProps) => void
+
+  actions?: React.ElementType
+
+  data?: Object
+  customProps?: Object
 
   fullScreen?: boolean
   maxWidth?: string
 }
 
-export type IOpenModalFunctionType = (IOpenModalParam) => Promise<any>
+export type IOpenModalFunctionType = (p: IOpenModalParam) => Promise<any>
 
 const defaultValue = {
   title: 'Konfirmasi',
@@ -33,33 +39,49 @@ const defaultValue = {
 
   okText: 'Ya',
   cancelText: 'Batalkan',
-  Actions: null,
+  actions: null,
+
+  onOk: (_resolve, customProps) => {
+    _resolve(true)
+  },
+  onCancel: (_resolve, customProps) => {
+    _resolve(false)
+  },
+  _resolve: () => {},
+
+  data: {},
+  customProps: {},
 
   fullScreen: false,
   maxWidth: 'sm',
-
 }
 
 const useModal = zustand<{
-  title: string | React.ElementType
-  body: string | React.ElementType
+  title: string | React.ElementType | boolean
+  body: string | React.ElementType | boolean
 
   okText: string
   cancelText: string
-  Actions: React.ElementType
+  actions: React.ElementType
+
+  onOk?: (_resolve: any, customProps) => void
+  onCancel?: (_resolve: any, customProps) => void
+
+  data?: Object
+  customProps?: Object
 
   open: boolean
 
   _openModal: IOpenModalFunctionType
   _closeModal: () => void
   _resolve: (d: any, closeModal?: boolean) => void
+  _setData: (data: any) => void
+  _setCustomProps: (customProps: any) => void
 
   fullScreen?: boolean
   maxWidth?: string
 }>((set, get) => ({
   ...defaultValue,
-
-  _resolve: () => {},
 
   _closeModal: () => {
     return set(
@@ -69,7 +91,17 @@ const useModal = zustand<{
     )
   },
 
-  _openModal: ({ title, body, fullScreen, maxWidth, okText, cancelText, Actions}) => {
+  _openModal: ({
+    title,
+    body,
+    fullScreen,
+    maxWidth,
+    okText,
+    cancelText,
+    actions,
+    onOk,
+    onCancel,
+  }) => {
     const promise = new Promise((resolve, reject) => {
       set(
         immer((draft) => {
@@ -78,8 +110,10 @@ const useModal = zustand<{
           draft.body = body
 
           draft.okText = !isNil(okText) ? okText : defaultValue.okText
-          draft.cancelText = !isNil(cancelText) ? cancelText : defaultValue.cancelText
-          draft.Actions = !isNil(Actions) ? Actions : defaultValue.Actions
+          draft.cancelText = !isNil(cancelText)
+            ? cancelText
+            : defaultValue.cancelText
+          draft.actions = !isNil(actions) ? actions : defaultValue.actions
 
           draft.maxWidth = !isNil(maxWidth) ? maxWidth : defaultValue.maxWidth
           draft.fullScreen = fullScreen
@@ -88,10 +122,29 @@ const useModal = zustand<{
             if (closeModal == true || isNil(closeModal)) get()._closeModal()
             return resolve(d)
           }
+
+          draft.onOk = !isNil(onOk) ? onOk : defaultValue.onOk
+          draft.onCancel = !isNil(onCancel) ? onCancel : defaultValue.onCancel
         })
       )
     })
     return promise
+  },
+
+  _setData: (data) => {
+    return set(
+      immer((draft) => {
+        draft.data = data
+      })
+    )
+  },
+
+  _setCustomProps: (customProps) => {
+    return set(
+      immer((draft) => {
+        draft.customProps = customProps
+      })
+    )
   },
 }))
 
@@ -104,22 +157,36 @@ export const AppDialog = () => {
     open,
     title,
     body,
+    HtmlBody,
     okText,
     cancelText,
     _resolve,
     fullScreen,
     maxWidth,
-    Actions
+    Actions,
+    _setData,
+    _setCustomProps,
+    onOk,
+    onCancel,
+    data,
+    customProps
   } = useModal((state) => ({
     open: state.open,
     title: state.title,
     body: state.body,
+    HtmlBody: state.body,
     okText: state.okText,
     cancelText: state.cancelText,
     _resolve: state._resolve,
     fullScreen: state.fullScreen,
     maxWidth: state.maxWidth,
-    Actions: state.Actions,
+    Actions: state.actions,
+    _setData: state._setData,
+    _setCustomProps: state._setCustomProps,
+    onOk: state.onOk,
+    onCancel: state.onCancel,
+    data: state.data,
+    customProps: state.customProps
   }))
 
   const { _closeModal } = useModal(
@@ -147,22 +214,29 @@ export const AppDialog = () => {
       TransitionComponent={Transition}
     >
       {title && <DialogTitle id="alert-dialog-title">{title}</DialogTitle>}
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          {body}
-        </DialogContentText>
-      </DialogContent>
+      {(typeof body == 'string' || typeof body == 'object') && (
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {body}
+          </DialogContentText>
+        </DialogContent>
+      )}
+      {typeof body == 'function' && (
+        <HtmlBody
+          _setCustomProps={_setCustomProps}
+          _resolve={_resolve}
+        />
+      )}
       <DialogActions sx={{ background: 'rgb(229, 231, 235)' }}>
-
-        {(!Actions && cancelText) && (
-          <Button onClick={_handleCancel} color="primary">
+        {!Actions && cancelText && (
+          <Button onClick={() => onCancel(_resolve, customProps)} color="primary">
             {cancelText}
           </Button>
         )}
-        {(!Actions && okText) && (
+        {!Actions && okText && (
           <Button
             variant="contained"
-            onClick={_handleOk}
+            onClick={() => onOk(_resolve, customProps)}
             color="primary"
             autoFocus
           >
@@ -170,8 +244,7 @@ export const AppDialog = () => {
           </Button>
         )}
 
-        {Actions && <Actions _resolve={_resolve} />}
-
+        {Actions && <Actions _resolve={_resolve} customProps={customProps} />}
       </DialogActions>
     </Dialog>
   )
