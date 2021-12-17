@@ -9,6 +9,11 @@ const useSidebarStore = zustand<{
     if(window) window.dispatchEvent(new Event('resize'))
     return set(state => ({ open: !state.open}))
   },
+
+  _set: (b) => {
+    if(window) window.dispatchEvent(new Event('resize'))
+    return set(state => ({ open: b}))
+  },
 }))
 
 

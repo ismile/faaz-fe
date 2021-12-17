@@ -26,7 +26,7 @@ export default function User() {
       }}
     >
       <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
-        <Box sx={{ flex: 1 }} />
+        <Box sx={{ flex: 1, display: {xs: 'none', sm: 'flex'} }} />
         <Typography variant="h6" sx={{fontWeight: 'bold'}}>SAMPLE GRID</Typography>
         <Box sx={{ flex: 1, display: 'flex'}} >
           <Box sx={{ flex: 1 }} />
