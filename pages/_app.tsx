@@ -2,7 +2,7 @@ import type { AppProps /*, AppContext */ } from 'next/app'
 import Head from 'next/head'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import theme from '../configs/theme'
+import theme, { themeDark } from '../configs/theme'
 import { useEffect } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 
@@ -19,6 +19,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DateAdapter from '@mui/lab/AdapterDayjs'
 import CSSTransition from 'react-transition-group/CSSTransition'
 import SwitchTransition from 'react-transition-group/SwitchTransition'
+import useSettingStore from '../components/hooks/useSettingStore'
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
@@ -38,6 +39,8 @@ function MyApp(props: MyAppProps) {
 
   const router = useRouter()
 
+  const [ mode, _set ] = useSettingStore((store) => [store.mode, store._set])
+
   return (
     <>
       <CacheProvider value={emotionCache}>
@@ -48,7 +51,7 @@ function MyApp(props: MyAppProps) {
             content="minimum-scale=1, initial-scale=1, width=device-width"
           />
         </Head>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={mode == 'light'?theme:themeDark}>
           <CssBaseline />
           <SnackbarProvider
             anchorOrigin={{

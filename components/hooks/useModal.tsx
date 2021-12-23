@@ -227,7 +227,7 @@ export const AppDialog = () => {
           _resolve={_resolve}
         />
       )}
-      <DialogActions sx={{ background: 'rgb(229, 231, 235)' }}>
+      <DialogActions sx={{ bgcolor: 'background.default' }}>
         {!Actions && cancelText && (
           <Button onClick={() => onCancel(_resolve, customProps)} color="primary">
             {cancelText}

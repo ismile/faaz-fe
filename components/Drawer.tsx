@@ -4,7 +4,6 @@ import InputBase from '@mui/material/InputBase'
 import MuiDrawer from '@mui/material/Drawer'
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles'
 import List from '@mui/material/List'
-import Divider from '@mui/material/Divider'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -16,29 +15,33 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble'
 import useSidebarStore from './hooks/useSidebarStore'
 import { useRouter } from 'next/router'
 import Box from '@mui/material/Box'
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from '@mui/material/useMediaQuery'
 import theme from '../configs/theme'
+import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import DraftsIcon from '@mui/icons-material/Drafts'
+import Avatar from '@mui/material/Avatar'
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Drawer() {
   const [open, _toggle, _set] = useSidebarStore((store) => [
     store.open,
     store._toggle,
-    store._set
+    store._set,
   ])
-  const { push } = useRouter()
+  const { push, pathname } = useRouter()
 
-  const pc = useMediaQuery(theme.breakpoints.up("md"));
-  const tablet = useMediaQuery(theme.breakpoints.up("sm"));
+  const pc = useMediaQuery(theme.breakpoints.up('md'))
+  const tablet = useMediaQuery(theme.breakpoints.up('sm'))
 
   useEffect(() => {
-    if(tablet && !pc) {
+    if (tablet && !pc) {
       _set(false)
     }
 
-    if(pc) {
+    if (pc) {
       _set(true)
     }
-
   }, [tablet, pc])
 
   return (
@@ -49,20 +52,64 @@ export default function Drawer() {
         </IconButton>
       </DrawerHeader>
       <Divider />
-      <List>
-        <ListItem button onClick={() => push('/')}>
+      <List sx={{ marginTop: 1, flex: 1 }} open={open}>
+        <DrawerItem
+          button
+          selected={pathname == '/'}
+          onClick={() => push('/')}
+          secondaryAction={<Chip label="1" size="small" color="error" />}
+        >
           <ListItemIcon>
             <TableChartIcon />
           </ListItemIcon>
           <ListItemText primary="Data Grid" />
-        </ListItem>
-        <ListItem button onClick={() => push('/sample-dialog')}>
+        </DrawerItem>
+        <DrawerItem
+          button
+          selected={pathname == '/sample-dialog'}
+          onClick={() => push('/sample-dialog')}
+        >
           <ListItemIcon>
             <ChatBubbleIcon />
           </ListItemIcon>
           <ListItemText primary="Modal" />
-        </ListItem>
+        </DrawerItem>
+
+        <Divider />
+
+        <DrawerItem button>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary="Inbox" />
+        </DrawerItem>
+        <DrawerItem button>
+          <ListItemIcon>
+            <DraftsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Drafts" />
+        </DrawerItem>
       </List>
+      <Divider />
+      <Box>
+        <ListItem
+          onClick={() => push('/')}
+          secondaryAction={
+            <IconButton edge="end">
+              <LogoutIcon />
+            </IconButton>
+          }
+        >
+          <ListItemIcon>
+            <Avatar
+              variant="circular"
+              alt="Remy Sharp"
+              src="/static/images/avatar/2.jpg"
+            />
+          </ListItemIcon>
+          <ListItemText primary="Peter Parker" secondary="Administrator" />
+        </ListItem>
+      </Box>
     </DrawerContainer>
   )
 }
@@ -71,7 +118,7 @@ function DrawerContainer({ open, children }) {
   return (
     <>
       <DrawerCustom
-        sx={{ display: { xs: 'none', sm: 'block' } }}
+        sx={{ display: { xs: 'none', sm: 'flex' } }}
         variant="permanent"
         open={open}
       >
@@ -79,7 +126,7 @@ function DrawerContainer({ open, children }) {
       </DrawerCustom>
       <MuiDrawer
         open={open}
-        sx={{ display: { sm: 'none', xs: 'block' }, width: 400 }}
+        sx={{ display: { sm: 'none', xs: 'flex' }, width: 400 }}
       >
         <Box sx={{ width: drawerWidth }}>{children}</Box>
       </MuiDrawer>
@@ -88,6 +135,27 @@ function DrawerContainer({ open, children }) {
 }
 
 const drawerWidth = 210
+
+const DrawerItem = styled(ListItem)(({ theme }) => ({
+  // marginLeft: '0.8em',
+  // marginRight: '0.8em',
+  width: 'auto',
+  // borderRadius: '4px',
+  '&.Mui-selected': {
+    borderLeft: '4px solid ' + theme.palette.primary.dark,
+    // background: theme.palette.primary.main,
+    color: theme.palette.text.primary,
+  },
+  '& .MuiSvgIcon-root': {
+    color: theme.palette.primary.dark,
+  },
+  '& .MuiListItemIcon-root': {
+    minWidth: '2.7em',
+  },
+  '& .MuiChip-root': {
+    borderRadius: '20px',
+  },
+}))
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -134,5 +202,15 @@ const DrawerCustom = styled(MuiDrawer, {
   ...(!open && {
     ...closedMixin(theme),
     '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+  ...(!open && {
+    '& .MuiChip-root': {
+      marginTop: '-20px',
+      marginLeft: '20px',
+      width: '20px',
+      height: '20px',
+      position: 'relative',
+      zIndex: 1000,
+    },
   }),
 }))

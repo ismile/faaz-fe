@@ -222,7 +222,7 @@ export default function UserForm() {
           </Grid>
           <Box
             sx={{
-              background: 'rgb(243, 244, 246)',
+              bgcolor: 'background.default',
               padding: '1rem',
               display: 'flex',
               flexDirection: 'row',

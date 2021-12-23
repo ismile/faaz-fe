@@ -31,7 +31,7 @@ export default function Layout({ children }) {
           sx={{
             width: '100%',
             minHeight: '100%',
-            background: 'rgb(243, 244, 246)',
+            bgcolor: 'background.default',
             display: 'block',
             padding: '0.75rem',
             paddingLeft: 0,

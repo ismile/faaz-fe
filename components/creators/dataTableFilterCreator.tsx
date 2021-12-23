@@ -54,7 +54,7 @@ export function dataTableFilterCreator(useStore) {
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          background: 'rgb(243, 244, 246)',
+          bgcolor: 'background.default',
           borderRight: '1px solid rgb(229, 231, 235)',
           width: filterOpen ? 260 : 0,
         }}
