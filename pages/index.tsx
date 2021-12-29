@@ -9,12 +9,26 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { IUserModel, useUserStore } from '../stores/UserStore'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import ListIcon from '@mui/icons-material/List'
+import GridViewIcon from '@mui/icons-material/GridView'
+import Divider from '@mui/material/Divider'
+import { useState } from 'react'
+
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import CardActionArea from '@mui/material/CardActionArea'
+import Grid from '@mui/material/Grid'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
     (state) => [state._toggleFilterOpen, state._fetch],
     (ps, ns) => true
   )
+  const [view, setView] = useState('table')
 
   return (
     <Box
@@ -26,16 +40,18 @@ export default function User() {
       }}
     >
       <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
-        <Box sx={{ flex: 1, display: {xs: 'none', sm: 'flex'} }} />
-        <Typography variant="h6" sx={{fontWeight: 'bold'}}>SAMPLE GRID</Typography>
-        <Box sx={{ flex: 1, display: 'flex'}} >
+        <Box sx={{ flex: 1, display: { xs: 'none', sm: 'flex' } }} />
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          SAMPLE GRID
+        </Typography>
+        <Box sx={{ flex: 1, display: 'flex' }}>
           <Box sx={{ flex: 1 }} />
+
           <DefaultTopAction />
         </Box>
-
       </Toolbar>
 
-      <Container sx={{flex: 1, display: 'flex'}}>
+      <Container sx={{ flex: 1, display: 'flex' }}>
         <Paper
           sx={{
             display: 'flex',
@@ -53,13 +69,64 @@ export default function User() {
               width: '100%',
             }}
           >
-            <Box sx={{ flex: 1, flexDirection: 'row' }}>
-              <DataTable />
+            <Box sx={{ flex: 1 }}>
+              {view == 'table' && <DataTable />}
+              {view == 'grid' && (
+                <CustomView
+                  ItemContainer={({ children }) => (
+                    <Grid container spacing={4} padding={4}>
+                      {children}
+                    </Grid>
+                  )}
+                  ItemTemplate={({ data }) => (
+                    <Grid item xs={12} md={4} lg={3}>
+                      <Card>
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image="https://picsum.photos/140/366"
+                            alt="green iguana"
+                          />
+                          <CardContent>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {data.firstName}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Lizards are a widespread group of squamate
+                              reptiles, with over 6,000 species, ranging across
+                              all continents except Antarctica
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Grid>
+                  )}
+                />
+              )}
             </Box>
-            <Toolbar sx={{ display: 'flex', flexDirection: 'row' }}>
-              <IconButton onClick={_toggleFilterOpen}>
+            <Toolbar sx={{ display: 'flex', flexDirection: 'row', borderTop: '1px solid rgba(0,0,0,.2)'}}>
+              <IconButton sx={{ marginRight: 2 }} onClick={_toggleFilterOpen}>
                 <FilterListIcon />
               </IconButton>
+              <Divider sx={{ marginRight: 3 }} orientation="vertical" />
+              <ToggleButtonGroup
+                size="small"
+                exclusive
+                value={view}
+                onChange={(e, v) => setView(v)}
+              >
+                <ToggleButton value="table">
+                  <ListIcon />
+                </ToggleButton>
+                <ToggleButton value="grid">
+                  <GridViewIcon />
+                </ToggleButton>
+              </ToggleButtonGroup>
               <Box sx={{ flex: 1 }} />
               <TablePagination />
             </Toolbar>
@@ -79,6 +146,7 @@ const {
   TablePagination,
   TableWatcher,
   DefaultTopAction,
+  CustomView,
 } = dataTableCreator<IUserModel>({
   useStore: useUserStore,
   actions: [

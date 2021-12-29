@@ -184,7 +184,7 @@ function OptionEditor<Row extends object, Option extends OptionOf<Row>>({
     <div onKeyPress={handleKeyPress}>
       <Stack direction="column">
         <Stack direction="row" alignItems="center" spacing={2} m={2} mb={1}>
-          <Typography>{option.field}</Typography>{' '}
+          <Typography>{option.label}</Typography>{' '}
           <Select
             size="small"
             value={input.operator}
@@ -380,6 +380,7 @@ export default function DataFilter<Row extends object>({
         onClick={handleCreateNew}
       />
       <Popover
+        sx={{marginTop: 2}}
         action={popperRef}
         open={menuOpen}
         anchorEl={anchorEl}

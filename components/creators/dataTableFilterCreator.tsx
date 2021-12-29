@@ -55,7 +55,7 @@ export function dataTableFilterCreator(useStore) {
           flexDirection: 'column',
           height: '100%',
           bgcolor: 'background.default',
-          borderRight: '1px solid rgb(229, 231, 235)',
+          borderRight: '1px solid rgba(0,0,0,.1)',
           width: filterOpen ? 260 : 0,
         }}
         // css={['flex flex-col h-full bg-gray-100 border-0 border-r border-gray-200 border-solid transition-width transition-slowest ease-in-out transform', filterOpen && tw`w-80`, !filterOpen && tw`w-0`]}
@@ -331,7 +331,7 @@ export function dataTableFilterCreator(useStore) {
 
                 return {
                   field: x.key,
-                  title: x.label,
+                  label: x.title,
                   ...d
                 }
               })}

@@ -21,7 +21,7 @@ import { useRouter, NextRouter } from 'next/dist/client/router'
 import React from 'react'
 import { UseBoundStore, State } from 'zustand'
 import { IStoreState } from './storeCreator'
-import {useHash} from '../../components/others/react-use/useHash'
+import { useHash } from '../../components/others/react-use/useHash'
 import queryString from 'query-string'
 import Box from '@mui/material/Box'
 
@@ -84,28 +84,27 @@ function dataTableCreator<IData>(
   const DataTable = () => {
     const data = config.useStore(
       (state) => state.data,
-      (oldTreats, newTreats) =>
-        JSON.stringify(oldTreats) == JSON.stringify(newTreats)
+      (o, n) => JSON.stringify(o) == JSON.stringify(n)
     )
 
     const loading = config.useStore(
       (state) => state.loading,
-      (oldTreats, newTreats) => oldTreats == newTreats
+      (o, n) => o == n
     )
 
     const squareRef = useRef(null)
     const { width, height } = useElementSize(squareRef)
 
     return (
-      <Box sx={{height: '100%', width: '100%'}} ref={squareRef}>
-        <Box sx={{position: 'fixed'}} style={{ width, height }}>
+      <Box sx={{ height: '100%', width: '100%' }} ref={squareRef}>
+        <Box sx={{ position: 'fixed' }} style={{ width, height }}>
           {loading && (
             <LinearProgress
               sx={{
                 position: 'absolute',
                 marginTop: '52px',
                 zIndex: 200,
-                width: '100%'
+                width: '100%',
               }}
             />
           )}
@@ -115,10 +114,51 @@ function dataTableCreator<IData>(
             // style={{ width: width, height: height }}
             columns={columns}
             data={data}
-            scroll={{ x: width, y: height - 53 }}
+            scroll={{ x: width, y: height - 54 }}
             rowKey={config.rowKey}
             components={TableComponents}
           />
+        </Box>
+      </Box>
+    )
+  }
+
+  const CustomView = ({ ItemTemplate, ItemContainer=({children})=> <div>{children}</div> }) => {
+    const data = config.useStore(
+      (state) => state.data,
+      (o, n) => JSON.stringify(o) == JSON.stringify(n)
+    )
+
+    const loading = config.useStore(
+      (state) => state.loading,
+      (o, n) => o == n
+    )
+
+    const squareRef = useRef(null)
+    const { width, height } = useElementSize(squareRef)
+
+    return (
+      <Box sx={{ height: '100%', width: '100%' }} ref={squareRef}>
+        <Box
+          sx={{ position: 'fixed', overflow: 'auto' }}
+          style={{ width, height }}
+        >
+          {loading && (
+            <LinearProgress
+              sx={{
+                position: 'absolute',
+                marginTop: '0px',
+                zIndex: 200,
+                width: '100%',
+              }}
+            />
+          )}
+
+          <ItemContainer>
+            {data.map((d) => (
+              <ItemTemplate key={d[config.rowKey]} data={d} />
+            ))}
+          </ItemContainer>
         </Box>
       </Box>
     )
@@ -129,8 +169,7 @@ function dataTableCreator<IData>(
 
     const { page, total, limit } = config.useStore(
       (state) => ({ page: state.page, total: state.total, limit: state.limit }),
-      (oldData, newData) =>
-        JSON.stringify(oldData) == JSON.stringify(newData)
+      (oldData, newData) => JSON.stringify(oldData) == JSON.stringify(newData)
     )
 
     const _fetch = config.useStore(
@@ -145,10 +184,10 @@ function dataTableCreator<IData>(
       window.location.hash = '#' + queryString.stringify(query)
     }
 
-    const _onChangeRowsPerPage = async (e:any) => {
+    const _onChangeRowsPerPage = async (e: any) => {
       var query = queryString.parse(window.location.hash)
       if (!query) query = {}
-      query.limit = e.target.value;
+      query.limit = e.target.value
       window.location.hash = '#' + queryString.stringify(query)
     }
 
@@ -185,7 +224,7 @@ function dataTableCreator<IData>(
           onClick={_handleReload}
           sx={{
             marginRight: '0.5rem',
-            color: 'text.primary'
+            color: 'text.primary',
           }}
           startIcon={<RefreshIcon />}
         >
@@ -197,7 +236,7 @@ function dataTableCreator<IData>(
           onClick={_handleNewButton}
           startIcon={<AddIcon />}
           sx={{
-            color: 'text.primary'
+            color: 'text.primary',
           }}
         >
           Tambah
@@ -214,6 +253,7 @@ function dataTableCreator<IData>(
   }
 
   return {
+    CustomView,
     DataTable,
     TableFilter,
     TablePagination,
@@ -350,7 +390,7 @@ function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
           return (
             <Checkbox
               key={`check-all`}
-              sx={{padding: 0}}
+              sx={{ padding: 0 }}
               checked={isAllSelected}
               onChange={_handleSelectAll}
               inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -366,7 +406,7 @@ function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
         return (
           <Checkbox
             key={`checkbox-${d[rowKey]}`}
-            sx={{padding: 0}}
+            sx={{ padding: 0 }}
             checked={!!selected[d[rowKey]]}
             onChange={function (ev, val) {
               _handleSingleSelect(d, val)
