@@ -10,7 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
-import TableChartIcon from '@mui/icons-material/TableChart'
+import PersonIcon from '@mui/icons-material/Person'
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble'
 import useSidebarStore from './hooks/useSidebarStore'
 import { useRouter } from 'next/router'
@@ -60,14 +60,14 @@ export default function Drawer() {
           secondaryAction={<Chip label="1" size="small" color="error" />}
         >
           <ListItemIcon>
-            <TableChartIcon />
+            <PersonIcon />
           </ListItemIcon>
-          <ListItemText primary="Data Grid" />
+          <ListItemText primary="User" />
         </DrawerItem>
         <DrawerItem
           button
-          selected={pathname == '/sample-dialog'}
-          onClick={() => push('/sample-dialog')}
+          selected={pathname == '/user'}
+          onClick={() => push('/user')}
         >
           <ListItemIcon>
             <ChatBubbleIcon />
@@ -95,7 +95,7 @@ export default function Drawer() {
         <ListItem
           onClick={() => push('/')}
           secondaryAction={
-            <IconButton edge="end">
+            <IconButton edge="end" onClick={()=> push('/account/login')}>
               <LogoutIcon />
             </IconButton>
           }

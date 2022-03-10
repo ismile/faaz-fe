@@ -1,12 +1,12 @@
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Toolbar from '@mui/material/Toolbar'
-import dataTableCreator from '../components/creators/dataTableCreator'
+import dataTableCreator from '../../components/creators/dataTableCreator'
 import IconButton from '@mui/material/IconButton'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { IUserModel, useUserStore } from '../stores/UserStore'
+import { IUserModel, useUserStore } from '../../stores/UserStore'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import ButtonGroup from '@mui/material/ButtonGroup'
@@ -187,9 +187,18 @@ const {
     {
       title: 'Nomor Identitas',
       dataIndex: 'nomorIdentitas',
-      key: 'nomorIdentitas',
-      resizeable: true,
-      width: 800,
+      key: 'nomorIdentitas'
+    },
+    {
+      title: 'Nama User',
+      dataIndex: 'namaUser',
+      key: 'namaUser'
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      resizeable: true
     },
   ],
 })

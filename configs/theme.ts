@@ -26,7 +26,6 @@ export const themeDark = createTheme({
   typography: {
     fontFamily: "'Roboto', Raleway, Arial",
   },
-  spacing: (factor) => `${0.25 * factor}rem`,
   palette: {
     mode: 'dark',
     primary: lightBlue,

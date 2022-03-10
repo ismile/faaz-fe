@@ -3,8 +3,7 @@ import Head from 'next/head'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import theme, { themeDark } from '../configs/theme'
-import { useEffect } from 'react'
-import Toolbar from '@mui/material/Toolbar'
+import { useEffect, useState } from 'react'
 
 import '../styles/globals.css'
 import Layout from '../components/layout'
@@ -20,26 +19,46 @@ import DateAdapter from '@mui/lab/AdapterDayjs'
 import CSSTransition from 'react-transition-group/CSSTransition'
 import SwitchTransition from 'react-transition-group/SwitchTransition'
 import useSettingStore from '../components/hooks/useSettingStore'
+import { NextPage } from 'next'
+import { NotificationAdapter } from '../stores/NotificationStore'
+import { useAuthStore } from '../stores/AuthStore'
+import axios from 'axios'
+import { getCookie } from 'cookies-next'
+import { NAMESPACE } from '../configs/constant'
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
+  Component: NextPage & {
+    Layout?: any
+  }
 }
 
 function MyApp(props: MyAppProps) {
   const { Component, emotionCache = StyleCache, pageProps } = props
+  const [loading, setLoading] = useState(true)
+  const [_me] = useAuthStore(
+    (state) => [state._me],
+    (ps, ns) => true
+  )
+  const router = useRouter()
+  const [mode, _set] = useSettingStore((store) => [store.mode, store._set])
+
   // init config
   httpConfig()
-
   useEffect(() => {
+    _init()
+  }, [])
+
+  const _init = async () => {
     const jssStyles = document.querySelector('#jss-server-side')
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
-  }, [])
-
-  const router = useRouter()
-
-  const [ mode, _set ] = useSettingStore((store) => [store.mode, store._set])
+    if (router.pathname !== '/account/login') {
+      await _me()
+    }
+    setLoading(false)
+  }
 
   return (
     <>
@@ -51,7 +70,7 @@ function MyApp(props: MyAppProps) {
             content="minimum-scale=1, initial-scale=1, width=device-width"
           />
         </Head>
-        <ThemeProvider theme={mode == 'light'?theme:themeDark}>
+        <ThemeProvider theme={mode == 'light' ? theme : themeDark}>
           <CssBaseline />
           <SnackbarProvider
             anchorOrigin={{
@@ -60,21 +79,26 @@ function MyApp(props: MyAppProps) {
             }}
           >
             <LocalizationProvider dateAdapter={DateAdapter}>
-              <Layout>
-                <SwitchTransition mode="out-in">
-                  <CSSTransition
-                    timeout={100}
-                    key={router.pathname}
-                    classNames="page"
-                    // addEndListener={(node, done) => {
-                    //   node.addEventListener("transitionend", done, false);
-                    // }}
-                  >
-                    <Component {...pageProps} />
-                  </CSSTransition>
-                </SwitchTransition>
-                <AppDialog />
-              </Layout>
+              {!loading && Component.Layout && (
+                <Component.Layout>
+                  <Component {...pageProps} />
+                </Component.Layout>
+              )}
+              {!loading && !Component.Layout && (
+                <Layout>
+                  <SwitchTransition mode="out-in">
+                    <CSSTransition
+                      timeout={100}
+                      key={router.pathname}
+                      classNames="page"
+                    >
+                      <Component {...pageProps} />
+                    </CSSTransition>
+                  </SwitchTransition>
+                </Layout>
+              )}
+              <AppDialog />
+              <NotificationAdapter />
             </LocalizationProvider>
           </SnackbarProvider>
         </ThemeProvider>
@@ -97,6 +121,8 @@ function MyApp(props: MyAppProps) {
 
 MyApp.getInitialProps = async function (ctx) {
   httpConfig()
+  axios.defaults.headers.common.Authorization =
+    'bearer ' + getCookie(`${NAMESPACE}_TOKEN`, ctx)
   return {}
 }
 

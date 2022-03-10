@@ -117,7 +117,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
       set(
         immer((draft) => {
           if (res.data) {
-            draft.data = res.data.items
+            draft.data = res.data.data
             draft.page = parseInt(res.data.page)
             draft.limit = parseInt(res.data.limit)
             draft.total = parseInt(res.data.total)

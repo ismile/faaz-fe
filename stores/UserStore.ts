@@ -7,7 +7,7 @@ export interface IUserModel {
 }
 
 const { useStore } = storeCreator<IUserModel>({
-  apiPath: '/user',
+  apiPath: '/api/user',
   routerPath: '/user'
 })
 

@@ -1,4 +1,9 @@
-import { useForm, Controller, useController, useFormContext} from 'react-hook-form'
+import {
+  useForm,
+  Controller,
+  useController,
+  useFormContext,
+} from 'react-hook-form'
 import TextFieldReact from '@mui/material/TextField'
 
 export default function TextField({
@@ -8,15 +13,17 @@ export default function TextField({
   name,
   variant = 'filled',
   rules = {},
-  sx={}
-}:{
-  control: any,
-  label: string,
-  className?: string,
-  name: string,
-  variant?: 'filled' | 'standard' | 'outlined',
-  rules?: Object,
+  sx = {},
+  type = null,
+}: {
+  control: any
+  label: string
+  className?: string
+  name: string
+  variant?: 'filled' | 'standard' | 'outlined'
+  rules?: Object
   sx?: Object
+  type?: string
 }) {
   const {
     field: { ref, onChange, value },
@@ -39,6 +46,7 @@ export default function TextField({
       error={!!error}
       helperText={error ? error.message : null}
       inputRef={ref}
+      type={type}
       sx={sx}
     />
   )
