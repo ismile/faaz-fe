@@ -25,6 +25,7 @@ import { useAuthStore } from '../stores/AuthStore'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import { NAMESPACE } from '../configs/constant'
+import Box from '@mui/material/Box'
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
@@ -70,38 +71,48 @@ function MyApp(props: MyAppProps) {
             content="minimum-scale=1, initial-scale=1, width=device-width"
           />
         </Head>
-        <ThemeProvider theme={mode == 'light' ? theme : themeDark}>
-          <CssBaseline />
-          <SnackbarProvider
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-          >
-            <LocalizationProvider dateAdapter={DateAdapter}>
-              {!loading && Component.Layout && (
-                <Component.Layout>
-                  <Component {...pageProps} />
-                </Component.Layout>
-              )}
-              {!loading && !Component.Layout && (
-                <Layout>
-                  <SwitchTransition mode="out-in">
-                    <CSSTransition
-                      timeout={100}
-                      key={router.pathname}
-                      classNames="page"
-                    >
-                      <Component {...pageProps} />
-                    </CSSTransition>
-                  </SwitchTransition>
-                </Layout>
-              )}
-              <AppDialog />
-              <NotificationAdapter />
-            </LocalizationProvider>
-          </SnackbarProvider>
-        </ThemeProvider>
+        <Box
+          className={'theme-'+mode}
+          sx={{
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
+        >
+          <ThemeProvider theme={mode == 'light' ? theme : themeDark}>
+            <CssBaseline />
+            <SnackbarProvider
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+            >
+              <LocalizationProvider dateAdapter={DateAdapter}>
+                {!loading && Component.Layout && (
+                  <Component.Layout>
+                    <Component {...pageProps} />
+                  </Component.Layout>
+                )}
+                {!loading && !Component.Layout && (
+                  <Layout>
+                    <SwitchTransition mode="out-in">
+                      <CSSTransition
+                        timeout={100}
+                        key={router.pathname}
+                        classNames="page"
+                      >
+                        <Component {...pageProps} />
+                      </CSSTransition>
+                    </SwitchTransition>
+                  </Layout>
+                )}
+                <AppDialog />
+                <NotificationAdapter />
+              </LocalizationProvider>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </Box>
       </CacheProvider>
     </>
   )

@@ -5,6 +5,7 @@ import { NAMESPACE } from './constant'
 
 export default function httpConfig() {
   axios.defaults.baseURL = 'https://faaz-be.herokuapp.com'
+  // axios.defaults.baseURL = 'http://localhost:3001'
   axios.defaults.headers.common.Authorization =
       'bearer ' + getCookie(`${NAMESPACE}_TOKEN`)
   axios.interceptors.response.use(
