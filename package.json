@@ -11,7 +11,7 @@
   "dependencies": {
     "@date-io/dayjs": "^2.13.1",
     "@emotion/cache": "^11.7.1",
-    "@emotion/react": "^11.8.2",
+    "@emotion/react": "^11.9.0",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.5.0",
@@ -42,7 +42,7 @@
     "zustand": "^3.7.1"
   },
   "devDependencies": {
-    "@emotion/babel-plugin": "^11.7.2",
+    "@emotion/babel-plugin": "^11.9.2",
     "@mui/types": "^7.1.2",
     "@next/bundle-analyzer": "^12.1.0",
     "@types/node": "^16.11.26",

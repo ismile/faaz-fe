@@ -114,7 +114,7 @@ function dataTableCreator<IData>(
             // style={{ width: width, height: height }}
             columns={columns}
             data={data}
-            scroll={{ x: width, y: height - 54 }}
+            scroll={{ x: width-17, y: height - 50 }}
             rowKey={config.rowKey}
             components={TableComponents}
           />
