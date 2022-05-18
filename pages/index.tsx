@@ -189,7 +189,7 @@ const {
       dataIndex: 'nomorIdentitas',
       key: 'nomorIdentitas',
       resizeable: true,
-      width: 'auto',
+      width: 1200,
     },
   ],
 })

@@ -63,7 +63,7 @@ function dataTableCreator<IData>(
     ...config,
   }
 
-  var columns = _columnGenerator(config)
+  var generateColumns = _columnGenerator(config)
   var TableComponents = tableComponentCreator(config)
 
   const TableWatcher = () => {
@@ -90,6 +90,11 @@ function dataTableCreator<IData>(
     const loading = config.useStore(
       (state) => state.loading,
       (o, n) => o == n
+    )
+
+    const columns = config.useStore(
+      (state) => state.columns,
+      (o, n) => JSON.stringify(o) == JSON.stringify(n)
     )
 
     const squareRef = useRef(null)

@@ -18,6 +18,7 @@ export interface IStoreState<IData> {
   order: 'ASC' | 'DSC'
   filter: Object
   columns: Array<Object>
+  columnMap: Map<string, Object>
   columnSetting: {action_: boolean, check_: boolean}
   isAllSelected: boolean
   selected: Object
@@ -79,6 +80,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     order: 'ASC',
     filter: {},
     columns: [],
+    columnMap: {},
     columnSetting: { action_: true, check_: true },
     isAllSelected: false,
     selected: {},
@@ -172,6 +174,10 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
       return set(
         immer((draft) => {
           draft.columns = columns
+          draft.columnMap = columns.reduce((pv, cv)=> {
+            pv[cv.key] = cv
+            return pv
+          }, {})
         })
       )
     },

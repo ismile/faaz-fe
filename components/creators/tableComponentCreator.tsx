@@ -14,6 +14,10 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import queryString from 'query-string'
 import { useHash } from '../../components/others/react-use/useHash'
 import IconButtonMenu from '../mui/IconButtonMenu'
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import immer from 'immer'
 
 const tableComponentCreator = (config) => ({
   table: memo((props) => <Table {...props} />),
@@ -38,9 +42,9 @@ const tableComponentCreator = (config) => ({
         ...restProps
       } = props
 
-      const [columnSetting] = config.useStore(
-        (state) => [state.columnSetting[keyid], state._toggleColumn],
-        (ps, ns) => ps[0] == ns[0]
+      const [columnSetting, _toggleColumn, columnMap, _setColumns] = config.useStore(
+        (state) => [state.columnSetting[keyid], state._toggleColumn, state.columnMap, state._setColumns],
+        (ps, ns) => JSON.stringify(ps[2]) == JSON.stringify(ns[2]),
       )
       const [hash, setHash] = useHash()
       const [order, setOrder] = useState(null)
@@ -59,6 +63,13 @@ const tableComponentCreator = (config) => ({
         query.sort = keyid
         query.order = order
         setHash(queryString.stringify(query))
+      }
+
+      const setPin = (pin) => {
+        const map = immer(columnMap, (d) => {
+          d[keyid].fixed = pin
+        })
+        _setColumns(Object.keys(map).map(k => map[k]))
       }
 
       if (Element) {
@@ -144,8 +155,38 @@ const tableComponentCreator = (config) => ({
                         </IconButtonMenu.ListItemText>
                       </IconButtonMenu.Item>
                       <IconButtonMenu.Divider />
-                      <IconButtonMenu.Item onClick={onClose}>
-                        1
+                      <IconButtonMenu.Item onClick={()=> {
+                        setPin('left');
+                        onClose();
+                      }} disabled={columnMap[keyid].fixed == 'left'}>
+                        <IconButtonMenu.ListItemIcon>
+                          <ArrowCircleLeftIcon fontSize="inherit" />
+                        </IconButtonMenu.ListItemIcon>
+                        <IconButtonMenu.ListItemText>
+                          Pin Left
+                        </IconButtonMenu.ListItemText>
+                      </IconButtonMenu.Item>
+                      <IconButtonMenu.Item onClick={()=> {
+                        setPin('right');
+                        onClose();
+                      }} disabled={columnMap[keyid].fixed == 'right'}>
+                        <IconButtonMenu.ListItemIcon>
+                          <ArrowCircleRightIcon fontSize="inherit" />
+                        </IconButtonMenu.ListItemIcon>
+                        <IconButtonMenu.ListItemText>
+                          Pin Right
+                        </IconButtonMenu.ListItemText>
+                      </IconButtonMenu.Item>
+                      <IconButtonMenu.Item onClick={()=> {
+                        setPin(null);
+                        onClose();
+                      }} disabled={!columnMap[keyid].fixed}>
+                        <IconButtonMenu.ListItemIcon>
+                          <RemoveCircleIcon fontSize="inherit" />
+                        </IconButtonMenu.ListItemIcon>
+                        <IconButtonMenu.ListItemText>
+                          No Pin
+                        </IconButtonMenu.ListItemText>
                       </IconButtonMenu.Item>
                     </>
                   )
