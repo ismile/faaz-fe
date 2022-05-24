@@ -63,7 +63,7 @@ function dataTableCreator<IData>(
     ...config,
   }
 
-  var generateColumns = _columnGenerator(config)
+  var columns = _columnGenerator(config)
   var TableComponents = tableComponentCreator(config)
 
   const TableWatcher = () => {
@@ -102,7 +102,7 @@ function dataTableCreator<IData>(
 
     return (
       <Box sx={{ height: '100%', width: '100%' }} ref={squareRef}>
-        <Box sx={{ position: 'fixed' }} style={{ width, height }}>
+        <Box sx={{ display: 'block' }} style={{ width, height }}>
           {loading && (
             <LinearProgress
               sx={{
