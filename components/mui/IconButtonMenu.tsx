@@ -8,14 +8,16 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 export default function IconButtonMenu({
-  children, Menus, sx, size, className, dense
+  children, Menus, sx, size, className, dense, style,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (event) => {
+    event.stopPropagation();
     setAnchorEl(null);
   };
 
@@ -30,6 +32,7 @@ export default function IconButtonMenu({
         sx={sx}
         size={size}
         className={className}
+        style={style}
       >
         {children}
       </IconButton>

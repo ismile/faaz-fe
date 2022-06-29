@@ -1,29 +1,29 @@
-import RCTable from 'rc-table'
-import { useEffect, useRef, useState } from 'react'
-import useElementSize from '../hooks/useElementSize'
-import tableComponentCreator from './tableComponentCreator'
-import { dataTableFilterCreator } from './dataTableFilterCreator'
-import TablePaginationMaterial from '@mui/material/TablePagination'
+import AddIcon from '@mui/icons-material/Add'
 import MenuIcon from '@mui/icons-material/Menu'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import LinearProgress from '@mui/material/LinearProgress'
-import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import useModal, { IOpenModalFunctionType } from '../hooks/useModal'
-import { useSnackbar, ProviderContext } from 'notistack'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import { useRouter, NextRouter } from 'next/dist/client/router'
-import React from 'react'
-import { UseBoundStore, State } from 'zustand'
-import { IStoreState } from './storeCreator'
-import { useHash } from '../../components/others/react-use/useHash'
+import TablePaginationMaterial from '@mui/material/TablePagination'
+import { NextRouter, useRouter } from 'next/dist/client/router'
+import { ProviderContext, useSnackbar } from 'notistack'
 import queryString from 'query-string'
-import Box from '@mui/material/Box'
+import React, { useEffect, useRef, useState } from 'react'
+import BaseTable from 'react-base-table'
+import 'react-base-table/styles.css'
+import { UseBoundStore } from 'zustand'
+import { useHash } from '../../components/others/react-use/useHash'
+import useElementSize from '../hooks/useElementSize'
+import useModal, { IOpenModalFunctionType } from '../hooks/useModal'
+import { dataTableFilterCreator } from './dataTableFilterCreator'
+import { IStoreState } from './storeCreator'
+import SortIndicator from './table/SortIndicator'
+import TableHeaderCell from './table/TableHeaderCell'
 
 interface ITableMenuActionParams<IData> {
   data: IData
@@ -34,7 +34,7 @@ interface ITableMenuActionParams<IData> {
 }
 
 export interface IDataTableCreatorConfig<IData> {
-  rowKey?: string
+  dataKey?: string
   useStore?: UseBoundStore<IStoreState<IData>>
   dataTableFilterCreator?: Function
   colCheckbox?: Boolean
@@ -48,7 +48,7 @@ export interface IDataTableCreatorConfig<IData> {
 }
 
 const defaultConfig = {
-  rowKey: 'id',
+  dataKey: 'id',
   dataTableFilterCreator: dataTableFilterCreator,
   colCheckbox: true,
   ActionElement: () => {},
@@ -64,7 +64,6 @@ function dataTableCreator<IData>(
   }
 
   var columns = _columnGenerator(config)
-  var TableComponents = tableComponentCreator(config)
 
   const TableWatcher = () => {
     const [hash, setHash] = useHash()
@@ -87,6 +86,11 @@ function dataTableCreator<IData>(
       (o, n) => JSON.stringify(o) == JSON.stringify(n)
     )
 
+    const [sort, order] = config.useStore(
+      (state) => [state.sort, state.order],
+      (o, n) => JSON.stringify(o) == JSON.stringify(n)
+    )
+
     const loading = config.useStore(
       (state) => state.loading,
       (o, n) => o == n
@@ -96,6 +100,19 @@ function dataTableCreator<IData>(
       (state) => state.columns,
       (o, n) => JSON.stringify(o) == JSON.stringify(n)
     )
+
+    const _setColumns = config.useStore(
+      (state) => state._setColumns,
+      (o, n) => true
+    )
+
+    const _onSort = (a) => {
+      var query = queryString.parse(window.location.hash)
+      if (!query) query = {}
+      query.sort = a.key
+      query.order = a.order
+      window.location.hash = '#' + queryString.stringify(query)
+    }
 
     const squareRef = useRef(null)
     const { width, height } = useElementSize(squareRef)
@@ -113,22 +130,29 @@ function dataTableCreator<IData>(
               }}
             />
           )}
-          <RCTable
-            // tableLayout="fixed"
-            // sticky
-            // style={{ width: width, height: height }}
+          <BaseTable
+            fixed
             columns={columns}
             data={data}
-            scroll={{ x: width-17, y: height - 50 }}
-            rowKey={config.rowKey}
-            components={TableComponents}
+            sortBy={{ key: sort, order: order }}
+            onColumnSort={_onSort}
+            width={width}
+            height={height}
+            components={{
+              SortIndicator: SortIndicator,
+              TableHeaderCell: TableHeaderCell
+            }}
+            headerCellProps={{useStore:config.useStore}}
           />
         </Box>
       </Box>
     )
   }
 
-  const CustomView = ({ ItemTemplate, ItemContainer=({children})=> <div>{children}</div> }) => {
+  const CustomView = ({
+    ItemTemplate,
+    ItemContainer = ({ children }) => <div>{children}</div>,
+  }) => {
     const data = config.useStore(
       (state) => state.data,
       (o, n) => JSON.stringify(o) == JSON.stringify(n)
@@ -161,7 +185,7 @@ function dataTableCreator<IData>(
 
           <ItemContainer>
             {data.map((d) => (
-              <ItemTemplate key={d[config.rowKey]} data={d} />
+              <ItemTemplate key={d[config.dataKey]} data={d} />
             ))}
           </ItemContainer>
         </Box>
@@ -269,7 +293,7 @@ function dataTableCreator<IData>(
 
 function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
   var columns = [...config.columns]
-  var rowKey = config.rowKey
+  var rowKey = config.dataKey
   const useStore = config.useStore
 
   columns.forEach((v) => {
@@ -295,131 +319,127 @@ function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
   )
 
   if (config.actions) {
+    const ActionCellRenderer = ({ rowData, rowIndex }) => {
+      const [anchorEl, setAnchorEl] = useState(null)
+      const handleClick = (event) => {
+        setAnchorEl(event.currentTarget)
+      }
+      const handleClose = () => {
+        setAnchorEl(null)
+      }
+
+      const { _openModal } = useModal(
+        (state) => ({ _openModal: state._openModal }),
+        () => true
+      )
+      const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+      const router = useRouter()
+
+      return (
+        <>
+          <IconButton
+            size="small"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleClick}
+            edge="start"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            {config.actions.map((d, i) => {
+              let disabled: boolean = false
+              if (typeof d.disabled == 'function')
+                disabled = d.disabled(rowData, rowIndex)
+              rowIndex
+              return (
+                <MenuItem
+                  key={i}
+                  disabled={disabled}
+                  onClick={() =>
+                    d.action({
+                      data: rowData,
+                      openModal: _openModal,
+                      closeMenu: handleClose,
+                      enqueueSnackbar,
+                      router,
+                    })
+                  }
+                >
+                  <ListItemIcon>
+                    <d.icon fontSize="small" />
+                  </ListItemIcon>
+                  {d.label}
+                </MenuItem>
+              )
+            })}
+          </Menu>
+        </>
+      )
+    }
     columns.unshift({
       title: '',
-      dataIndex: 'action',
+      dataKey: 'action',
       key: 'action_',
       width: 60,
-      fixed: 'left',
-      onHeaderCell: (column) => ({
-        keyid: 'action_',
-      }),
-      onCell: (column) => ({
-        keyid: 'action_',
-      }),
-      render: (data, row, index) => {
-        const [anchorEl, setAnchorEl] = useState(null)
-        const handleClick = (event) => {
-          setAnchorEl(event.currentTarget)
-        }
-        const handleClose = () => {
-          setAnchorEl(null)
-        }
-
-        const { _openModal } = useModal(
-          (state) => ({ _openModal: state._openModal }),
-          () => true
-        )
-        const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-        const router = useRouter()
-
-        return (
-          <>
-            <IconButton
-              size="small"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleClick}
-              edge="start"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              {config.actions.map((d, i) => {
-                let disabled: boolean = false
-                if (typeof d.disabled == 'function')
-                  disabled = d.disabled(row, index)
-
-                return (
-                  <MenuItem
-                    key={i}
-                    disabled={disabled}
-                    onClick={() =>
-                      d.action({
-                        data: row,
-                        openModal: _openModal,
-                        closeMenu: handleClose,
-                        enqueueSnackbar,
-                        router,
-                      })
-                    }
-                  >
-                    <ListItemIcon>
-                      <d.icon fontSize="small" />
-                    </ListItemIcon>
-                    {d.label}
-                  </MenuItem>
-                )
-              })}
-            </Menu>
-          </>
-        )
+      frozen: 'left',
+      cellRenderer: ({ rowData, rowIndex }) => {
+        return <ActionCellRenderer rowData={rowData} rowIndex={rowIndex} />
       },
     })
   }
+
   if (config.colCheckbox) {
+    const ChecboxHeaderRenderer = ({ column }) => {
+      const [isAllSelected, _handleSelectAll] = useStore((state) => [
+        state.isAllSelected,
+        state._handleSelectAll,
+      ])
+      return (
+        <Checkbox
+          key={`check-all`}
+          sx={{ padding: 0 }}
+          checked={isAllSelected}
+          onChange={_handleSelectAll}
+          inputProps={{ 'aria-label': 'primary checkbox' }}
+        />
+      )
+    }
+    const ChecboxChellRenderer = ({ rowData, rowIndex }) => {
+      const [selected, _handleSingleSelect] = useStore((state) => [
+        state.selected,
+        state._handleSingleSelect,
+      ])
+      return (
+        <Checkbox
+          key={`checkbox-${rowData[rowKey]}`}
+          sx={{ padding: 0 }}
+          checked={!!selected[rowData[rowKey]]}
+          onChange={function (ev, val) {
+            _handleSingleSelect(rowData, val)
+          }}
+          inputProps={{ 'aria-label': 'primary checkbox' }}
+        />
+      )
+    }
     columns.unshift({
       title: 'Checkbox',
       key: 'check_',
-      dataIndex: 'check',
+      dataKey: 'check',
       width: 60,
-      fixed: 'left',
-      onCell: (column) => ({
-        keyid: 'check_',
-      }),
-      onHeaderCell: (column) => ({
-        width: column.width,
-        type: 'checkbox',
-        keyid: 'check_',
-        Element: () => {
-          const [isAllSelected, _handleSelectAll] = useStore((state) => [
-            state.isAllSelected,
-            state._handleSelectAll,
-          ])
-          return (
-            <Checkbox
-              key={`check-all`}
-              sx={{ padding: 0 }}
-              checked={isAllSelected}
-              onChange={_handleSelectAll}
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-          )
-        },
-      }),
-      render: (v, d) => {
-        const [selected, _handleSingleSelect] = useStore((state) => [
-          state.selected,
-          state._handleSingleSelect,
-        ])
-        return (
-          <Checkbox
-            key={`checkbox-${d[rowKey]}`}
-            sx={{ padding: 0 }}
-            checked={!!selected[d[rowKey]]}
-            onChange={function (ev, val) {
-              _handleSingleSelect(d, val)
-            }}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        )
-      },
+      frozen: 'left',
+      headerRenderer: ({ column, columnIndex }) => (
+        <ChecboxHeaderRenderer column={column} />
+      ),
+      cellRenderer: ({ rowData, rowIndex }) => (
+        <ChecboxChellRenderer rowData={rowData} />
+      ),
     })
   }
 

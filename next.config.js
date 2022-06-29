@@ -1,13 +1,13 @@
-const withPlugins = require('next-compose-plugins');
+const withPlugins = require('next-compose-plugins')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: false,
 })
 
-module.exports = module.exports = withPlugins(
-  [withBundleAnalyzer],
-  {
-    typescript: {
-      ignoreBuildErrors: true,
-    },
+module.exports = module.exports = withPlugins([withBundleAnalyzer], {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  compiler: {
+    emotion: true
   }
-)
+})

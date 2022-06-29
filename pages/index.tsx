@@ -180,13 +180,21 @@ const {
   columns: [
     {
       title: 'Nama',
-      dataIndex: 'nama',
+      dataKey: 'nama',
       key: 'nama',
       width: 100,
+      sortable: true,
+    },
+    {
+      title: 'Email',
+      dataKey: 'email',
+      key: 'email',
+      width: 200,
+      sortable: true,
     },
     {
       title: 'Nomor Identitas',
-      dataIndex: 'nomorIdentitas',
+      dataKey: 'nomorIdentitas',
       key: 'nomorIdentitas',
       resizeable: true,
       width: 1200,
