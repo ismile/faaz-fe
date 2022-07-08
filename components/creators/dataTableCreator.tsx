@@ -134,15 +134,16 @@ function dataTableCreator<IData>(
             fixed
             columns={columns}
             data={data}
-            sortBy={{ key: sort, order: order }}
+            sortBy={{ key: sort, order: order.toLowerCase() }}
             onColumnSort={_onSort}
             width={width}
             height={height}
+            usestore={config.useStore}
             components={{
               SortIndicator: SortIndicator,
               TableHeaderCell: TableHeaderCell
             }}
-            headerCellProps={{useStore:config.useStore}}
+            // headerCellProps={{usestore:config.useStore}}
           />
         </Box>
       </Box>

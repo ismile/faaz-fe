@@ -26,11 +26,11 @@ export default function TableHeaderCell({
         sx={{ order: 2, height: 31 }}
         Menus={({ onClose }) => {
           const [sort, order, columns] =
-            container.props.headerCellProps.useStore(
+            container.props.usestore(
               (state) => [state.sort, state.order, state.columns],
               (ps, ns) => JSON.stringify(ps) == JSON.stringify(ns)
             )
-          const _setColumns = container.props.headerCellProps.useStore(
+          const _setColumns = container.props.usestore(
             (state) => state._setColumns,
             (o, n) => true
           )
