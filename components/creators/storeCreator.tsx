@@ -193,7 +193,8 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     _toggleColumn: (key) => {
       return set(
         immer((draft) => {
-          draft.columnSetting[key] = !draft.columnSetting[key]
+          var col = draft.columns.find((x)=> x.key === key)
+          col.hidden = !col.hidden
         })
       )
     },

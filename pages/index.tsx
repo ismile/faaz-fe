@@ -22,6 +22,7 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import CardActionArea from '@mui/material/CardActionArea'
 import Grid from '@mui/material/Grid'
+import DataTable from '../components/table/DataTable'
 
 export default function User() {
   const [_toggleFilterOpen, _fetch] = useUserStore(
@@ -70,7 +71,7 @@ export default function User() {
             }}
           >
             <Box sx={{ flex: 1 }}>
-              {view == 'table' && <DataTable />}
+              {view == 'table' && <DataTable useStore={useUserStore} />}
               {view == 'grid' && (
                 <CustomView
                   ItemContainer={({ children }) => (
@@ -109,7 +110,13 @@ export default function User() {
                 />
               )}
             </Box>
-            <Toolbar sx={{ display: 'flex', flexDirection: 'row', borderTop: '1px solid rgba(0,0,0,.2)'}}>
+            <Toolbar
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                borderTop: '1px solid rgba(0,0,0,.2)',
+              }}
+            >
               <IconButton sx={{ marginRight: 2 }} onClick={_toggleFilterOpen}>
                 <FilterListIcon />
               </IconButton>
@@ -141,7 +148,6 @@ export default function User() {
 }
 
 const {
-  DataTable,
   TableFilter,
   TablePagination,
   TableWatcher,
@@ -153,12 +159,15 @@ const {
     {
       label: 'Edit',
       icon: EditIcon,
-      disabled: (d, i) => {
-        return d.firstName == 'Ismail'
+      disabled: (d) => {
+        return d.index == 0
       },
       action: ({ data, router }) => {
         router.push(`${useUserStore.getState().apiPath}/${data.id}`)
       },
+    },
+    {
+      type: 'divider',
     },
     {
       label: 'Delete',
@@ -170,7 +179,7 @@ const {
         closeMenu()
         if (d) {
           var res = await useUserStore.getState()._delete(data.id, true)
-          showSnackbar('Data telah berhasil di hapus.', {
+          enqueueSnackbar('Data telah berhasil di hapus.', {
             variant: 'success',
           })
         }

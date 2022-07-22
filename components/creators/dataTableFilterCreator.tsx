@@ -24,18 +24,19 @@ import SwipeableViews from 'react-swipeable-views'
 import DataFilterField from '../form/DataFilterField'
 
 export function dataTableFilterCreator(useStore) {
-  const SwitchTable = ({ dataKey }) => {
+  const SwitchTable = ({ dataKey, hidden }) => {
     const [columnSetting, _toggleColumn] = useStore(
       (state) => [state.columnSetting[dataKey], state._toggleColumn],
       (ps, ns) => ps[0] == ns[0]
     )
+
     return (
       <Switch
         edge="end"
         onChange={(e, v) => {
           _toggleColumn(dataKey)
         }}
-        checked={Boolean(columnSetting)}
+        checked={!hidden}
         inputProps={{ 'aria-labelledby': 'switch-list-label-wifi' }}
       />
     )
@@ -96,7 +97,7 @@ export function dataTableFilterCreator(useStore) {
   const ColumnSelector = () => {
     const columns = useStore(
       (state) => state.columns,
-      (ps, ns) => true
+      (ps, ns) => JSON.stringify(ps) === JSON.stringify(ns)
     )
 
     return (
@@ -114,12 +115,12 @@ export function dataTableFilterCreator(useStore) {
       >
         {columns
           .filter((d) => !(d.key == 'action_' || d.key == 'check_'))
-          .map((d) => {
+          .map((d, i) => {
             return (
               <ListItem key={d.key}>
                 <ListItemText id={'switch_' + d.key} primary={d.title} />
                 <ListItemSecondaryAction>
-                  <SwitchTable dataKey={d.key} />
+                  <SwitchTable dataKey={d.key} hidden={d.hidden} />
                 </ListItemSecondaryAction>
               </ListItem>
             )

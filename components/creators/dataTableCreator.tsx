@@ -24,6 +24,7 @@ import { dataTableFilterCreator } from './dataTableFilterCreator'
 import { IStoreState } from './storeCreator'
 import SortIndicator from './table/SortIndicator'
 import TableHeaderCell from './table/TableHeaderCell'
+import IconButtonMenu from '../mui/IconButtonMenu'
 
 interface ITableMenuActionParams<IData> {
   data: IData
@@ -141,7 +142,7 @@ function dataTableCreator<IData>(
             usestore={config.useStore}
             components={{
               SortIndicator: SortIndicator,
-              TableHeaderCell: TableHeaderCell
+              TableHeaderCell: TableHeaderCell,
             }}
             // headerCellProps={{usestore:config.useStore}}
           />
@@ -338,49 +339,20 @@ function _columnGenerator<IData>(config: IDataTableCreatorConfig<IData>) {
 
       return (
         <>
-          <IconButton
+          <IconButtonMenu
             size="small"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleClick}
-            edge="start"
+            menus={config.actions}
+            data={{
+              data: rowData,
+              index: rowIndex,
+              openModal: _openModal,
+              closeMenu: handleClose,
+              enqueueSnackbar,
+              router,
+            }}
           >
             <MenuIcon />
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            {config.actions.map((d, i) => {
-              let disabled: boolean = false
-              if (typeof d.disabled == 'function')
-                disabled = d.disabled(rowData, rowIndex)
-              rowIndex
-              return (
-                <MenuItem
-                  key={i}
-                  disabled={disabled}
-                  onClick={() =>
-                    d.action({
-                      data: rowData,
-                      openModal: _openModal,
-                      closeMenu: handleClose,
-                      enqueueSnackbar,
-                      router,
-                    })
-                  }
-                >
-                  <ListItemIcon>
-                    <d.icon fontSize="small" />
-                  </ListItemIcon>
-                  {d.label}
-                </MenuItem>
-              )
-            })}
-          </Menu>
+          </IconButtonMenu>
         </>
       )
     }

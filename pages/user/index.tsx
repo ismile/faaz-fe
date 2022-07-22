@@ -109,7 +109,13 @@ export default function User() {
                 />
               )}
             </Box>
-            <Toolbar sx={{ display: 'flex', flexDirection: 'row', borderTop: '1px solid rgba(0,0,0,.2)'}}>
+            <Toolbar
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                borderTop: '1px solid rgba(0,0,0,.2)',
+              }}
+            >
               <IconButton sx={{ marginRight: 2 }} onClick={_toggleFilterOpen}>
                 <FilterListIcon />
               </IconButton>
@@ -180,25 +186,24 @@ const {
   columns: [
     {
       title: 'Nama',
-      dataIndex: 'nama',
+      dataKey: 'nama',
       key: 'nama',
       width: 100,
-    },
-    {
-      title: 'Nomor Identitas',
-      dataIndex: 'nomorIdentitas',
-      key: 'nomorIdentitas'
-    },
-    {
-      title: 'Nama User',
-      dataIndex: 'namaUser',
-      key: 'namaUser'
+      sortable: true,
     },
     {
       title: 'Email',
-      dataIndex: 'email',
+      dataKey: 'email',
       key: 'email',
-      resizeable: true
+      width: 200,
+      sortable: true,
+    },
+    {
+      title: 'Nomor Identitas',
+      dataKey: 'nomorIdentitas',
+      key: 'nomorIdentitas',
+      resizeable: true,
+      width: 1200,
     },
   ],
 })
