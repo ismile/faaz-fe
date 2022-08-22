@@ -10,7 +10,7 @@ import queryString from 'query-string'
 import immer from 'immer'
 import RemoveIcon from '@mui/icons-material/Remove'
 
-export default function TableHeaderCell({
+export default function FDataTableHeaderCell({
   className,
   column,
   columnIndex,

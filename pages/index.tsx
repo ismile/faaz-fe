@@ -1,115 +1,93 @@
-import Typography from '@mui/material/Typography'
-import Paper from '@mui/material/Paper'
-import Toolbar from '@mui/material/Toolbar'
-import dataTableCreator from '../components/creators/dataTableCreator'
-import IconButton from '@mui/material/IconButton'
+import AddIcon from '@mui/icons-material/Add'
 import FilterListIcon from '@mui/icons-material/FilterList'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { IUserModel, useUserStore } from '../stores/UserStore'
+import GridViewIcon from '@mui/icons-material/GridView'
+import ListIcon from '@mui/icons-material/List'
+import RefreshIcon from '@mui/icons-material/Refresh'
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import ButtonGroup from '@mui/material/ButtonGroup'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import ListIcon from '@mui/icons-material/List'
-import GridViewIcon from '@mui/icons-material/GridView'
-import Divider from '@mui/material/Divider'
+import Toolbar from '@mui/material/Toolbar'
+import { useRouter } from 'next/dist/client/router'
 import { useState } from 'react'
-
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import CardActionArea from '@mui/material/CardActionArea'
-import Grid from '@mui/material/Grid'
-import DataTable from '../components/table/DataTable'
+import FLayout from '../components/faaz/layout/FLayout'
+import FDataTable from '../components/faaz/table/FDataTable'
+import FDataTableFilter from '../components/faaz/table/FDataTableFilter'
+import FDataTablePagination from '../components/faaz/table/FDataTablePagination'
+import FDataTableWatcher from '../components/faaz/table/FDataTableWatcher'
+import FToolbar from '../components/faaz/toolbar/FToolbar'
+import { useUserStore } from '../stores/UserStore'
 
 export default function User() {
-  const [_toggleFilterOpen, _fetch] = useUserStore(
-    (state) => [state._toggleFilterOpen, state._fetch],
+  const [_toggleFilterOpen, _fetch, routerPath] = useUserStore(
+    (state) => [state._toggleFilterOpen, state._fetch, state.routerPath],
     (ps, ns) => true
   )
   const [view, setView] = useState('table')
+  const router = useRouter()
 
   return (
-    <Box
-      sx={{
-        height: '100%',
-        weight: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
-        <Box sx={{ flex: 1, display: { xs: 'none', sm: 'flex' } }} />
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          SAMPLE GRID
-        </Typography>
-        <Box sx={{ flex: 1, display: 'flex' }}>
-          <Box sx={{ flex: 1 }} />
-
-          <DefaultTopAction />
-        </Box>
-      </Toolbar>
-
-      <Container sx={{ flex: 1, display: 'flex' }}>
-        <Paper
-          sx={{
-            display: 'flex',
-            flex: 1,
-            flexDirection: 'row',
-            marginBottom: '0.25rem',
-          }}
-        >
-          <TableFilter />
-          <Box
-            sx={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
-            <Box sx={{ flex: 1 }}>
-              {view == 'table' && <DataTable useStore={useUserStore} />}
-              {view == 'grid' && (
-                <CustomView
-                  ItemContainer={({ children }) => (
-                    <Grid container spacing={4} padding={4}>
-                      {children}
-                    </Grid>
-                  )}
-                  ItemTemplate={({ data }) => (
-                    <Grid item xs={12} md={4} lg={3}>
-                      <Card>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            height="140"
-                            image="https://picsum.photos/140/366"
-                            alt="green iguana"
-                          />
-                          <CardContent>
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              {data.firstName}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Lizards are a widespread group of squamate
-                              reptiles, with over 6,000 species, ranging across
-                              all continents except Antarctica
-                            </Typography>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
-                    </Grid>
-                  )}
-                />
-              )}
-            </Box>
+    <FLayout
+      FToolbar={() => (
+        <FToolbar
+          title="User"
+          actions={[
+            {
+              text: 'Refresh',
+              variant: 'text',
+              startIcon: <RefreshIcon />,
+              sx: {
+                marginRight: '0.5rem',
+                color: 'text.primary',
+              },
+              onClick: () => _fetch(),
+            },
+            {
+              text: 'Tambah',
+              color: 'secondary',
+              variant: 'contained',
+              startIcon: <AddIcon />,
+              sx: {
+                color: 'text.primary',
+              },
+              onClick: () => router.push(`${routerPath}/new`),
+            },
+          ]}
+        />
+      )}
+      FLeftContent={() => <FDataTableFilter useStore={useUserStore} />}
+      FContent={() => (
+        <FDataTable
+          useStore={useUserStore}
+          columns={[
+            {
+              title: 'Nama',
+              dataKey: 'nama',
+              key: 'nama',
+              width: 100,
+              sortable: true,
+            },
+            {
+              title: 'Email',
+              dataKey: 'email',
+              key: 'email',
+              width: 200,
+              sortable: true,
+            },
+            {
+              title: 'Nomor Identitas',
+              dataKey: 'nomorIdentitas',
+              key: 'nomorIdentitas',
+              resizeable: true,
+              width: 1200,
+            },
+          ]}
+        />
+      )}
+      FBottomContent={() => {
+        return (
+          <>
             <Toolbar
               sx={{
                 display: 'flex',
@@ -135,78 +113,12 @@ export default function User() {
                 </ToggleButton>
               </ToggleButtonGroup>
               <Box sx={{ flex: 1 }} />
-              <TablePagination />
+              <FDataTablePagination useStore={useUserStore} />
             </Toolbar>
-          </Box>
-        </Paper>
-      </Container>
-      <TableWatcher />
-
-      {/* </Paper> */}
-    </Box>
+            <FDataTableWatcher useStore={useUserStore} />
+          </>
+        )
+      }}
+    />
   )
 }
-
-const {
-  TableFilter,
-  TablePagination,
-  TableWatcher,
-  DefaultTopAction,
-  CustomView,
-} = dataTableCreator<IUserModel>({
-  useStore: useUserStore,
-  actions: [
-    {
-      label: 'Edit',
-      icon: EditIcon,
-      disabled: (d) => {
-        return d.index == 0
-      },
-      action: ({ data, router }) => {
-        router.push(`${useUserStore.getState().apiPath}/${data.id}`)
-      },
-    },
-    {
-      type: 'divider',
-    },
-    {
-      label: 'Delete',
-      icon: DeleteIcon,
-      action: async ({ data, openModal, closeMenu, enqueueSnackbar }) => {
-        var d = await openModal({
-          body: 'Apakah anda yakin akan menghapus data ini?',
-        })
-        closeMenu()
-        if (d) {
-          var res = await useUserStore.getState()._delete(data.id, true)
-          enqueueSnackbar('Data telah berhasil di hapus.', {
-            variant: 'success',
-          })
-        }
-      },
-    },
-  ],
-  columns: [
-    {
-      title: 'Nama',
-      dataKey: 'nama',
-      key: 'nama',
-      width: 100,
-      sortable: true,
-    },
-    {
-      title: 'Email',
-      dataKey: 'email',
-      key: 'email',
-      width: 200,
-      sortable: true,
-    },
-    {
-      title: 'Nomor Identitas',
-      dataKey: 'nomorIdentitas',
-      key: 'nomorIdentitas',
-      resizeable: true,
-      width: 1200,
-    },
-  ],
-})

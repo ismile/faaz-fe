@@ -1,14 +1,16 @@
 import immer from 'immer'
 import zustand from 'zustand'
-import axios, {AxiosResponse} from 'axios'
+import axios, { AxiosResponse } from 'axios'
+
 interface IStoreCreatorConfig {
   rowKey?: String
   apiPath?: String
-  store?: Function,
-  routerPath?: String,
+  store?: Function
+  routerPath?: String
 }
 
 export interface IStoreState<IData> {
+  rowKey: String,
   loading: boolean
   data: Array<IData>
   page: number
@@ -19,7 +21,7 @@ export interface IStoreState<IData> {
   filter: Object
   columns: Array<Object>
   columnMap: Map<string, Object>
-  columnSetting: {action_: boolean, check_: boolean}
+  columnSetting: { action_: boolean; check_: boolean }
   isAllSelected: boolean
   selected: Object
   selectedArr: Array<Object>
@@ -33,17 +35,20 @@ export interface IStoreState<IData> {
     limit: number
     total: number
   }>
-  _getOne: (id: string|string[]) => AxiosResponse<IData>
+  _getOne: (id: string | string[]) => AxiosResponse<IData>
   _create: (data: IData, fetch?: boolean) => AxiosResponse<IData>
   _update: (data: IData, fetch?: boolean) => AxiosResponse<IData>
   _delete: (id: string, fetch?: boolean) => AxiosResponse<IData>
-  _toggleColumn: (key: string)=>void
-  _toggleFilterOpen: ()=>void
+  _toggleColumn: (key: string) => void
+  _toggleFilterOpen: () => void
   _setSort: (sort: string, order: 'ASC' | 'DSC') => void
-  _setColumns: (columns:Array<Object>)=>void
-  _setColumnSetting: (columnSetting:{action_: boolean, check_: boolean})=> void
-  _handleSingleSelect:(d:IData, val: boolean) => void
-  _handleSelectAll: ()=>void
+  _setColumns: (columns: Array<Object>) => void
+  _setColumnSetting: (columnSetting: {
+    action_: boolean
+    check_: boolean
+  }) => void
+  _handleSingleSelect: (d: IData, val: boolean) => void
+  _handleSelectAll: () => void
 }
 
 export interface IFetchParams {
@@ -53,16 +58,18 @@ export interface IFetchParams {
   sort?: string
 }
 
-const defaultConfig = {
-  rowKey: 'id',
-  apiPath: '/user',
-  routerPath: '/user',
-  store: (set, get) => {
-    return {}
-  }
-}
 
-function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
+
+function storeCreator<IData>(config: IStoreCreatorConfig) {
+  const defaultConfig = {
+    rowKey: 'id',
+    apiPath: '/user',
+    routerPath: '/user',
+    store: (set, get) => {
+      return {}
+    },
+  }
+
   config = {
     ...defaultConfig,
     ...config,
@@ -71,6 +78,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
   const rowKey = config.rowKey
 
   const useStore = zustand<IStoreState<IData>>((set, get) => ({
+    rowKey: config.rowKey,
     loading: false,
     data: [],
     page: 1,
@@ -81,7 +89,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     filter: {},
     columns: [],
     columnMap: {},
-    columnSetting: { action_: true, check_: true },
+    columnSetting: {},
     isAllSelected: false,
     selected: {},
     selectedArr: [],
@@ -89,7 +97,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     apiPath: config.apiPath,
     routerPath: config.routerPath,
 
-    _fetch: async (params:any = {}) => {
+    _fetch: async (params: any = {}) => {
       if (params.page == null || params.page == undefined)
         params.page = get().page
       if (params.limit == null || params.limit == undefined)
@@ -106,8 +114,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
       }
 
       if (query.field && query.criteria) {
-        query[query.field + '__' + query.criteria] =
-          query.key
+        query[query.field + '__' + query.criteria] = query.key
       }
 
       delete query.field
@@ -152,13 +159,13 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     _create: async (data, fetch = false) => {
       const res = await axios.post(get().apiPath, data)
       if (fetch) get()._fetch()
-      return res;
+      return res
     },
 
     _update: async (data, fetch = false) => {
-      const res = await axios.put(get().apiPath+"/"+data.id, data)
+      const res = await axios.put(get().apiPath + '/' + data.id, data)
       if (fetch) get()._fetch()
-      return res;
+      return res
     },
 
     _setSort: (sort, order) => {
@@ -174,7 +181,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
       return set(
         immer((draft) => {
           draft.columns = columns
-          draft.columnMap = columns.reduce((pv, cv)=> {
+          draft.columnMap = columns.reduce((pv, cv) => {
             pv[cv.key] = cv
             return pv
           }, {})
@@ -193,7 +200,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
     _toggleColumn: (key) => {
       return set(
         immer((draft) => {
-          var col = draft.columns.find((x)=> x.key === key)
+          var col = draft.columns.find((x) => x.key === key)
           col.hidden = !col.hidden
         })
       )
@@ -241,7 +248,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig = defaultConfig) {
           })
         })
       ),
-    ...config.store(set, get)
+    ...config.store(set, get),
   }))
 
   return {

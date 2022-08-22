@@ -1,4 +1,4 @@
-import storeCreator from "../components/creators/storeCreator";
+import storeCreator from '../components/creators/storeCreator'
 
 export interface IUserModel {
   id: string

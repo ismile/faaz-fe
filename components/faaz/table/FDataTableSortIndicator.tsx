@@ -3,7 +3,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import IconButton from '@mui/material/IconButton'
 
-export default function SortIndicator({ sortOrder, className }) {
+export default function FDataTableSortIndicator({ sortOrder, className }) {
   return sortOrder === 'asc' ? (
     <div className={className}>
       <IconButton size="small">
