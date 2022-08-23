@@ -15,6 +15,7 @@ import FLayout from '../components/faaz/layout/FLayout'
 import FDataTable from '../components/faaz/table/FDataTable'
 import FDataTableFilter from '../components/faaz/table/FDataTableFilter'
 import FDataTablePagination from '../components/faaz/table/FDataTablePagination'
+import FDataTablePaginationBar from '../components/faaz/table/FDataTablePaginationBar'
 import FDataTableWatcher from '../components/faaz/table/FDataTableWatcher'
 import FToolbar from '../components/faaz/toolbar/FToolbar'
 import { useUserStore } from '../stores/UserStore'
@@ -36,7 +37,7 @@ export default function User() {
             {
               text: 'Refresh',
               variant: 'text',
-              startIcon: <RefreshIcon />,
+              icon: <RefreshIcon />,
               sx: {
                 marginRight: '0.5rem',
                 color: 'text.primary',
@@ -47,7 +48,7 @@ export default function User() {
               text: 'Tambah',
               color: 'secondary',
               variant: 'contained',
-              startIcon: <AddIcon />,
+              icon: <AddIcon />,
               sx: {
                 color: 'text.primary',
               },
@@ -85,40 +86,31 @@ export default function User() {
           ]}
         />
       )}
-      FBottomContent={() => {
-        return (
-          <>
-            <Toolbar
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                borderTop: '1px solid rgba(0,0,0,.2)',
-              }}
-            >
-              <IconButton sx={{ marginRight: 2 }} onClick={_toggleFilterOpen}>
-                <FilterListIcon />
-              </IconButton>
-              <Divider sx={{ marginRight: 3 }} orientation="vertical" />
-              <ToggleButtonGroup
-                size="small"
-                exclusive
-                value={view}
-                onChange={(e, v) => setView(v)}
-              >
-                <ToggleButton value="table">
-                  <ListIcon />
-                </ToggleButton>
-                <ToggleButton value="grid">
-                  <GridViewIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-              <Box sx={{ flex: 1 }} />
-              <FDataTablePagination useStore={useUserStore} />
-            </Toolbar>
-            <FDataTableWatcher useStore={useUserStore} />
-          </>
-        )
-      }}
+      FBottomContent={() => (
+        <FDataTablePaginationBar
+          useStore={useUserStore}
+          FLeftContent={() => {
+            return (
+              <>
+                <Divider sx={{ marginRight: 3 }} orientation="vertical" />
+                <ToggleButtonGroup
+                  size="small"
+                  exclusive
+                  value={view}
+                  onChange={(e, v) => setView(v)}
+                >
+                  <ToggleButton value="table">
+                    <ListIcon />
+                  </ToggleButton>
+                  <ToggleButton value="grid">
+                    <GridViewIcon />
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </>
+            )
+          }}
+        />
+      )}
     />
   )
 }
