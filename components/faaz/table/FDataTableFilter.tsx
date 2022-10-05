@@ -21,7 +21,7 @@ import queryString from 'query-string'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import SwipeableViews from 'react-swipeable-views'
-import DataFilterField from '../../form/DataFilterField'
+import DataFilterField from '../form/DataFilterField'
 import DataTable from './FDataTable'
 
 const SwitchTable = ({ useStore, dataKey, hidden }) => {

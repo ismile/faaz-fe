@@ -9,7 +9,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Slide from '@mui/material/Slide'
 import { useMediaQuery } from '@mui/material'
-import theme from '../../configs/theme'
+import theme from '../../../configs/theme'
 import isNil from 'lodash/isNil'
 
 export interface IOpenModalParam {

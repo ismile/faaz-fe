@@ -2,7 +2,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { useRouter } from 'next/dist/client/router'
 import { useSnackbar } from 'notistack'
 import React, { useState } from "react"
-import useModal from '../../hooks/useModal'
+import useModal from '../hooks/useModal'
 import IconButtonMenu from '../../mui/IconButtonMenu'
 
 const FDataTableCellActionRenderer = ({ rowData, rowIndex, actions }) => {

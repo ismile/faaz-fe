@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import useElementSize from '../../hooks/useElementSize'
+import useElementSize from '../hooks/useElementSize'
 import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
 

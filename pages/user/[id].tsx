@@ -2,17 +2,17 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
-import TextField from '../../components/form/TextField'
-import CheckBoxField from '../../components/form/CheckBoxField'
+import TextField from '../../components/faaz/form/TextField'
+import CheckBoxField from '../../components/faaz/form/CheckBoxField'
 import { useUserStore } from '../../stores/UserStore'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/dist/client/router'
 import Button from '@mui/material/Button'
 import { useEffect, useState } from 'react'
-import RadioField from '../../components/form/RadioField'
-import AutocompleteField from '../../components/form/AutocompleteField'
-import DateField from '../../components/form/DateField'
-import SwitchField from '../../components/form/SwitchField'
+import RadioField from '../../components/faaz/form/RadioField'
+import AutocompleteField from '../../components/faaz/form/AutocompleteField'
+import DateField from '../../components/faaz/form/DateField'
+import SwitchField from '../../components/faaz/form/SwitchField'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
@@ -22,7 +22,7 @@ import DataFilter, {
   TYPE_STRING,
   TYPE_NUMBER,
 } from '../../components/others/Datafilter'
-import DataFilterField from '../../components/form/DataFilterField'
+import DataFilterField from '../../components/faaz/form/DataFilterField'
 
 interface Object {
   url: string

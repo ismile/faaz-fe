@@ -6,7 +6,7 @@ import BaseTable from 'react-base-table'
 import 'react-base-table/styles.css'
 import FDataTableSortIndicator from './FDataTableSortIndicator'
 import FDataTableHeaderCell from './FDataTableHeaderCell'
-import useElementSize from '../../hooks/useElementSize'
+import useElementSize from '../hooks/useElementSize'
 import FDataTableCellActionRenderer from '../../faaz/table/FDataTableCellActionRenderer'
 import FDataTableCellCheckboxRenderer, {
   FDataTableHeaderCheckboxRenderer,

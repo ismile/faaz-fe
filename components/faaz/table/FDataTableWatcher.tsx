@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useHash } from '../../others/react-use/useHash'
+import { useHash } from '../hooks/useHash'
 import queryString from 'query-string'
 
 const FDataTableWatcher = ({useStore}) => {

@@ -5,7 +5,7 @@ import {
   useFormContext,
 } from 'react-hook-form'
 import TextFieldReact from '@mui/material/TextField'
-import DataFilter, {TYPE_STRING, TYPE_NUMBER} from '../others/Datafilter'
+import DataFilter, {TYPE_STRING, TYPE_NUMBER} from '../../others/Datafilter'
 
 
 function DataFilterField({

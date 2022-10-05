@@ -10,9 +10,9 @@ import Badge from '@mui/material/Badge'
 import Tooltip from '@mui/material/Tooltip'
 import SearchBar from './others/SearchBar'
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles'
-import useSidebarStore from './hooks/useSidebarStore'
+import useSidebarStore from './faaz/hooks/useSidebarStore'
 import Switch, { SwitchProps } from '@mui/material/Switch'
-import useSettingStore from './hooks/useSettingStore'
+import useSettingStore from './faaz/hooks/useSettingStore'
 
 export default function () {
   const [open, _toggle] = useSidebarStore((store) => [

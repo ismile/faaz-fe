@@ -10,7 +10,7 @@ interface IStoreCreatorConfig {
 }
 
 export interface IStoreState<IData> {
-  rowKey: String,
+  rowKey: String
   loading: boolean
   data: Array<IData>
   page: number
@@ -58,9 +58,15 @@ export interface IFetchParams {
   sort?: string
 }
 
-
-
-function storeCreator<IData>(config: IStoreCreatorConfig) {
+function storeCreator<IData, IStoreCustom>(
+  f: (
+    set: (
+      partial: Partial<IStoreState<IData> & IStoreCustom>,
+      replace?: boolean
+    ) => void,
+    get: () => IStoreState<IData> & IStoreCustom
+  ) => IStoreCustom
+) {
   const defaultConfig = {
     rowKey: 'id',
     apiPath: '/user',
@@ -70,6 +76,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig) {
     },
   }
 
+  let config: IStoreCreatorConfig = {}
   config = {
     ...defaultConfig,
     ...config,
@@ -77,7 +84,7 @@ function storeCreator<IData>(config: IStoreCreatorConfig) {
 
   const rowKey = config.rowKey
 
-  const useStore = zustand<IStoreState<IData>>((set, get) => ({
+  const useStore = zustand<IStoreState<IData> & IStoreCustom>((set, get) => ({
     rowKey: config.rowKey,
     loading: false,
     data: [],
@@ -249,11 +256,10 @@ function storeCreator<IData>(config: IStoreCreatorConfig) {
         })
       ),
     ...config.store(set, get),
+    ...f(set, get)
   }))
 
-  return {
-    useStore,
-  }
+  return useStore
 }
 
 storeCreator.immer = immer

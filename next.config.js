@@ -8,6 +8,6 @@ module.exports = module.exports = withPlugins([withBundleAnalyzer], {
     ignoreBuildErrors: true,
   },
   compiler: {
-    emotion: true
-  }
+    emotion: true,
+  },
 })
