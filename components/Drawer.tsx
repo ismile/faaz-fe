@@ -21,7 +21,7 @@ import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import DraftsIcon from '@mui/icons-material/Drafts'
 import Avatar from '@mui/material/Avatar'
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from '@mui/icons-material/Logout'
 
 export default function Drawer() {
   const [open, _toggle, _set] = useSidebarStore((store) => [
@@ -66,8 +66,8 @@ export default function Drawer() {
         </DrawerItem>
         <DrawerItem
           button
-          selected={pathname == '/user'}
-          onClick={() => push('/user')}
+          selected={pathname == '/sample-dialog'}
+          onClick={() => push('/sample-dialog')}
         >
           <ListItemIcon>
             <ChatBubbleIcon />
@@ -77,7 +77,7 @@ export default function Drawer() {
 
         <Divider />
 
-        <DrawerItem button>
+        <DrawerItem button onClick={() => push('/sample-dialog')}>
           <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
@@ -95,7 +95,7 @@ export default function Drawer() {
         <ListItem
           onClick={() => push('/')}
           secondaryAction={
-            <IconButton edge="end" onClick={()=> push('/account/login')}>
+            <IconButton edge="end" onClick={() => push('/account/login')}>
               <LogoutIcon />
             </IconButton>
           }

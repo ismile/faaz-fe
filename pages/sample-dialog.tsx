@@ -22,8 +22,11 @@ export default function UserForm() {
     () => true
   )
 
-  const _handleConfirmDialog = async () => {
-    var d = await _openModal({ body: 'Konfirmasi Dialog' })
+  const _handleConfirmDialog = async (id = 'default') => {
+    var d = await _openModal(
+      { body: 'Konfirmasi Dialog', fullWidth: false },
+      id
+    )
     console.log(d)
     if (d) {
       enqueueSnackbar('Confirmed!', { variant: 'success' })
@@ -42,43 +45,46 @@ export default function UserForm() {
     enqueueSnackbar('closed', { variant: 'info' })
   }
 
-  const _handleCustomAction = async () => {
-    var d = await _openModal({
-      title: 'Custom Action',
-      body: 'Hello World!',
-      actions: ({ _resolve }) => (
-        <>
-          <Button
-            onClick={() => {
-              _resolve('bye!', true)
-              enqueueSnackbar('Bye!', { variant: 'warning' })
-            }}
-            color="secondary"
-          >
-            Say Bye
-          </Button>
-          <Button
-            onClick={() => {
-              _resolve('hi!', true)
-              enqueueSnackbar('Hi!', { variant: 'warning' })
-            }}
-            color="secondary"
-          >
-            Say Hi
-          </Button>
-          <Button
-            onClick={() => {
-              _resolve('hello!', true)
-              enqueueSnackbar('Hello!', { variant: 'success' })
-            }}
-            color="primary"
-            variant="contained"
-          >
-            Say Hello
-          </Button>
-        </>
-      ),
-    })
+  const _handleCustomAction = async (id = 'default') => {
+    var d = await _openModal(
+      {
+        title: 'Custom Action',
+        body: 'Hello World!',
+        actions: ({ _resolve }) => (
+          <>
+            <Button
+              onClick={() => {
+                _resolve('bye!', true)
+                enqueueSnackbar('Bye!', { variant: 'warning' })
+              }}
+              color="secondary"
+            >
+              Say Bye
+            </Button>
+            <Button
+              onClick={() => {
+                _resolve('hi!', true)
+                enqueueSnackbar('Hi!', { variant: 'warning' })
+              }}
+              color="secondary"
+            >
+              Say Hi
+            </Button>
+            <Button
+              onClick={() => {
+                _resolve('hello!', true)
+                enqueueSnackbar('Hello!', { variant: 'success' })
+              }}
+              color="primary"
+              variant="contained"
+            >
+              Say Hello
+            </Button>
+          </>
+        ),
+      },
+      id
+    )
     console.log(d)
   }
 
@@ -252,6 +258,55 @@ export default function UserForm() {
     })
   }
 
+  const _handleNestedDialog = async () => {
+    var d = await _openModal({
+      body: 'Nested Dialog',
+      actions: ({ _resolve }) => (
+        <>
+          <Button
+            onClick={() => {
+              _handleConfirmDialog('id-nested')
+              // _resolve('hi!', true)
+              // enqueueSnackbar('Hi!', { variant: 'warning' })
+            }}
+            color="secondary"
+          >
+            Another Dialog
+          </Button>
+          <Button
+            onClick={() => {
+              _resolve('hello!', true)
+              enqueueSnackbar('Hello!', { variant: 'success' })
+            }}
+            color="primary"
+            variant="contained"
+          >
+            Say Hello
+          </Button>
+        </>
+      ),
+    })
+    console.log(d)
+    if (d) {
+      enqueueSnackbar('Confirmed!', { variant: 'success' })
+    } else {
+      enqueueSnackbar('Cancelled!', { variant: 'info' })
+    }
+  }
+
+  const _handleFullScreenDialog = async (id = 'default') => {
+    var d = await _openModal(
+      { body: 'Full Screen Dialog', fullScreen: true },
+      id
+    )
+    console.log(d)
+    if (d) {
+      enqueueSnackbar('Confirmed!', { variant: 'success' })
+    } else {
+      enqueueSnackbar('Cancelled!', { variant: 'info' })
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -262,7 +317,7 @@ export default function UserForm() {
       }}
     >
       <Toolbar className="animate__animated animate__delay-200ms animate__faster animate__fadeInDown">
-        <Box sx={{ flex: 1, display: {xs: 'none', sm: 'flex'} }} />
+        <Box sx={{ flex: 1, display: { xs: 'none', sm: 'flex' } }} />
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
           Modal/Dialog
         </Typography>
@@ -320,6 +375,24 @@ export default function UserForm() {
               onClick={_handleDialogWithTab}
             >
               Dialog With Tab
+            </Button>
+
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              color="primary"
+              onClick={_handleNestedDialog}
+            >
+              Nested Dialog
+            </Button>
+
+            <Button
+              sx={{ m: 2 }}
+              variant="outlined"
+              color="primary"
+              onClick={_handleFullScreenDialog}
+            >
+              Full Screen Dialog
             </Button>
           </Box>
         </Paper>
